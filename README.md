@@ -20,18 +20,46 @@ ember install @zestia/ember-modal-dialog
 
 ## Example
 
+The modal dialog component isn't designed to be used on its own, but rather wrapped with a parent component.
+
+```javascript
+// my-modal/component.js
+export default class MyModal extends Component {
+  @action loaded(person) {
+    set(this, 'person', person);
+  }
+}
+```
+
 ```handlebars
-{{#if this.showModal}}
-  <ModalDialog @onClose={{this.hideModal}} @onLoad={{this.loadPerson}} as |modal|>
-    <modal.Header>
-      Welcome
-    </modal.Header>
-    <modal.Content>
+{{! my-modal/template.hbs }}
+<ModalDialog
+  @onClose={{@onClose}}
+  @onLoad={{@onLoad}}
+  @onLoaded={{this.loaded}} as |modal|>
+  <modal.Header>
+    Welcome
+  </modal.Header>
+  <modal.Content>
+    {{#if modal.isLoading}}
+      Loading person…
+    {{else if modal.loadingError}}
+      Unable to load person
+    {{else}}
       Hello {{this.person.name}}
-    </modal.Content>
-    <modal.Footer>
-      <button {{on "click" modal.close}}>Close</button>
-    </modal.Footer>
-  </ModalDialog>
+    {{/if}}
+  </modal.Content>
+  <modal.Footer>
+    <button {{on "click" modal.close}}>Close</button>
+  </modal.Footer>
+</ModalDialog>
+```
+
+```handlebars
+{{! application.hbs }}
+{{#if this.showMyModal}}
+  <MyModal
+    @onClose={{this.hideMyModal}}
+    @onLoad={{fn this.loadPerson 123}} />
 {{/if}}
 ```
