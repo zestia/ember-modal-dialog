@@ -1,0 +1,28 @@
+<div
+  {{did-insert this.handleInsertElement}}
+  {{will-destroy this.handleDestroyElement}}
+  {{on "click" this.handleClick}}
+  {{on "keydown" this.handleKeydown}}
+  class={{concat
+    "modal-dialog "
+    "modal-dialog--"
+    (if this.isShowing "showing" "hiding")
+    (if this.isTooTall " modal-dialog--too-tall")
+    (if this.isWarning " modal-dialog--warning")
+    (if this.isLoading " modal-dialog--loading")
+  }}
+  role="dialog"
+  tabindex="0"
+  aria-modal="true"
+  ...attributes>
+  <div {{did-insert this.handleInsertBoxElement}} class="modal-dialog__box">
+    {{yield (hash
+      Header=(component "modal-dialog/header")
+      Content=(component "modal-dialog/content")
+      Footer=(component "modal-dialog/footer")
+      close=this.close
+      isLoading=this.isLoading
+      loadingError=this.loadingError
+    )}}
+  </div>
+</div>

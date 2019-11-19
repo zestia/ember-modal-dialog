@@ -1,0 +1,47 @@
+@keyframes warn {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.02);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+@keyframes show {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes hide {
+  0% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+.test-modal {
+  &.modal-dialg--showing {
+    animation: show 150ms;
+  }
+
+  &.modal-dialog--hiding {
+    animation: hide 150ms;
+  }
+
+  &.modal-dialog--warning .modal-dialog__box {
+    animation: warn 300ms;
+  }
+}
