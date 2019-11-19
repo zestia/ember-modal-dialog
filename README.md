@@ -1,7 +1,5 @@
 # @zestia/ember-modal-dialog
 
-<a href="https://badge.fury.io/js/%40zestia%2Fember-modal-dialog"><img src="https://badge.fury.io/js/%40zestia%2Fember-modal-dialog.svg" alt="npm version" height="18"></a> &nbsp; <a href="http://travis-ci.org/zestia/ember-modal-dialog"><img src="https://travis-ci.org/zestia/ember-modal-dialog.svg?branch=master"></a> &nbsp; <a href="https://david-dm.org/zestia/ember-modal-dialog#badge-embed"><img src="https://david-dm.org/zestia/ember-modal-dialog.svg"></a> &nbsp; <a href="https://david-dm.org/zestia/ember-modal-dialog#dev-badge-embed"><img src="https://david-dm.org/zestia/ember-modal-dialog/dev-status.svg"></a> &nbsp; <a href="https://emberobserver.com/addons/@zestia/ember-modal-dialog"><img src="https://emberobserver.com/badges/-zestia-ember-modal-dialog.svg"></a>
-
 This addon provides a simple Modal Dialog component.
 
 When rendered will display in an top level DOM element, rather than in-place.
