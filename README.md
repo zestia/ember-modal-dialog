@@ -28,6 +28,10 @@ export default class MyModal extends Component {
   @action loaded(person) {
     set(this, 'person', person);
   }
+
+  @action failedToLoad(error) {
+    set(this, 'loadingError', error.message);
+  }
 }
 ```
 
@@ -36,15 +40,16 @@ export default class MyModal extends Component {
 <ModalDialog
   @onClose={{@onClose}}
   @onLoad={{@onLoad}}
-  @onLoaded={{this.loaded}} as |modal|>
+  @onLoaded={{this.loaded}}
+  @onLoadError={{this.failedToLoad}} as |modal|>
   <modal.Header>
     Welcome
   </modal.Header>
   <modal.Content>
     {{#if modal.isLoading}}
       Loading person…
-    {{else if modal.loadingError}}
-      Unable to load person
+    {{else if this.loadingError}}
+      Unable to load person because {{this.loadingError}}
     {{else}}
       Hello {{this.person.name}}
     {{/if}}

@@ -16,6 +16,7 @@ export default class ModalDialogComponent extends Component {
 
   onReady() {}
   onLoaded() {}
+  onLoadError() {}
   onClose() {}
 
   onLoad() {
@@ -94,7 +95,7 @@ export default class ModalDialogComponent extends Component {
         this.onLoaded(data);
       })
       .catch(error => {
-        trySet(this, 'loadingError', error);
+        this.onLoadError(error);
       })
       .finally(() => {
         trySet(this, 'isLoading', false);

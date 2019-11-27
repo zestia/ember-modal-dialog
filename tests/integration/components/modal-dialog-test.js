@@ -127,12 +127,13 @@ module('modal-dialog', function(hooks) {
     test('failure', async function(assert) {
       assert.expect(2);
 
-      this.set('load', () => reject('sorry'));
+      this.set('load', () => reject({ message: 'sorry' }));
+      this.set('loadError', error => this.set('error', error));
 
       await render(hbs`
-        <ModalDialog class="test-modal" @onLoad={{this.load}} as |modal|>
-          {{#if modal.loadingError}}
-            Failed {{modal.loadingError}}
+        <ModalDialog class="test-modal" @onLoad={{this.load}} @onLoadError={{this.loadError}}>
+          {{#if this.error}}
+            Failed {{this.error.message}}
           {{/if}}
         </ModalDialog>
       `);
@@ -148,7 +149,7 @@ module('modal-dialog', function(hooks) {
 
       assert
         .dom('.modal-dialog')
-        .hasText('Failed sorry', 'yields the result of the failure');
+        .hasText('Failed sorry', 'yields correctly after loading has failed');
     });
   });
 
