@@ -12,6 +12,10 @@ Additionally, it can be set into a loading state which is useful if the modal di
 ember install @zestia/ember-modal-dialog
 ```
 
+## Demo
+
+https://zestia.github.io/ember-modal-dialog/
+
 ## Notes
 
 - This addon intentionally does not come with any styles.
