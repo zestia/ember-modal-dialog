@@ -2,8 +2,6 @@
 
 This addon provides a simple Modal Dialog component.
 
-When rendered will display in an top level DOM element, rather than in-place.
-
 The component can be animated in and out using class names that are added to the element during its set up and tear down phase.
 
 Additionally, it can be set into a loading state which is useful if the modal dialog needs to wait for some data before it can display.
