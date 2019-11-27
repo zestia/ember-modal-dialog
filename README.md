@@ -60,8 +60,18 @@ export default class MyModal extends Component {
 </ModalDialog>
 ```
 
+```javascript
+// application/route.js
+export default class ApplicationRoute extends Route {
+  @action
+  loadPerson() {
+    // Fetch remote data
+  }
+}
+```
+
 ```handlebars
-{{! application.hbs }}
+{{! application/route.hbs }}
 {{#if this.showMyModal}}
   <MyModal
     @onClose={{this.hideMyModal}}
