@@ -1,1 +1,27 @@
-<h1>@zestia/ember-modal-dialog</h1>
+<div class="inside-the-application">
+  <h1>@zestia/ember-modal-dialog</h1>
+
+  <button {{on "click" this.openTestModal}} type="button">Open</button>
+
+  <br><br>
+</div>
+
+<div class="outside-the-application">
+  {{#if this.showTestModal}}
+    <ModalDialog class="test-modal" @onClose={{this.closeTestModal}} as |modal|>
+      <modal.Header>
+        Header
+      </modal.Header>
+
+      <modal.Content>
+        Content
+      </modal.Content>
+
+      <modal.Footer>
+        Footer
+
+        <button {{on "click" modal.close}} type="button">Close</button>
+      </modal.Footer>
+    </ModalDialog>
+  {{/if}}
+</div>

@@ -33,7 +33,16 @@
 }
 
 .test-modal {
-  &.modal-dialg--showing {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+
+  &.modal-dialog--showing {
     animation: show 150ms;
   }
 
@@ -44,4 +53,9 @@
   &.modal-dialog--warning .modal-dialog__box {
     animation: warn 300ms;
   }
+}
+
+:root.has-modal .inside-the-application {
+  filter: blur(4px);
+  transition: filter 100ms;
 }
