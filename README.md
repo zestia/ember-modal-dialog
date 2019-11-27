@@ -39,7 +39,7 @@ export default class MyModal extends Component {
 {{! my-modal/template.hbs }}
 <ModalDialog
   @onClose={{@onClose}}
-  @onLoad={{@onLoad}}
+  @onLoad={{@onFetchPerson}}
   @onLoaded={{this.loaded}}
   @onLoadError={{this.failedToLoad}} as |modal|>
   <modal.Header>
@@ -75,6 +75,6 @@ export default class ApplicationRoute extends Route {
 {{#if this.showMyModal}}
   <MyModal
     @onClose={{this.hideMyModal}}
-    @onLoad={{fn this.loadPerson 123}} />
+    @onFetchPerson={{fn this.loadPerson 123}} />
 {{/if}}
 ```
