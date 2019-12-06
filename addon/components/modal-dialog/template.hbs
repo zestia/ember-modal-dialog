@@ -1,8 +1,4 @@
 <div
-  {{did-insert this.handleInsertElement}}
-  {{will-destroy this.handleDestroyElement}}
-  {{on "click" this.handleClick}}
-  {{on "keydown" this.handleKeydown}}
   class={{concat
     "modal-dialog "
     "modal-dialog--"
@@ -14,15 +10,22 @@
   role="dialog"
   tabindex="0"
   aria-modal="true"
-  ...attributes>
-  <div {{did-insert this.handleInsertBoxElement}} class="modal-dialog__box">
-    {{yield (hash
-      Header=(component "modal-dialog/header")
-      Content=(component "modal-dialog/content")
-      Footer=(component "modal-dialog/footer")
-      close=this.close
-      isLoading=this.isLoading
-      loadingError=this.loadingError
-    )}}
+  ...attributes
+  {{did-insert this.handleInsertElement}}
+  {{will-destroy this.handleDestroyElement}}
+  {{on "click" this.handleClick}}
+  {{on "keydown" this.handleKeydown}}
+>
+  <div class="modal-dialog__box" {{did-insert this.handleInsertBoxElement}}>
+    {{yield
+      (hash
+        Header=(component "modal-dialog/header")
+        Content=(component "modal-dialog/content")
+        Footer=(component "modal-dialog/footer")
+        close=this.close
+        isLoading=this.isLoading
+        loadingError=this.loadingError
+      )
+    }}
   </div>
 </div>
