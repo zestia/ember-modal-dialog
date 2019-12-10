@@ -161,7 +161,7 @@ module('modal-dialog', function(hooks) {
 
       await render(hbs`
         <ModalDialog class="test-modal" @onClose={{this.close}} as |modal|>
-          <button {{on "click" modal.close}}>Close</button>
+          <button type="button" {{on "click" modal.close}}>Close</button>
         </ModalDialog>
       `);
 
@@ -192,7 +192,7 @@ module('modal-dialog', function(hooks) {
           class="test-modal"
           @onReady={{this.ready}}
           @onClose={{this.close}} as |modal|>
-          <button {{on "click" modal.close}}>Close</button>
+          <button type="button" {{on "click" modal.close}}>Close</button>
         </ModalDialog>
       `);
 
