@@ -39,6 +39,7 @@ https://zestia.github.io/ember-modal-dialog/
 - Automatic overflow detection ✔︎
 - Focus handling ✔︎
 - Keyboard controls ✔︎
+- Root element notification ✔︎
 - Simple API ✔︎
 
 ## Notes
