@@ -36,10 +36,10 @@ https://zestia.github.io/ember-modal-dialog/
 
 - Class names for animating ✔︎
 - Loading state handling ✔︎
-- Automatic overflow detection ✔︎
 - Focus handling ✔︎
 - Optionally escapable ✔︎
 - Root element notification ✔︎
+- Automatic overflow detection ✔︎
 - Simple API ✔︎
 
 ## Notes

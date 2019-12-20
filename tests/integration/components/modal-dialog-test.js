@@ -268,6 +268,24 @@ module('modal-dialog', function(hooks) {
   });
 
   test('height', async function(assert) {
+    // You may wonder why this is needed / useful.
+    //
+    // Consider a modal dialog that fits in the viewport, and has content
+    // inside it, that overflows outside the modal.
+    // For example: a dropdown menu.
+    //
+    // You would not want any overflow css rules, so that dropdown does not
+    // get cut off.
+    //
+    // Then consider a modal dialog that is too tall for the viewport, now you
+    // will want to add scrollbars to the modal for it to remain useful.
+    //
+    // It's now ok to add overflow css rules, the dropdown menu will now open
+    // 'inside' the modal dialog, rather than overflowing outside it.
+    //
+    // Note that this general problem is also solvable by rendering the dropdown
+    // elsewhere in the DOM, but this is not always possible.
+
     assert.expect(2);
 
     const fakeDocumentElement = {
