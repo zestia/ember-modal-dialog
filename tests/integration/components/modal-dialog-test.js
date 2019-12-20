@@ -14,7 +14,7 @@ module('modal-dialog', function(hooks) {
       assert.expect(7);
 
       await render(hbs`
-        <ModalDialog class="test-modal" as |modal|>
+        <ModalDialog as |modal|>
           <modal.Header>
             Header goes here
           </modal.Header>
@@ -57,7 +57,7 @@ module('modal-dialog', function(hooks) {
 
       await render(hbs`
         {{#if this.show}}
-          <ModalDialog class="test-modal" />
+          <ModalDialog />
         {{/if}}
       `);
 
@@ -90,7 +90,6 @@ module('modal-dialog', function(hooks) {
 
       await render(hbs`
         <ModalDialog
-          class="test-modal"
           @onLoad={{this.load}}
           @onLoaded={{this.loaded}} as |modal|>
           {{#if modal.isLoading}}
@@ -135,7 +134,7 @@ module('modal-dialog', function(hooks) {
       this.set('loadError', error => this.set('error', error));
 
       await render(hbs`
-        <ModalDialog class="test-modal" @onLoad={{this.load}} @onLoadError={{this.loadError}}>
+        <ModalDialog @onLoad={{this.load}} @onLoadError={{this.loadError}}>
           {{#if this.error}}
             Failed {{this.error.message}}
           {{/if}}
@@ -164,7 +163,7 @@ module('modal-dialog', function(hooks) {
       this.close = () => assert.step('close');
 
       await render(hbs`
-        <ModalDialog class="test-modal" @onClose={{this.close}} as |modal|>
+        <ModalDialog @onClose={{this.close}} as |modal|>
           <button type="button" {{on "click" modal.close}}>Close</button>
         </ModalDialog>
       `);
@@ -193,7 +192,6 @@ module('modal-dialog', function(hooks) {
 
       await render(hbs`
         <ModalDialog
-          class="test-modal"
           @onReady={{this.ready}}
           @onClose={{this.close}} as |modal|>
           <button type="button" {{on "click" modal.close}}>Close</button>
@@ -231,7 +229,6 @@ module('modal-dialog', function(hooks) {
 
       await render(hbs`
         <ModalDialog
-          class="test-modal"
           @escapable={{true}}
           @onClose={{this.close}} />
       `);
@@ -252,7 +249,7 @@ module('modal-dialog', function(hooks) {
       this.close = () => assert.step('close');
 
       await render(hbs`
-        <ModalDialog class="test-modal" @onClose={{this.close}} />
+        <ModalDialog @onClose={{this.close}} />
       `);
 
       await triggerKeyEvent('.modal-dialog', 'keydown', 27);
