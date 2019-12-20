@@ -13,7 +13,7 @@
 
 <div class="outside-the-application">
   {{#if this.showTestModal}}
-    <ModalDialog class="test-modal" @onClose={{this.closeTestModal}} as |modal|>
+    <ModalDialog class="test-modal" @onClose={{this.closeTestModal}} @escapable={{true}} as |modal|>
       <modal.Header>
         Header
       </modal.Header>
