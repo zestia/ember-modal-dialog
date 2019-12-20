@@ -49,6 +49,10 @@ module('modal-dialog', function(hooks) {
     });
 
     test('root element', async function(assert) {
+      // It's useful to inform the root element that a modal dialog is present
+      // in the DOM, because you may wish to add styles to prevent document
+      // scrolling or blur the background for example.
+
       assert.expect(2);
 
       await render(hbs`
@@ -214,6 +218,12 @@ module('modal-dialog', function(hooks) {
   });
 
   module('escaping', function() {
+    // Modal dialogs that do not close when escape is pressed add a class name
+    // to the modal, so you can add a suitable animation to inform the user
+    // that their action was denied. This is useful for preventing accidental
+    // data loss, if a user has entered text into a modal, then hits escape
+    // without pressing Save for example.
+
     test('allowed', async function(assert) {
       assert.expect(2);
 
