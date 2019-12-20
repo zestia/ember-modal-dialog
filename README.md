@@ -1,10 +1,26 @@
 # @zestia/ember-modal-dialog
 
+<p>
+  <a href="http://travis-ci.org/zestia/ember-modal-dialog">
+    <img src="https://travis-ci.org/zestia/ember-modal-dialog.svg?branch=master">
+  </a>
+
+  <a href="https://david-dm.org/zestia/ember-modal-dialog#badge-embed">
+    <img src="https://david-dm.org/zestia/ember-modal-dialog.svg">
+  </a>
+
+  <a href="https://david-dm.org/zestia/ember-modal-dialog#dev-badge-embed">
+    <img src="https://david-dm.org/zestia/ember-modal-dialog/dev-status.svg">
+  </a>
+
+  <a href="https://emberobserver.com/addons/@zestia/ember-modal-dialog">
+    <img src="https://emberobserver.com/badges/-zestia-ember-modal-dialog.svg">
+  </a>
+
+  <img src="https://img.shields.io/badge/Ember-%3E%3D%203.11-brightgreen">
+</p>
+
 This addon provides a simple Modal Dialog component.
-
-- The component can be animated in and out using class names that are added to the element during its set up and tear down phase.
-
-- Additionally, it can be set into a loading state which is useful if the modal dialog needs to wait for some data before it can display.
 
 ## Installation
 
@@ -16,13 +32,22 @@ ember install @zestia/ember-modal-dialog
 
 https://zestia.github.io/ember-modal-dialog/
 
+## Features
+
+- Class names for animating ✔︎
+- Loading state handling ✔︎
+- Automatic overflow detection ✔︎
+- Focus handling ✔︎
+- Keyboard controls ✔︎
+- Simple API ✔︎
+
 ## Notes
 
 - This addon intentionally does not come with any styles.
 
 ## Example
 
-The modal dialog component isn't designed to be used on its own, but rather wrapped with a parent component.
+The modal dialog component isn't designed to be used on its own, but rather wrapped with a parent component...
 
 ```javascript
 // my-modal/component.js
