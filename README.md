@@ -38,7 +38,7 @@ https://zestia.github.io/ember-modal-dialog/
 - Loading state handling ✔︎
 - Automatic overflow detection ✔︎
 - Focus handling ✔︎
-- Keyboard controls ✔︎
+- Optionally escapable ✔︎
 - Root element notification ✔︎
 - Simple API ✔︎
 
