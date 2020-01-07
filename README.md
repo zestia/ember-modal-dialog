@@ -48,7 +48,7 @@ https://zestia.github.io/ember-modal-dialog/
 
 ## Example
 
-The modal dialog component isn't designed to be used on its own, but rather used to compose a new modal dialog component...
+The modal dialog component isn't designed to be used on its own, but rather used to compose a new modal dialog component... in this example it's called "my-modal"
 
 ```javascript
 // my-modal/component.js
