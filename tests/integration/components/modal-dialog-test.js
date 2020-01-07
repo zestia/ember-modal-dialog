@@ -213,6 +213,22 @@ module('modal-dialog', function(hooks) {
         'close action is fired after the hide animation'
       );
     });
+
+    test('missing close argument', async function(assert) {
+      assert.expect(1);
+
+      await render(hbs`
+        <ModalDialog @onClose={{null}} as |modal|>
+          <button type="button" {{on "click" modal.close}}>Close</button>
+        </ModalDialog>
+      `);
+
+      await click('button');
+
+      await waitForAnimation('.modal-dialog');
+
+      assert.ok(true, 'does not blow up if onClose is not a function');
+    });
   });
 
   module('escaping', function() {

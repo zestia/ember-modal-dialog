@@ -8,20 +8,23 @@ export default class ModalDialogComponent extends Component {
   tagName = '';
   layout = layout;
 
+  // State
+
   isLoading = false;
   isShowing = true;
   isWarning = false;
 
+  // Arguments
+
   escapable = false;
 
-  onReady() {}
-  onLoaded() {}
-  onLoadError() {}
-  onClose() {}
+  // Actions
 
-  onLoad() {
-    return resolve();
-  }
+  onReady = null;
+  onLoaded = null;
+  onLoadError = null;
+  onClose = null;
+  onLoad = null;
 
   constructor() {
     super(...arguments);
@@ -31,16 +34,14 @@ export default class ModalDialogComponent extends Component {
 
   @action
   close() {
-    return this._hide().then(() => this.onClose());
+    return this._hide().then(() => this._invokeAction('onClose'));
   }
 
   @action
   warn() {
     set(this, 'isWarning', true);
 
-    this._waitForAnimation().then(() => {
-      trySet(this, 'isWarning', false);
-    });
+    this._waitForAnimation().then(() => trySet(this, 'isWarning', false));
   }
 
   @action
@@ -78,7 +79,7 @@ export default class ModalDialogComponent extends Component {
   }
 
   _ready() {
-    this.onReady(this._api());
+    this._invokeAction('onReady', this._api());
   }
 
   _api() {
@@ -90,16 +91,10 @@ export default class ModalDialogComponent extends Component {
   _load() {
     set(this, 'isLoading', true);
 
-    this.onLoad()
-      .then(data => {
-        this.onLoaded(data);
-      })
-      .catch(error => {
-        this.onLoadError(error);
-      })
-      .finally(() => {
-        trySet(this, 'isLoading', false);
-      });
+    resolve(this._invokeAction('onLoad'))
+      .then(data => this._invokeAction('onLoaded', data))
+      .catch(error => this._invokeAction('onLoadError', error))
+      .finally(() => trySet(this, 'isLoading', false));
   }
 
   _hide() {
@@ -153,6 +148,12 @@ export default class ModalDialogComponent extends Component {
       this.close();
     } else {
       this.warn();
+    }
+  }
+
+  _invokeAction(name, ...args) {
+    if (typeof this[name] === 'function') {
+      return this[name](...args);
     }
   }
 }
