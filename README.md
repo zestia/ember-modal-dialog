@@ -74,10 +74,12 @@ export default class MyModal extends Component {
   @onClose={{@onClose}}
   @onLoad={{@onFetchPerson}}
   @onLoaded={{this.loaded}}
-  @onLoadError={{this.failedToLoad}} as |modal|>
+  @onLoadError={{this.failedToLoad}} as |modal|
+>
   <modal.Header>
     Welcome
   </modal.Header>
+
   <modal.Content>
     {{#if modal.isLoading}}
       Loading person…
@@ -87,8 +89,11 @@ export default class MyModal extends Component {
       Hello {{this.person.name}}
     {{/if}}
   </modal.Content>
+
   <modal.Footer>
-    <button {{on "click" modal.close}}>Close</button>
+    <button {{on "click" modal.close}}>
+      Close
+    </button>
   </modal.Footer>
 </ModalDialog>
 ```
