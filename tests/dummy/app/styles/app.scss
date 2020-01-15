@@ -72,7 +72,6 @@
 .modal-dialog__box {
   background-color: var(--modal-box-bg-colour);
   border: 1px solid var(--modal-box-border-colour);
-  min-width: 500px;
 }
 
 .modal-dialog__header {
@@ -88,4 +87,16 @@
 .modal-dialog__footer {
   padding: var(--modal-box-padding);
   border-top: 1px solid var(--modal-box-border-colour);
+}
+
+@media (min-width: 500px) {
+  .modal-dialog__box {
+    width: 480px;
+  }
+}
+
+@media (max-width: 500px) {
+  .modal-dialog__box {
+    width: calc(100% - 20px);
+  }
 }
