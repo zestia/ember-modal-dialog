@@ -26,8 +26,9 @@ export default class ModalDialogComponent extends Component {
   onClose = null;
   onLoad = null;
 
-  constructor() {
-    super(...arguments);
+  init() {
+    this._load();
+    super.init(...arguments);
     this.rootElement = document.querySelector(':root');
     this.documentElement = document.documentElement;
   }
@@ -63,7 +64,6 @@ export default class ModalDialogComponent extends Component {
     set(this, 'domElement', element);
     this.domElement.focus();
     this.rootElement.classList.add('has-modal');
-    this._load();
     this._watchForContentChanges();
     this._ready();
   }
