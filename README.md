@@ -53,14 +53,17 @@ The modal dialog component isn't designed to be used on its own, but rather used
 ```javascript
 // my-modal/component.js
 export default class MyModal extends Component {
+  @tracked person;
+  @tracked loadingError;
+
   @action
   loaded(person) {
-    set(this, 'person', person);
+    this.person = person;
   }
 
   @action
   failedToLoad(error) {
-    set(this, 'loadingError', error.message);
+    this.loadingError = error.message;
   }
 }
 ```
