@@ -48,19 +48,22 @@ https://zestia.github.io/ember-modal-dialog/
 
 ## Example
 
-The modal dialog component isn't designed to be used on its own, but rather wrapped with a parent component...
+The modal dialog component isn't designed to be used on its own, but rather used to compose a new modal dialog component... in this example it's called "my-modal"
 
 ```javascript
 // my-modal/component.js
 export default class MyModal extends Component {
+  @tracked person;
+  @tracked loadingError;
+
   @action
   loaded(person) {
-    set(this, 'person', person);
+    this.person = person;
   }
 
   @action
   failedToLoad(error) {
-    set(this, 'loadingError', error.message);
+    this.loadingError = error.message;
   }
 }
 ```
@@ -71,10 +74,12 @@ export default class MyModal extends Component {
   @onClose={{@onClose}}
   @onLoad={{@onFetchPerson}}
   @onLoaded={{this.loaded}}
-  @onLoadError={{this.failedToLoad}} as |modal|>
+  @onLoadError={{this.failedToLoad}} as |modal|
+>
   <modal.Header>
     Welcome
   </modal.Header>
+
   <modal.Content>
     {{#if modal.isLoading}}
       Loading person…
@@ -84,8 +89,11 @@ export default class MyModal extends Component {
       Hello {{this.person.name}}
     {{/if}}
   </modal.Content>
+
   <modal.Footer>
-    <button {{on "click" modal.close}}>Close</button>
+    <button {{on "click" modal.close}}>
+      Close
+    </button>
   </modal.Footer>
 </ModalDialog>
 ```
@@ -105,6 +113,7 @@ export default class ApplicationRoute extends Route {
 {{#if this.showMyModal}}
   <MyModal
     @onClose={{this.hideMyModal}}
-    @onFetchPerson={{fn this.loadPerson 123}} />
+    @onFetchPerson={{fn this.loadPerson 123}}
+  />
 {{/if}}
 ```

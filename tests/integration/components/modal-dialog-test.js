@@ -80,6 +80,35 @@ module('modal-dialog', function(hooks) {
   });
 
   module('loading', function() {
+    test('action order', async function(assert) {
+      assert.expect(3);
+
+      const deferred = defer();
+
+      this.set('load', () => {
+        assert.step('load');
+
+        return deferred.promise;
+      });
+
+      this.set('inserted', () => {
+        assert.step('inserted');
+      });
+
+      await render(hbs`
+        <ModalDialog
+          @onLoad={{this.load}}
+          {{did-insert this.inserted}}
+        />
+      `);
+
+      assert.verifySteps(
+        ['load', 'inserted'],
+        'load action fires before dom node is inserted. ' +
+          'this is so a loading state will be immediately visible'
+      );
+    });
+
     test('success', async function(assert) {
       assert.expect(4);
 
@@ -213,6 +242,22 @@ module('modal-dialog', function(hooks) {
         'close action is fired after the hide animation'
       );
     });
+
+    test('missing close argument', async function(assert) {
+      assert.expect(1);
+
+      await render(hbs`
+        <ModalDialog @onClose={{null}} as |modal|>
+          <button type="button" {{on "click" modal.close}}>Close</button>
+        </ModalDialog>
+      `);
+
+      await click('button');
+
+      await waitForAnimation('.modal-dialog');
+
+      assert.ok(true, 'does not blow up if onClose is not a function');
+    });
   });
 
   module('escaping', function() {
@@ -300,8 +345,8 @@ module('modal-dialog', function(hooks) {
     };
 
     class TestModalDialogComponent extends ModalDialogComponent {
-      constructor() {
-        super(...arguments);
+      init() {
+        super.init(...arguments);
         this.documentElement = fakeDocumentElement;
       }
     }
