@@ -113,6 +113,7 @@ export default class ApplicationRoute extends Route {
 {{#if this.showMyModal}}
   <MyModal
     @onClose={{this.hideMyModal}}
-    @onFetchPerson={{fn this.loadPerson 123}} />
+    @onFetchPerson={{fn this.loadPerson 123}}
+  />
 {{/if}}
 ```
