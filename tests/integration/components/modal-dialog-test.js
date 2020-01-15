@@ -4,14 +4,7 @@ import hbs from 'htmlbars-inline-precompile';
 import ModalDialogComponent from '@zestia/ember-modal-dialog/components/modal-dialog/component';
 import waitForAnimation from '../../helpers/wait-for-animation';
 import { reject, defer } from 'rsvp';
-import {
-  find,
-  waitUntil,
-  render,
-  settled,
-  triggerKeyEvent,
-  click
-} from '@ember/test-helpers';
+import { render, settled, triggerKeyEvent, click } from '@ember/test-helpers';
 
 module('modal-dialog', function(hooks) {
   setupRenderingTest(hooks);
@@ -112,7 +105,7 @@ module('modal-dialog', function(hooks) {
       assert.verifySteps(
         ['load', 'inserted'],
         'load action fires before dom node is inserted. ' +
-          'this is so an loading state will be immediately visible'
+          'this is so a loading state will be immediately visible'
       );
     });
 
