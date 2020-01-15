@@ -27,10 +27,10 @@ export default class ModalDialogComponent extends Component {
   onLoad = null;
 
   init() {
-    this._load();
     super.init(...arguments);
     this.rootElement = document.querySelector(':root');
     this.documentElement = document.documentElement;
+    this._load();
   }
 
   @action
