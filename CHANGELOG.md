@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.0.5
+
+- Splat attributes on header, content and footer components
+- Upgrade dependencies
+
 ## 1.0.4
 
 - Move `@onLoad` action from did insert hook to component initialisation hook

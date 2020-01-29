@@ -11,19 +11,19 @@ module('modal-dialog', function(hooks) {
 
   module('rendering', function() {
     test('it works', async function(assert) {
-      assert.expect(7);
+      assert.expect(10);
 
       await render(hbs`
         <ModalDialog as |modal|>
-          <modal.Header>
+          <modal.Header class="foo">
             Header goes here
           </modal.Header>
 
-          <modal.Content>
+          <modal.Content class="bar">
             Content goes here
           </modal.Content>
 
-          <modal.Footer>
+          <modal.Footer class="baz">
             Footer goes here
           </modal.Footer>
         </ModalDialog>
@@ -46,6 +46,12 @@ module('modal-dialog', function(hooks) {
       assert.dom('.modal-dialog__header').exists('can render the content');
 
       assert.dom('.modal-dialog__header').exists('can render the footer');
+
+      assert.dom('.modal-dialog__header').hasClass('foo', 'splattributes');
+
+      assert.dom('.modal-dialog__content').hasClass('bar', 'splattributes');
+
+      assert.dom('.modal-dialog__footer').hasClass('baz', 'splattributes');
     });
 
     test('root element', async function(assert) {
