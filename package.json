@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "build": "ember build",
+    "build": "ember build --environment=production",
     "lint": "npm run lint:js && npm run lint:hbs && npm run lint:css",
     "lint:hbs": "ember-template-lint .",
     "lint:js": "eslint .",
@@ -24,7 +24,7 @@
     "url": "https://github.com/zestia/ember-modal-dialog.git"
   },
   "engines": {
-    "node": "8.* || >= 10.*"
+    "node": "10.* || >= 12"
   },
   "author": "Zestia",
   "license": "MIT",
@@ -34,7 +34,9 @@
     "@zestia/eslint-config": "^2.0.34",
     "@zestia/prettier-config": "^1.0.0",
     "@zestia/stylelint-config": "^2.0.35",
+    "babel-eslint": "^10.0.3",
     "broccoli-asset-rev": "^3.0.0",
+    "ember-auto-import": "^1.5.3",
     "ember-cli": "^3.16.0",
     "ember-cli-dependency-checker": "^3.2.0",
     "ember-cli-github-pages": "^0.2.2",
@@ -61,6 +63,8 @@
   },
   "dependencies": {
     "@ember/render-modifiers": "^1.0.2",
+    "@glimmer/component": "^1.0.0",
+    "@glimmer/tracking": "^1.0.0",
     "ember-cli-babel": "^7.17.2",
     "ember-cli-htmlbars": "^4.2.2"
   },
@@ -71,6 +75,9 @@
     "popup",
     "prompt"
   ],
+  "ember": {
+    "edition": "octane"
+  },
   "ember-addon": {
     "configPath": "tests/dummy/config"
   },
