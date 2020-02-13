@@ -2,7 +2,7 @@
 
 ## 1.0.6
 
-- Upgrade dependenies
+- Upgrade dependencies
 
 ## 1.0.5
 
