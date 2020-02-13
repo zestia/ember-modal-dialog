@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.0.6
+
+- Upgrade dependenies
+
 ## 1.0.5
 
 - Splat attributes on header, content and footer components
