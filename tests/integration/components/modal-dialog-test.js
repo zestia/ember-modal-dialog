@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import ModalDialogComponent from '@zestia/ember-modal-dialog/components/modal-dialog/component';
+import ModalDialogComponent from '@zestia/ember-modal-dialog/components/modal-dialog';
 import waitForAnimation from '../../helpers/wait-for-animation';
 import { reject, defer } from 'rsvp';
 import { render, settled, triggerKeyEvent, click } from '@ember/test-helpers';
@@ -351,8 +351,8 @@ module('modal-dialog', function(hooks) {
     };
 
     class TestModalDialogComponent extends ModalDialogComponent {
-      init() {
-        super.init(...arguments);
+      constructor() {
+        super(...arguments);
         this.documentElement = fakeDocumentElement;
       }
     }

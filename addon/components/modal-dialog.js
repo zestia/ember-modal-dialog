@@ -1,36 +1,26 @@
-import Component from '@ember/component';
-import layout from './template';
+import Component from '@glimmer/component';
 import { Promise, resolve } from 'rsvp';
-import { action, set, trySet } from '@ember/object';
+import { action } from '@ember/object';
+import { tracked } from '@glimmer/tracking';
 import { scheduleOnce } from '@ember/runloop';
 
 export default class ModalDialogComponent extends Component {
-  tagName = '';
-  layout = layout;
+  @tracked isLoading = false;
+  @tracked isShowing = true;
+  @tracked isWarning = false;
+  @tracked isTooTall = false;
 
-  // State
-
-  isLoading = false;
-  isShowing = true;
-  isWarning = false;
-
-  // Arguments
-
-  escapable = false;
-
-  // Actions
-
-  onReady = null;
-  onLoaded = null;
-  onLoadError = null;
-  onClose = null;
-  onLoad = null;
-
-  init() {
-    super.init(...arguments);
+  constructor() {
+    super(...arguments);
     this.rootElement = document.querySelector(':root');
     this.documentElement = document.documentElement;
     this._load();
+  }
+
+  get api() {
+    return {
+      close: this.close
+    };
   }
 
   @action
@@ -40,9 +30,9 @@ export default class ModalDialogComponent extends Component {
 
   @action
   warn() {
-    set(this, 'isWarning', true);
+    this.isWarning = true;
 
-    this._waitForAnimation().then(() => trySet(this, 'isWarning', false));
+    this._waitForAnimation().then(() => (this.isWarning = false));
   }
 
   @action
@@ -61,7 +51,7 @@ export default class ModalDialogComponent extends Component {
 
   @action
   handleInsertElement(element) {
-    set(this, 'domElement', element);
+    this.domElement = element;
     this.domElement.focus();
     this.rootElement.classList.add('has-modal');
     this._watchForContentChanges();
@@ -75,30 +65,24 @@ export default class ModalDialogComponent extends Component {
 
   @action
   handleInsertBoxElement(element) {
-    set(this, 'boxElement', element);
+    this.boxElement = element;
   }
 
   _ready() {
-    this._invokeAction('onReady', this._api());
-  }
-
-  _api() {
-    return {
-      close: this.close
-    };
+    this._invokeAction('onReady', this.api);
   }
 
   _load() {
-    set(this, 'isLoading', true);
+    this.isLoading = true;
 
     resolve(this._invokeAction('onLoad'))
       .then(data => this._invokeAction('onLoaded', data))
       .catch(error => this._invokeAction('onLoadError', error))
-      .finally(() => trySet(this, 'isLoading', false));
+      .finally(() => (this.isLoading = false));
   }
 
   _hide() {
-    set(this, 'isShowing', false);
+    this.isShowing = false;
 
     return this._waitForAnimation();
   }
@@ -132,7 +116,7 @@ export default class ModalDialogComponent extends Component {
     const box = this.boxElement;
     const doc = this.documentElement;
 
-    set(this, 'isTooTall', box && doc.clientHeight <= box.clientHeight);
+    this.isTooTall = box && doc.clientHeight <= box.clientHeight;
   }
 
   _waitForAnimation() {
@@ -144,7 +128,7 @@ export default class ModalDialogComponent extends Component {
   }
 
   _attemptEscape() {
-    if (this.escapable) {
+    if (this.args.escapable) {
       this.close();
     } else {
       this.warn();
@@ -152,8 +136,10 @@ export default class ModalDialogComponent extends Component {
   }
 
   _invokeAction(name, ...args) {
-    if (typeof this[name] === 'function') {
-      return this[name](...args);
+    const action = this.args[name];
+
+    if (typeof action === 'function') {
+      return action(...args);
     }
   }
 }
