@@ -1,16 +1,32 @@
 import Controller from '@ember/controller';
-import { action, set } from '@ember/object';
+import { action } from '@ember/object';
+import { tracked } from '@glimmer/tracking';
+import { Promise } from 'rsvp';
+import { later } from '@ember/runloop';
 
 export default class ApplicationController extends Controller {
-  showTestModal = false;
+  testModalIsEscapable = false;
+  testModalLoadDelay = false;
+  @tracked showTestModal = false;
 
   @action
   openTestModal() {
-    set(this, 'showTestModal', true);
+    this.showTestModal = true;
   }
 
   @action
   closeTestModal() {
-    set(this, 'showTestModal', false);
+    this.showTestModal = false;
+  }
+
+  @action
+  loadTestModal() {
+    if (!this.testModalLoadDelay) {
+      return;
+    }
+
+    return new Promise(resolve => {
+      later(resolve, 2000);
+    });
   }
 }

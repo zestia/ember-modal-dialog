@@ -3,6 +3,26 @@
     @zestia/ember-modal-dialog
   </h1>
 
+  <fieldset>
+    <legend>
+      Options
+    </legend>
+    <label>
+      <Input @type="checkbox" @checked={{this.testModalIsEscapable}} />
+      Escapable
+    </label>
+
+    <br />
+
+    <label>
+      <Input @type="checkbox" @checked={{this.testModalLoadDelay}} />
+      Load delay
+    </label>
+  </fieldset>
+
+  <br />
+  <br />
+
   <button type="button" {{on "click" this.openTestModal}}>
     Open
   </button>
@@ -48,13 +68,21 @@ dapibus dolor egestas.
 
 <div class="outside-the-application">
   {{#if this.showTestModal}}
-    <ModalDialog @onClose={{this.closeTestModal}} as |modal|>
+    <ModalDialog
+      @onClose={{this.closeTestModal}}
+      @onLoad={{this.loadTestModal}}
+      @escapable={{this.testModalIsEscapable}} as |modal|
+    >
       <modal.Header>
         Header
       </modal.Header>
 
       <modal.Content>
-        Content
+        {{#if modal.isLoading}}
+          Please wait...
+        {{else}}
+          Content
+        {{/if}}
       </modal.Content>
 
       <modal.Footer>

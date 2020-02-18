@@ -91,15 +91,15 @@ module('modal-dialog', function(hooks) {
 
       const deferred = defer();
 
-      this.set('load', () => {
+      this.load = () => {
         assert.step('load');
 
         return deferred.promise;
-      });
+      };
 
-      this.set('inserted', () => {
+      this.inserted = () => {
         assert.step('inserted');
-      });
+      };
 
       await render(hbs`
         <ModalDialog
@@ -120,8 +120,8 @@ module('modal-dialog', function(hooks) {
 
       const deferred = defer();
 
-      this.set('load', () => deferred.promise);
-      this.set('loaded', data => this.set('name', data));
+      this.load = () => deferred.promise;
+      this.loaded = data => (this.name = data);
 
       await render(hbs`
         <ModalDialog
@@ -165,8 +165,8 @@ module('modal-dialog', function(hooks) {
     test('failure', async function(assert) {
       assert.expect(2);
 
-      this.set('load', () => reject({ message: 'sorry' }));
-      this.set('loadError', error => this.set('error', error));
+      this.load = () => reject({ message: 'sorry' });
+      this.loadError = error => this.set('error', error);
 
       await render(hbs`
         <ModalDialog @onLoad={{this.load}} @onLoadError={{this.loadError}}>
