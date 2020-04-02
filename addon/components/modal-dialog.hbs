@@ -1,5 +1,6 @@
 <div
-  class={{concat
+  class={{
+    concat
     "modal-dialog "
     "modal-dialog--"
     (if this.isShowing "showing" "hiding")
@@ -17,7 +18,8 @@
   {{on "keydown" this.handleKeydown}}
 >
   <div class="modal-dialog__box" {{did-insert this.handleInsertBoxElement}}>
-    {{yield
+    {{
+      yield
       (hash
         Header=(component "modal-dialog/header")
         Content=(component "modal-dialog/content")

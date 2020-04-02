@@ -19,7 +19,7 @@ export default class ModalDialogComponent extends Component {
 
   get api() {
     return {
-      close: this.close
+      close: this.close,
     };
   }
 
@@ -76,8 +76,8 @@ export default class ModalDialogComponent extends Component {
     this.isLoading = true;
 
     resolve(this._invokeAction('onLoad'))
-      .then(data => this._invokeAction('onLoaded', data))
-      .catch(error => this._invokeAction('onLoadError', error))
+      .then((data) => this._invokeAction('onLoaded', data))
+      .catch((error) => this._invokeAction('onLoadError', error))
       .finally(() => (this.isLoading = false));
   }
 
@@ -94,7 +94,7 @@ export default class ModalDialogComponent extends Component {
 
     this._mutationObserver.observe(this.domElement, {
       childList: true,
-      subtree: true
+      subtree: true,
     });
 
     this._contentChanged();
@@ -120,9 +120,9 @@ export default class ModalDialogComponent extends Component {
   }
 
   _waitForAnimation() {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       this.domElement.addEventListener('animationend', resolve, {
-        once: true
+        once: true,
       });
     });
   }

@@ -25,7 +25,7 @@ export default class ApplicationController extends Controller {
       return;
     }
 
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       later(resolve, 2000);
     });
   }

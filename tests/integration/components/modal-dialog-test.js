@@ -6,11 +6,11 @@ import waitForAnimation from '../../helpers/wait-for-animation';
 import { reject, defer } from 'rsvp';
 import { render, settled, triggerKeyEvent, click } from '@ember/test-helpers';
 
-module('modal-dialog', function(hooks) {
+module('modal-dialog', function (hooks) {
   setupRenderingTest(hooks);
 
-  module('rendering', function() {
-    test('it works', async function(assert) {
+  module('rendering', function () {
+    test('it works', async function (assert) {
       assert.expect(10);
 
       await render(hbs`
@@ -54,7 +54,7 @@ module('modal-dialog', function(hooks) {
       assert.dom('.modal-dialog__footer').hasClass('baz', 'splattributes');
     });
 
-    test('root element', async function(assert) {
+    test('root element', async function (assert) {
       // It's useful to inform the root element that a modal dialog is present
       // in the DOM, because you may wish to add styles to prevent document
       // scrolling or blur the background for example.
@@ -85,8 +85,8 @@ module('modal-dialog', function(hooks) {
     });
   });
 
-  module('loading', function() {
-    test('action order', async function(assert) {
+  module('loading', function () {
+    test('action order', async function (assert) {
       assert.expect(3);
 
       const deferred = defer();
@@ -115,13 +115,13 @@ module('modal-dialog', function(hooks) {
       );
     });
 
-    test('success', async function(assert) {
+    test('success', async function (assert) {
       assert.expect(4);
 
       const deferred = defer();
 
       this.load = () => deferred.promise;
-      this.loaded = data => (this.name = data);
+      this.loaded = (data) => (this.name = data);
 
       await render(hbs`
         <ModalDialog
@@ -162,11 +162,11 @@ module('modal-dialog', function(hooks) {
         .hasText('Hello World', 'yields correctly after loading has finished');
     });
 
-    test('failure', async function(assert) {
+    test('failure', async function (assert) {
       assert.expect(2);
 
       this.load = () => reject({ message: 'sorry' });
-      this.loadError = error => this.set('error', error);
+      this.loadError = (error) => this.set('error', error);
 
       await render(hbs`
         <ModalDialog @onLoad={{this.load}} @onLoadError={{this.loadError}}>
@@ -191,8 +191,8 @@ module('modal-dialog', function(hooks) {
     });
   });
 
-  module('api', function() {
-    test('yielded close', async function(assert) {
+  module('api', function () {
+    test('yielded close', async function (assert) {
       assert.expect(3);
 
       this.close = () => assert.step('close');
@@ -217,12 +217,12 @@ module('modal-dialog', function(hooks) {
       );
     });
 
-    test('callback close', async function(assert) {
+    test('callback close', async function (assert) {
       assert.expect(3);
 
       let api;
 
-      this.ready = modal => (api = modal);
+      this.ready = (modal) => (api = modal);
       this.close = () => assert.step('close');
 
       await render(hbs`
@@ -249,7 +249,7 @@ module('modal-dialog', function(hooks) {
       );
     });
 
-    test('missing close argument', async function(assert) {
+    test('missing close argument', async function (assert) {
       assert.expect(1);
 
       await render(hbs`
@@ -266,14 +266,14 @@ module('modal-dialog', function(hooks) {
     });
   });
 
-  module('escaping', function() {
+  module('escaping', function () {
     // Modal dialogs that do not close when escape is pressed add a class name
     // to the modal, so you can add a suitable animation to inform the user
     // that their action was denied. This is useful for preventing accidental
     // data loss, if a user has entered text into a modal, then hits escape
     // without pressing Save for example.
 
-    test('allowed', async function(assert) {
+    test('allowed', async function (assert) {
       assert.expect(2);
 
       this.close = () => assert.step('close');
@@ -294,7 +294,7 @@ module('modal-dialog', function(hooks) {
       );
     });
 
-    test('not allowed', async function(assert) {
+    test('not allowed', async function (assert) {
       assert.expect(3);
 
       this.close = () => assert.step('close');
@@ -325,7 +325,7 @@ module('modal-dialog', function(hooks) {
     });
   });
 
-  test('height', async function(assert) {
+  test('height', async function (assert) {
     // You may wonder why this is needed / useful.
     //
     // Consider a modal dialog that fits in the viewport, and has content
@@ -347,7 +347,7 @@ module('modal-dialog', function(hooks) {
     assert.expect(2);
 
     const fakeDocumentElement = {
-      clientHeight: 100
+      clientHeight: 100,
     };
 
     class TestModalDialogComponent extends ModalDialogComponent {
