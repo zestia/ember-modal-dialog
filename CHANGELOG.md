@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.0
+
+- Add body-scroll-lock
+
 ## 2.0.1
 
 - Upgrade dependencies
