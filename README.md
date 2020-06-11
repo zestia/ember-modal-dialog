@@ -40,6 +40,7 @@ https://zestia.github.io/ember-modal-dialog/
 - Optionally escapable ✔︎
 - Root element notification ✔︎
 - Automatic overflow detection ✔︎
+- Body Scroll Lock ✔︎
 - Simple API ✔︎
 
 ## Notes
