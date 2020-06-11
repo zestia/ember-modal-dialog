@@ -15,15 +15,9 @@ export default class ModalDialogComponent extends Component {
 
   constructor() {
     super(...arguments);
+    this.rootElement = document.querySelector(':root');
+    this.documentElement = document.documentElement;
     this._load();
-  }
-
-  get rootElement() {
-    return document.querySelector(':root');
-  }
-
-  get documentElement() {
-    return this.testDocumentElement || document.documentElement;
   }
 
   get api() {
