@@ -19,7 +19,7 @@ export default class ModalDialogComponent extends Component {
 
   get api() {
     return {
-      close: this.close,
+      close: this.close
     };
   }
 
@@ -94,7 +94,7 @@ export default class ModalDialogComponent extends Component {
 
     this._mutationObserver.observe(this.domElement, {
       childList: true,
-      subtree: true,
+      subtree: true
     });
 
     this._contentChanged();
@@ -122,7 +122,7 @@ export default class ModalDialogComponent extends Component {
   _waitForAnimation() {
     return new Promise((resolve) => {
       this.domElement.addEventListener('animationend', resolve, {
-        once: true,
+        once: true
       });
     });
   }

@@ -347,7 +347,7 @@ module('modal-dialog', function (hooks) {
     assert.expect(2);
 
     const fakeDocumentElement = {
-      clientHeight: 100,
+      clientHeight: 100
     };
 
     class TestModalDialogComponent extends ModalDialogComponent {
