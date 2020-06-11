@@ -389,4 +389,30 @@ module('modal-dialog', function (hooks) {
         'has a class name when the modal dialog box does not fits in the window'
       );
   });
+
+  module('body scroll lock', function () {
+    test('it works', async function (assert) {
+      assert.expect(3);
+
+      await render(hbs`
+        {{#if this.show}}
+          <ModalDialog />
+        {{/if}}
+      `);
+
+      assert.dom(document.body).hasStyle({ overflow: 'visible' });
+
+      this.set('show', true);
+
+      await settled();
+
+      assert.dom(document.body).hasStyle({ overflow: 'hidden' });
+
+      this.set('show', false);
+
+      await settled();
+
+      assert.dom(document.body).hasStyle({ overflow: 'visible' });
+    });
+  });
 });

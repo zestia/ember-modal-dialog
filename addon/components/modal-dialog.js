@@ -3,8 +3,11 @@ import { Promise, resolve } from 'rsvp';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { scheduleOnce } from '@ember/runloop';
+import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 
 export default class ModalDialogComponent extends Component {
+  element = null;
+
   @tracked isLoading = false;
   @tracked isShowing = true;
   @tracked isWarning = false;
@@ -12,9 +15,15 @@ export default class ModalDialogComponent extends Component {
 
   constructor() {
     super(...arguments);
-    this.rootElement = document.querySelector(':root');
-    this.documentElement = document.documentElement;
     this._load();
+  }
+
+  get rootElement() {
+    return document.querySelector(':root');
+  }
+
+  get documentElement() {
+    return document.documentElement;
   }
 
   get api() {
@@ -44,15 +53,16 @@ export default class ModalDialogComponent extends Component {
 
   @action
   handleClick(e) {
-    if (e.target === this.domElement) {
+    if (e.target === this.element) {
       this._attemptEscape();
     }
   }
 
   @action
   handleInsertElement(element) {
-    this.domElement = element;
-    this.domElement.focus();
+    disableBodyScroll(element);
+    this.element = element;
+    this.element.focus();
     this.rootElement.classList.add('has-modal');
     this._watchForContentChanges();
     this._ready();
@@ -60,6 +70,7 @@ export default class ModalDialogComponent extends Component {
 
   @action
   handleDestroyElement() {
+    enableBodyScroll(this.element);
     this.rootElement.classList.remove('has-modal');
   }
 
@@ -92,7 +103,7 @@ export default class ModalDialogComponent extends Component {
       this._contentChanged.bind(this)
     );
 
-    this._mutationObserver.observe(this.domElement, {
+    this._mutationObserver.observe(this.element, {
       childList: true,
       subtree: true
     });
@@ -121,7 +132,7 @@ export default class ModalDialogComponent extends Component {
 
   _waitForAnimation() {
     return new Promise((resolve) => {
-      this.domElement.addEventListener('animationend', resolve, {
+      this.element.addEventListener('animationend', resolve, {
         once: true
       });
     });
