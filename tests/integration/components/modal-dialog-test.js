@@ -353,7 +353,7 @@ module('modal-dialog', function (hooks) {
     class TestModalDialogComponent extends ModalDialogComponent {
       constructor() {
         super(...arguments);
-        this.documentElement = fakeDocumentElement;
+        this.testDocumentElement = fakeDocumentElement;
       }
     }
 

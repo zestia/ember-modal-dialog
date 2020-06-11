@@ -23,7 +23,7 @@ export default class ModalDialogComponent extends Component {
   }
 
   get documentElement() {
-    return document.documentElement;
+    return this.testDocumentElement || document.documentElement;
   }
 
   get api() {
