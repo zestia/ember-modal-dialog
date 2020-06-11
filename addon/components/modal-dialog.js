@@ -54,10 +54,10 @@ export default class ModalDialogComponent extends Component {
 
   @action
   handleInsertElement(element) {
-    this._disableBodyScroll();
     this.element = element;
     this.element.focus();
     this.rootElement.classList.add('has-modal');
+    this._disableBodyScroll();
     this._watchForContentChanges();
     this._ready();
   }
