@@ -1,5 +1,10 @@
 # Changelog
 
+## 2.1.1
+
+- Set body-scroll-lock's reserveScrollBarGap to true
+- Make sure the dialog box can be scrolled on touch devices
+
 ## 2.1.0
 
 - Add body-scroll-lock

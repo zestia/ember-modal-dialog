@@ -54,7 +54,7 @@ export default class ModalDialogComponent extends Component {
 
   @action
   handleInsertElement(element) {
-    disableBodyScroll(element);
+    this._disableBodyScroll();
     this.element = element;
     this.element.focus();
     this.rootElement.classList.add('has-modal');
@@ -64,7 +64,7 @@ export default class ModalDialogComponent extends Component {
 
   @action
   handleDestroyElement() {
-    enableBodyScroll(this.element);
+    this._enableBodyScroll();
     this.rootElement.classList.remove('has-modal');
   }
 
@@ -122,6 +122,21 @@ export default class ModalDialogComponent extends Component {
     const doc = this.documentElement;
 
     this.isTooTall = box && doc.clientHeight <= box.clientHeight;
+  }
+
+  _disableBodyScroll() {
+    disableBodyScroll(this.element, {
+      reserveScrollBarGap: true,
+      allowTouchMove: this._allowTouchMove.bind(this)
+    });
+  }
+
+  _enableBodyScroll() {
+    enableBodyScroll(this.element);
+  }
+
+  _allowTouchMove(element) {
+    return this.boxElement.contains(element);
   }
 
   _waitForAnimation() {

@@ -72,6 +72,7 @@
 .modal-dialog__box {
   background-color: var(--modal-box-bg-colour);
   border: 1px solid var(--modal-box-border-colour);
+  box-sizing: border-box;
 }
 
 .modal-dialog__header {
