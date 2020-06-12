@@ -182,11 +182,11 @@ export default class ModalDialogComponent extends Component {
   }
 
   _trapFocus(e) {
-    if (this._tabbedToEnd(e)) {
-      this.firstFocusableElement.focus();
-      e.preventDefault();
-    } else if (this._tabbedToStart(e)) {
+    if (this._tabbedToStart(e)) {
       this.lastFocusableElement.focus();
+      e.preventDefault();
+    } else if (this._tabbedToEnd(e)) {
+      this.firstFocusableElement.focus();
       e.preventDefault();
     }
   }
