@@ -26,6 +26,22 @@ export default class ModalDialogComponent extends Component {
     };
   }
 
+  get focusableElements() {
+    return [
+      ...this.element.querySelectorAll(
+        'a, button, textarea, input, select, [tabindex]:not([tabindex="-1"])'
+      )
+    ].filter((element) => !element.disabled);
+  }
+
+  get firstFocusableElement() {
+    return this.focusableElements[0];
+  }
+
+  get lastFocusableElement() {
+    return this.focusableElements[this.focusableElements.length - 1];
+  }
+
   @action
   close() {
     return this._hide().then(() => this._invokeAction('onClose'));
@@ -40,8 +56,10 @@ export default class ModalDialogComponent extends Component {
 
   @action
   handleKeydown(e) {
-    if (e.keyCode === 27) {
+    if (this._pressedEscape(e)) {
       this._attemptEscape();
+    } else if (this._pressedTab(e)) {
+      this._trapFocus(e);
     }
   }
 
@@ -145,6 +163,32 @@ export default class ModalDialogComponent extends Component {
         once: true
       });
     });
+  }
+
+  _pressedEscape(e) {
+    return e.keyCode === 27;
+  }
+
+  _pressedTab(e) {
+    return e.keyCode === 9;
+  }
+
+  _tabbedToEnd(e) {
+    return !e.shiftKey && document.activeElement === this.lastFocusableElement;
+  }
+
+  _tabbedToStart(e) {
+    return e.shiftKey && document.activeElement === this.firstFocusableElement;
+  }
+
+  _trapFocus(e) {
+    if (this._tabbedToEnd(e)) {
+      this.firstFocusableElement.focus();
+      e.preventDefault();
+    } else if (this._tabbedToStart(e)) {
+      this.lastFocusableElement.focus();
+      e.preventDefault();
+    }
   }
 
   _attemptEscape() {

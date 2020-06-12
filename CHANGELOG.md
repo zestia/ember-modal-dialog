@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.1.2
+
+- Add focus trap
+
 ## 2.1.1
 
 - Set body-scroll-lock's reserveScrollBarGap to true

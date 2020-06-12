@@ -4,7 +4,14 @@ import hbs from 'htmlbars-inline-precompile';
 import ModalDialogComponent from '@zestia/ember-modal-dialog/components/modal-dialog';
 import waitForAnimation from '../../helpers/wait-for-animation';
 import { reject, defer } from 'rsvp';
-import { render, settled, triggerKeyEvent, click } from '@ember/test-helpers';
+import {
+  find,
+  render,
+  settled,
+  focus,
+  triggerKeyEvent,
+  click
+} from '@ember/test-helpers';
 
 module('modal-dialog', function (hooks) {
   setupRenderingTest(hooks);
@@ -391,7 +398,7 @@ module('modal-dialog', function (hooks) {
   });
 
   module('body scroll lock', function () {
-    test('it works', async function (assert) {
+    test('third party addon is installed', async function (assert) {
       assert.expect(3);
 
       await render(hbs`
@@ -413,6 +420,46 @@ module('modal-dialog', function (hooks) {
       await settled();
 
       assert.dom(document.body).hasStyle({ overflow: 'visible' });
+    });
+  });
+
+  module('focus trap', function (hooks) {
+    hooks.beforeEach(async function () {
+      await render(hbs`
+        <button type="button" class="external"></button>
+
+        <ModalDialog>
+          <button type="button" class="first"></button>
+          <button type="button" class="second"></button>
+          <button type="button" class="third"></button>
+        </ModalDialog>
+     `);
+    });
+
+    test('tabbing forwards', async function (assert) {
+      assert.expect(1);
+
+      await focus('.third');
+      await triggerKeyEvent('.modal-dialog', 'keydown', 9);
+
+      assert.deepEqual(
+        find('.first'),
+        document.activeElement,
+        'loops back to the beginning and focuses the first element'
+      );
+    });
+
+    test('tabbing backwards', async function (assert) {
+      assert.expect(1);
+
+      await focus('.first');
+      await triggerKeyEvent('.modal-dialog', 'keydown', 9, { shiftKey: true });
+
+      assert.deepEqual(
+        find('.third'),
+        document.activeElement,
+        'loops back to the end and focuses the last element'
+      );
     });
   });
 });
