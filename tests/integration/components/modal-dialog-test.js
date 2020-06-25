@@ -340,16 +340,16 @@ module('modal-dialog', function (hooks) {
     // For example: a dropdown menu.
     //
     // You would not want any overflow css rules, so that dropdown does not
-    // get cut off.
+    // get cut off when opened.
     //
     // Then consider a modal dialog that is too tall for the viewport, now you
     // will want to add scrollbars to the modal for it to remain useful.
     //
-    // It's now ok to add overflow css rules, the dropdown menu will now open
-    // 'inside' the modal dialog, rather than overflowing outside it.
+    // The dropdown menu will now open 'inside' the scrollable modal dialog,
+    // rather than overflowing outside it.
     //
     // Note that this general problem is also solvable by rendering the dropdown
-    // elsewhere in the DOM, but this is not always possible.
+    // elsewhere in the DOM (aka 'wormhole'), but this is not always possible.
 
     assert.expect(2);
 
