@@ -1,8 +1,8 @@
 # Changelog
 
-## 2.2.0
+## 3.0.0
 
-- Improve 'too-tall' calculation. Instead, 'in-viewport' calculation is used
+- Remove is too tall class name
 
 ## 2.1.2
 
