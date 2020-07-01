@@ -10,7 +10,6 @@ export default class ModalDialogComponent extends Component {
   @tracked isLoading = false;
   @tracked isShowing = true;
   @tracked isWarning = false;
-  @tracked isScrollable = false;
 
   constructor() {
     super(...arguments);
