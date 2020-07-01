@@ -6,7 +6,6 @@
     (if this.isShowing "showing" "hiding")
     (if this.isWarning " modal-dialog--warning")
     (if this.isLoading " modal-dialog--loading")
-    (if this.inViewport " modal-dialog--in-viewport")
   }}
   role="dialog"
   tabindex="0"
@@ -17,7 +16,7 @@
   {{on "click" this.handleClick}}
   {{on "keydown" this.handleKeydown}}
 >
-  <div class="modal-dialog__box" {{did-insert this.handleInsertBoxElement}}>
+  <div class="modal-dialog__box">
     {{
       yield
       (hash

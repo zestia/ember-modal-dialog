@@ -17,7 +17,7 @@ module('modal-dialog', function (hooks) {
 
   module('rendering', function () {
     test('it works', async function (assert) {
-      assert.expect(10);
+      assert.expect(11);
 
       await render(hbs`
         <ModalDialog as |modal|>
@@ -46,6 +46,8 @@ module('modal-dialog', function (hooks) {
       assert
         .dom('.modal-dialog')
         .isFocused('is focused to respond the keyboard');
+
+      assert.dom('.modal-dialog__box').exists('renders the box');
 
       assert.dom('.modal-dialog__header').exists('can render the header');
 
@@ -329,61 +331,6 @@ module('modal-dialog', function (hooks) {
 
       assert.verifySteps([], 'close action is not fired');
     });
-  });
-
-  test('viewport', async function (assert) {
-    // You may wonder why this is needed / useful.
-    //
-    // Consider a modal dialog that fits in the viewport, and has content
-    // inside it, that overflows outside the modal.
-    // For example: a dropdown menu.
-    //
-    // You would not want any overflow css rules, so that dropdown does not
-    // get cut off when opened.
-    //
-    // Then consider a modal dialog that is too tall for the viewport, now you
-    // will want to add scrollbars to the modal for it to remain useful.
-    //
-    // The dropdown menu will now open 'inside' the scrollable modal dialog,
-    // rather than overflowing outside it.
-    //
-    // Note that this general problem is also solvable by rendering the dropdown
-    // elsewhere in the DOM (aka 'wormhole'), but this is not always possible.
-    //
-    // Also note this test needs to be run in ?devmode (stupid name)
-    // so that the browser window dimensions are adhered to in testem.js
-
-    assert.expect(2);
-
-    await render(hbs`
-      {{! template-lint-disable no-inline-styles }}
-
-      <ModalDialog>
-        {{#if this.exceedViewport}}
-          <div style="height: 901px">I'm too tall</div>
-        {{else}}
-          I'm OK
-        {{/if}}
-      </ModalDialog>
-    `);
-
-    assert
-      .dom('.modal-dialog')
-      .hasClass(
-        'modal-dialog--in-viewport',
-        'has a class name when the modal dialog box fits in the viewport'
-      );
-
-    this.set('exceedViewport', true);
-
-    await settled();
-
-    assert
-      .dom('.modal-dialog')
-      .doesNotHaveClass(
-        'modal-dialog--in-viewport',
-        'does not have a class name when the modal dialog box does not fits in the viewport'
-      );
   });
 
   module('body scroll lock', function () {

@@ -2,7 +2,6 @@ import Component from '@glimmer/component';
 import { Promise, resolve } from 'rsvp';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
-import { scheduleOnce } from '@ember/runloop';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 
 export default class ModalDialogComponent extends Component {
@@ -11,12 +10,10 @@ export default class ModalDialogComponent extends Component {
   @tracked isLoading = false;
   @tracked isShowing = true;
   @tracked isWarning = false;
-  @tracked inViewport = false;
+  @tracked isScrollable = false;
 
   constructor() {
     super(...arguments);
-    this.rootElement = document.querySelector(':root');
-    this.documentElement = document.documentElement;
     this._load();
   }
 
@@ -24,6 +21,10 @@ export default class ModalDialogComponent extends Component {
     return {
       close: this.close
     };
+  }
+
+  get rootElement() {
+    return document.querySelector(':root');
   }
 
   get focusableElements() {
@@ -76,7 +77,6 @@ export default class ModalDialogComponent extends Component {
     this.element.focus();
     this.rootElement.classList.add('has-modal');
     this._disableBodyScroll();
-    this._watchForContentChanges();
     this._ready();
   }
 
@@ -84,11 +84,6 @@ export default class ModalDialogComponent extends Component {
   handleDestroyElement() {
     this._enableBodyScroll();
     this.rootElement.classList.remove('has-modal');
-  }
-
-  @action
-  handleInsertBoxElement(element) {
-    this.boxElement = element;
   }
 
   _ready() {
@@ -108,49 +103,6 @@ export default class ModalDialogComponent extends Component {
     this.isShowing = false;
 
     return this._waitForAnimation();
-  }
-
-  _watchForContentChanges() {
-    this._mutationObserver = new MutationObserver(
-      this._contentChanged.bind(this)
-    );
-
-    this._mutationObserver.observe(this.element, {
-      childList: true,
-      subtree: true
-    });
-
-    this._contentChanged();
-  }
-
-  _stopWatchingForChanges() {
-    this._mutationObserver.disconnect();
-  }
-
-  _contentChanged() {
-    scheduleOnce('afterRender', this, '_checkFitsInViewport');
-  }
-
-  _checkFitsInViewport() {
-    if (this.isDestroying || this.isDestroyed) {
-      return;
-    }
-
-    const box = this.boxElement;
-
-    this.inViewport = box && this._inViewport(box);
-  }
-
-  _inViewport(element) {
-    const rect = element.getBoundingClientRect();
-    const doc = this.documentElement;
-
-    return (
-      rect.top >= 0 &&
-      rect.left >= 0 &&
-      rect.bottom <= doc.clientHeight &&
-      rect.right <= doc.clientWidth
-    );
   }
 
   _disableBodyScroll() {
