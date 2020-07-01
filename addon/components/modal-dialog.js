@@ -11,7 +11,7 @@ export default class ModalDialogComponent extends Component {
   @tracked isLoading = false;
   @tracked isShowing = true;
   @tracked isWarning = false;
-  @tracked isTooTall = false;
+  @tracked inViewport = false;
 
   constructor() {
     super(...arguments);
@@ -128,18 +128,29 @@ export default class ModalDialogComponent extends Component {
   }
 
   _contentChanged() {
-    scheduleOnce('afterRender', this, '_checkIfTooTall');
+    scheduleOnce('afterRender', this, '_checkFitsInViewport');
   }
 
-  _checkIfTooTall() {
+  _checkFitsInViewport() {
     if (this.isDestroying || this.isDestroyed) {
       return;
     }
 
     const box = this.boxElement;
+
+    this.inViewport = box && this._inViewport(box);
+  }
+
+  _inViewport(element) {
+    const rect = element.getBoundingClientRect();
     const doc = this.documentElement;
 
-    this.isTooTall = box && doc.clientHeight <= box.clientHeight;
+    return (
+      rect.top >= 0 &&
+      rect.left >= 0 &&
+      rect.bottom <= doc.clientHeight &&
+      rect.right <= doc.clientWidth
+    );
   }
 
   _disableBodyScroll() {

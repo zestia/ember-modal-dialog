@@ -1,7 +1,6 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
-import ModalDialogComponent from '@zestia/ember-modal-dialog/components/modal-dialog';
 import waitForAnimation from '../../helpers/wait-for-animation';
 import { reject, defer } from 'rsvp';
 import {
@@ -332,7 +331,7 @@ module('modal-dialog', function (hooks) {
     });
   });
 
-  test('height', async function (assert) {
+  test('viewport', async function (assert) {
     // You may wonder why this is needed / useful.
     //
     // Consider a modal dialog that fits in the viewport, and has content
@@ -350,50 +349,40 @@ module('modal-dialog', function (hooks) {
     //
     // Note that this general problem is also solvable by rendering the dropdown
     // elsewhere in the DOM (aka 'wormhole'), but this is not always possible.
+    //
+    // Also note this test needs to be run in ?devmode (stupid name)
+    // so that the browser window dimensions are adhered to in testem.js
 
     assert.expect(2);
-
-    const fakeDocumentElement = {
-      clientHeight: 100
-    };
-
-    class TestModalDialogComponent extends ModalDialogComponent {
-      constructor() {
-        super(...arguments);
-        this.documentElement = fakeDocumentElement;
-      }
-    }
-
-    this.owner.register('component:modal-dialog', TestModalDialogComponent);
 
     await render(hbs`
       {{! template-lint-disable no-inline-styles }}
 
       <ModalDialog>
-        {{#if this.makeTooTall}}
-          <div style="height: 100px">I'm too tall</div>
+        {{#if this.exceedViewport}}
+          <div style="height: 901px">I'm too tall</div>
         {{else}}
-          <div style="height: 99px">I'm OK</div>
+          I'm OK
         {{/if}}
       </ModalDialog>
     `);
 
     assert
       .dom('.modal-dialog')
-      .doesNotHaveClass(
-        'modal-dialog--too-tall',
-        'does not have a class name when the modal dialog box fits in the window'
+      .hasClass(
+        'modal-dialog--in-viewport',
+        'has a class name when the modal dialog box fits in the viewport'
       );
 
-    this.set('makeTooTall', true);
+    this.set('exceedViewport', true);
 
     await settled();
 
     assert
       .dom('.modal-dialog')
-      .hasClass(
-        'modal-dialog--too-tall',
-        'has a class name when the modal dialog box does not fits in the window'
+      .doesNotHaveClass(
+        'modal-dialog--in-viewport',
+        'does not have a class name when the modal dialog box does not fits in the viewport'
       );
   });
 
