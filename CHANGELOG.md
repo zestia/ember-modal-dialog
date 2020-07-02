@@ -1,5 +1,13 @@
 # Changelog
 
+## 2.2.1
+
+- Upgrade dependencies
+
+## 2.2.0
+
+- Unpublished (contained a breaking change)
+
 ## 2.1.2
 
 - Add focus trap

@@ -64,7 +64,7 @@
   animation: warn var(--modal-ani-speed);
 }
 
-.modal-dialog:not(.modal-dialog--in-viewport) .modal-dialog__box {
+.modal-dialog--too-tall .modal-dialog__box {
   overflow-y: scroll;
   max-height: 100%;
 }
