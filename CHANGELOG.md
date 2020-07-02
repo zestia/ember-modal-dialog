@@ -1,9 +1,5 @@
 # Changelog
 
-## 2.2.0
-
-- Improve 'too-tall' calculation. Instead, 'in-viewport' calculation is used
-
 ## 2.1.2
 
 - Add focus trap
