@@ -3,6 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import waitForAnimation from '../../helpers/wait-for-animation';
 import ModalDialogComponent from '@zestia/ember-modal-dialog/components/modal-dialog';
+import { helper } from '@ember/component/helper';
 import { reject, defer } from 'rsvp';
 import {
   find,
@@ -15,6 +16,12 @@ import {
 
 module('modal-dialog', function (hooks) {
   setupRenderingTest(hooks);
+
+  hooks.beforeEach(function () {
+    const capture = helper(([arg]) => (this.captured = arg));
+
+    this.owner.register('helper:capture', capture);
+  });
 
   module('rendering', function () {
     test('it works', async function (assert) {
@@ -270,6 +277,22 @@ module('modal-dialog', function (hooks) {
       await waitForAnimation('.modal-dialog');
 
       assert.ok(true, 'does not blow up if onClose is not a function');
+    });
+
+    test('box element', async function (assert) {
+      assert.expect(1);
+
+      await render(hbs`
+        <ModalDialog as |modal|>
+          {{capture modal}}
+        </ModalDialog>
+      `);
+
+      assert.deepEqual(
+        this.captured.boxElement,
+        find('.modal-dialog__box'),
+        'exposes the modal dialog box element via the yielded api'
+      );
     });
   });
 

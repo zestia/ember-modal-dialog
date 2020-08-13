@@ -12,6 +12,7 @@ export default class ModalDialogComponent extends Component {
   @tracked isShowing = true;
   @tracked isWarning = false;
   @tracked isTooTall = false;
+  @tracked boxElement = null;
 
   constructor() {
     super(...arguments);

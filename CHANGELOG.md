@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.3
+
+- Expose modal dialog box element via the yielded API
+
 ## 2.2.2
 
 - Upgrade dependencies
