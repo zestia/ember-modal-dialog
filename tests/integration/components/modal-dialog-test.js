@@ -190,8 +190,6 @@ module('modal-dialog', function (hooks) {
         </ModalDialog>
       `);
 
-      await settled();
-
       assert
         .dom('.modal-dialog')
         .doesNotHaveClass(

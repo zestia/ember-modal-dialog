@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.2.8
+
+- Upgrade dependencies
+
 ## 2.2.7
 
 - Run ember-cli-update
