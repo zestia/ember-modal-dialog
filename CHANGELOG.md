@@ -1,9 +1,5 @@
 # Changelog
 
-## 2.2.9
-
-- Upgrade dependencies
-
 ## 2.2.8
 
 - Upgrade dependencies
