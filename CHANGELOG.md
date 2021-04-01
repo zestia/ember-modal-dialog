@@ -4,6 +4,7 @@
 
 - Upgrade dependencies
 - Add Embroider support
+- Prefer `keyup` over `keydown` where possible
 
 ## 2.2.8
 

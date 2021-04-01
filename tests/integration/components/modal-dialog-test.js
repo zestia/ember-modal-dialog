@@ -312,7 +312,7 @@ module('modal-dialog', function (hooks) {
           @onClose={{this.close}} />
       `);
 
-      await triggerKeyEvent('.modal-dialog', 'keydown', 27);
+      await triggerKeyEvent('.modal-dialog', 'keyup', 27); // Escape
 
       await waitForAnimation('.modal-dialog');
 
@@ -331,7 +331,7 @@ module('modal-dialog', function (hooks) {
         <ModalDialog @onClose={{this.close}} />
       `);
 
-      await triggerKeyEvent('.modal-dialog', 'keydown', 27);
+      await triggerKeyEvent('.modal-dialog', 'keyup', 27); // Escape
 
       assert
         .dom('.modal-dialog')
@@ -444,6 +444,9 @@ module('modal-dialog', function (hooks) {
   });
 
   module('focus trap', function (hooks) {
+    // We specifically use keydown and not keyup,
+    // because keyup, is too late to prevent default.
+
     hooks.beforeEach(async function () {
       await render(hbs`
         <button type="button" class="external"></button>
@@ -460,7 +463,7 @@ module('modal-dialog', function (hooks) {
       assert.expect(1);
 
       await focus('.third');
-      await triggerKeyEvent('.modal-dialog', 'keydown', 9);
+      await triggerKeyEvent('.modal-dialog', 'keydown', 9); // Tab
 
       assert.deepEqual(
         find('.first'),
@@ -473,7 +476,7 @@ module('modal-dialog', function (hooks) {
       assert.expect(1);
 
       await focus('.first');
-      await triggerKeyEvent('.modal-dialog', 'keydown', 9, { shiftKey: true });
+      await triggerKeyEvent('.modal-dialog', 'keydown', 9, { shiftKey: true }); // Tab
 
       assert.deepEqual(
         find('.third'),

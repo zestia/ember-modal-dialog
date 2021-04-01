@@ -1,3 +1,4 @@
+{{! template-lint-disable no-down-event-binding }}
 <div
   class={{
     concat
@@ -15,7 +16,8 @@
   {{did-insert this.handleInsertElement}}
   {{will-destroy this.handleDestroyElement}}
   {{on "click" this.handleClick}}
-  {{on "keydown" this.handleKeydown}}
+  {{on "keyup" this.handleKeyUp}}
+  {{on "keydown" this.handleKeyDown}}
 >
   <div class="modal-dialog__box" {{did-insert this.handleInsertBoxElement}}>
     {{yield

@@ -56,11 +56,16 @@ export default class ModalDialogComponent extends Component {
   }
 
   @action
-  handleKeydown(e) {
+  handleKeyDown(e) {
+    if (this._pressedTab(e)) {
+      this._trapFocus(e);
+    }
+  }
+
+  @action
+  handleKeyUp(e) {
     if (this._pressedEscape(e)) {
       this._attemptEscape();
-    } else if (this._pressedTab(e)) {
-      this._trapFocus(e);
     }
   }
 
