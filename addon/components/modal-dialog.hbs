@@ -13,13 +13,12 @@
   tabindex="0"
   aria-modal="true"
   ...attributes
-  {{did-insert this.handleInsertElement}}
-  {{will-destroy this.handleDestroyElement}}
+  {{this.this.handleElementLifecycle}}
   {{on "click" this.handleClick}}
   {{on "keyup" this.handleKeyUp}}
   {{on "keydown" this.handleKeyDown}}
 >
-  <div class="modal-dialog__box" {{did-insert this.handleInsertBoxElement}}>
+  <div class="modal-dialog__box" {{this.handleBoxElementLifecycle}}>
     {{yield
       (hash
         Header=(component "modal-dialog/header")

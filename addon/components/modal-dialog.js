@@ -4,6 +4,7 @@ import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { scheduleOnce } from '@ember/runloop';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
+import { modifier } from 'ember-modifier';
 
 export default class ModalDialogComponent extends Component {
   element = null;
@@ -76,8 +77,16 @@ export default class ModalDialogComponent extends Component {
     }
   }
 
-  @action
-  handleInsertElement(element) {
+  handleElementLifecycle = modifier((element) => {
+    this._handleInsertElement(element);
+    return () => this._handleDestroyElement();
+  });
+
+  handleBoxElementLifecycle = modifier((element) => {
+    this.boxElement = element;
+  });
+
+  _handleInsertElement(element) {
     this.element = element;
     this.element.focus();
     this.rootElement.classList.add('has-modal');
@@ -86,15 +95,9 @@ export default class ModalDialogComponent extends Component {
     this._ready();
   }
 
-  @action
-  handleDestroyElement() {
+  _handleDestroyElement() {
     this._enableBodyScroll();
     this.rootElement.classList.remove('has-modal');
-  }
-
-  @action
-  handleInsertBoxElement(element) {
-    this.boxElement = element;
   }
 
   _ready() {

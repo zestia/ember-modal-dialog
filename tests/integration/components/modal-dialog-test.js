@@ -5,6 +5,7 @@ import waitForAnimation from '../../helpers/wait-for-animation';
 import ModalDialogComponent from '@zestia/ember-modal-dialog/components/modal-dialog';
 import { helper } from '@ember/component/helper';
 import { reject, defer } from 'rsvp';
+import { modifier } from 'ember-modifier';
 import {
   find,
   render,
@@ -111,14 +112,14 @@ module('modal-dialog', function (hooks) {
         return deferred.promise;
       };
 
-      this.inserted = () => {
+      this.inserted = modifier(() => {
         assert.step('inserted');
-      };
+      });
 
       await render(hbs`
         <ModalDialog
           @onLoad={{this.load}}
-          {{did-insert this.inserted}}
+          {{this.inserted}}
         />
       `);
 
