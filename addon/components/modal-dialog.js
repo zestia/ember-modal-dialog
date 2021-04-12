@@ -145,17 +145,17 @@ export default class ModalDialogComponent extends Component {
     this.isTooTall = box && doc.clientHeight <= box.clientHeight;
   }
 
-  _inViewport(element) {
-    const rect = element.getBoundingClientRect();
-    const doc = this.documentElement;
+  // _inViewport(element) {
+  //   const rect = element.getBoundingClientRect();
+  //   const doc = this.documentElement;
 
-    return (
-      rect.top >= 0 &&
-      rect.left >= 0 &&
-      rect.bottom <= doc.clientHeight &&
-      rect.right <= doc.clientWidth
-    );
-  }
+  //   return (
+  //     rect.top >= 0 &&
+  //     rect.left >= 0 &&
+  //     rect.bottom <= doc.clientHeight &&
+  //     rect.right <= doc.clientWidth
+  //   );
+  // }
 
   _waitForAnimation() {
     return new Promise((resolve) => {
