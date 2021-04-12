@@ -78,27 +78,38 @@ export default class ModalDialogComponent extends Component {
   }
 
   handleElementLifecycle = modifier((element) => {
-    this._handleInsertElement(element);
-    return () => this._handleDestroyElement();
+    this.element = element;
+    this._ready();
   });
 
   handleBoxElementLifecycle = modifier((element) => {
     this.boxElement = element;
   });
 
-  _handleInsertElement(element) {
-    this.element = element;
-    this.element.focus();
+  hasModal = modifier(() => {
     this.rootElement.classList.add('has-modal');
-    this._disableBodyScroll();
-    this._watchForContentChanges();
-    this._ready();
-  }
+    return () => this.rootElement.classList.remove('has-modal');
+  });
 
-  _handleDestroyElement() {
-    this._enableBodyScroll();
-    this.rootElement.classList.remove('has-modal');
-  }
+  bodyScrollLock = modifier((element) => {
+    disableBodyScroll(element, {
+      reserveScrollBarGap: true,
+      allowTouchMove: () => this.boxElement.contains(element)
+    });
+
+    return () => enableBodyScroll(element);
+  });
+
+  checkIfTooTall = modifier((element) => {
+    const observer = new MutationObserver(this._contentChanged.bind(this));
+
+    observer.observe(element, {
+      childList: true,
+      subtree: true
+    });
+
+    return () => observer.disconnect();
+  });
 
   _ready() {
     this._invokeAction('onReady', this.api);
@@ -117,23 +128,6 @@ export default class ModalDialogComponent extends Component {
     this.isShowing = false;
 
     return this._waitForAnimation();
-  }
-
-  _watchForContentChanges() {
-    this._mutationObserver = new MutationObserver(
-      this._contentChanged.bind(this)
-    );
-
-    this._mutationObserver.observe(this.element, {
-      childList: true,
-      subtree: true
-    });
-
-    this._contentChanged();
-  }
-
-  _stopWatchingForChanges() {
-    this._mutationObserver.disconnect();
   }
 
   _contentChanged() {
@@ -161,21 +155,6 @@ export default class ModalDialogComponent extends Component {
       rect.bottom <= doc.clientHeight &&
       rect.right <= doc.clientWidth
     );
-  }
-
-  _disableBodyScroll() {
-    disableBodyScroll(this.element, {
-      reserveScrollBarGap: true,
-      allowTouchMove: this._allowTouchMove.bind(this)
-    });
-  }
-
-  _enableBodyScroll() {
-    enableBodyScroll(this.element);
-  }
-
-  _allowTouchMove(element) {
-    return this.boxElement.contains(element);
   }
 
   _waitForAnimation() {

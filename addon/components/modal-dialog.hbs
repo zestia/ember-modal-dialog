@@ -13,7 +13,11 @@
   tabindex="0"
   aria-modal="true"
   ...attributes
-  {{this.this.handleElementLifecycle}}
+  {{this.hasModal}}
+  {{this.bodyScrollLock}}
+  {{this.checkIfTooTall}}
+  {{auto-focus}}
+  {{this.handleElementLifecycle}}
   {{on "click" this.handleClick}}
   {{on "keyup" this.handleKeyUp}}
   {{on "keydown" this.handleKeyDown}}
