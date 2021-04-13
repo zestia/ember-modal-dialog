@@ -20,15 +20,6 @@
   {{on "keydown" this.handleKeyDown}}
 >
   <div class="modal-dialog__box" {{did-insert this.handleInsertBoxElement}}>
-    {{yield
-      (hash
-        Header=(component "modal-dialog/header")
-        Content=(component "modal-dialog/content")
-        Footer=(component "modal-dialog/footer")
-        close=this.close
-        isLoading=this.isLoading
-        boxElement=this.boxElement
-      )
-    }}
+    {{yield this.api}}
   </div>
 </div>
