@@ -57,7 +57,7 @@ export default class ModalDialogComponent extends Component {
 
   @action
   close() {
-    return this._hide().then(() => this._invokeAction('onClose'));
+    return this._hide().then(() => this.args.onClose?.());
   }
 
   @action
@@ -110,15 +110,15 @@ export default class ModalDialogComponent extends Component {
   }
 
   _ready() {
-    this._invokeAction('onReady', this.api);
+    this.args.onReady?.(this.api);
   }
 
   _load() {
     this.isLoading = true;
 
-    resolve(this._invokeAction('onLoad'))
-      .then((data) => this._invokeAction('onLoaded', data))
-      .catch((error) => this._invokeAction('onLoadError', error))
+    resolve(this.args.onLoad?.())
+      .then((data) => this.args.onLoaded?.(data))
+      .catch((error) => this.args.onLoadError?.(error))
       .finally(() => (this.isLoading = false));
   }
 
@@ -226,14 +226,6 @@ export default class ModalDialogComponent extends Component {
       this.close();
     } else {
       this.warn();
-    }
-  }
-
-  _invokeAction(name, ...args) {
-    const action = this.args[name];
-
-    if (typeof action === 'function') {
-      return action(...args);
     }
   }
 }
