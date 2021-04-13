@@ -1,4 +1,7 @@
 import Component from '@glimmer/component';
+import ModalDialogHeader from './header';
+import ModalDialogContent from './content';
+import ModalDialogFooter from './footer';
 import { Promise, resolve } from 'rsvp';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
@@ -8,6 +11,10 @@ import { modifier } from 'ember-modifier';
 
 export default class ModalDialogComponent extends Component {
   element = null;
+
+  ModalDialogHeader = ModalDialogHeader;
+  ModalDialogContent = ModalDialogContent;
+  ModalDialogFooter = ModalDialogFooter;
 
   @tracked isLoading = false;
   @tracked isShowing = true;
@@ -24,7 +31,12 @@ export default class ModalDialogComponent extends Component {
 
   get api() {
     return {
-      close: this.close
+      Header: this.ModalDialogHeader,
+      Content: this.ModalDialogContent,
+      Footer: this.ModalDialogFooter,
+      close: this.close,
+      isLoading: this.isLoading,
+      boxElement: this.boxElement
     };
   }
 

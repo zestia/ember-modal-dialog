@@ -8,6 +8,7 @@ export default class ApplicationController extends Controller {
   testModalIsEscapable = false;
   testModalLoadDelay = false;
   @tracked showTestModal = false;
+  @tracked showMoreContent = false;
 
   @action
   openTestModal() {
@@ -17,6 +18,12 @@ export default class ApplicationController extends Controller {
   @action
   closeTestModal() {
     this.showTestModal = false;
+    this.showMoreContent = false;
+  }
+
+  @action
+  addMoreContent() {
+    this.showMoreContent = true;
   }
 
   @action
