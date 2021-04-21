@@ -25,7 +25,7 @@ module('modal-dialog', function (hooks) {
 
   module('rendering', function () {
     test('it works', async function (assert) {
-      assert.expect(10);
+      assert.expect(9);
 
       await render(hbs`
         <ModalDialog as |modal|>
@@ -50,10 +50,6 @@ module('modal-dialog', function (hooks) {
       assert.dom('.modal-dialog').hasAttribute('role', 'dialog');
 
       assert.dom('.modal-dialog').hasAttribute('aria-modal', 'true');
-
-      assert
-        .dom('.modal-dialog')
-        .isFocused('is focused to respond the keyboard');
 
       assert.dom('.modal-dialog__header').exists('can render the header');
 
@@ -96,6 +92,46 @@ module('modal-dialog', function (hooks) {
           'has-modal',
           'root element is informed when a modal dialog is present'
         );
+    });
+
+    test('focus', async function (assert) {
+      assert.expect(4);
+
+      await render(hbs`
+        <button type="button" class="external"></button>
+
+        {{#if this.showModal}}
+          <ModalDialog as |modal|>
+            <button type="button" class="internal" {{on "click" modal.close}}></button>
+          </ModalDialog>
+        {{/if}}
+      `);
+
+      await focus('.external');
+
+      assert
+        .dom('.external')
+        .isFocused('initial focus is on an element outside the modal');
+
+      this.set('showModal', true);
+
+      assert
+        .dom('.modal-dialog')
+        .isFocused('modal is focused to respond the keyboard');
+
+      await click('.internal');
+
+      assert
+        .dom('.internal')
+        .isFocused(
+          "focus isn't restored until after the animation (full closure)"
+        );
+
+      await waitForAnimation('.modal-dialog');
+
+      assert
+        .dom('.external')
+        .isFocused('focus is returned to the originally focused element');
     });
   });
 

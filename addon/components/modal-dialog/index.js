@@ -25,6 +25,7 @@ export default class ModalDialogComponent extends Component {
     super(...arguments);
     this.rootElement = document.querySelector(':root');
     this.documentElement = document.documentElement;
+    this.activeElement = document.activeElement;
     this._load();
   }
 
@@ -57,7 +58,10 @@ export default class ModalDialogComponent extends Component {
 
   @action
   close() {
-    return this._hide().then(() => this.args.onClose?.());
+    return this._hide().then(() => {
+      this._restoreFocus();
+      this.args.onClose?.();
+    });
   }
 
   @action
@@ -218,6 +222,15 @@ export default class ModalDialogComponent extends Component {
     } else if (this._tabbedToEnd(e)) {
       this.firstFocusableElement.focus();
       e.preventDefault();
+    }
+  }
+
+  _restoreFocus() {
+    try {
+      console.log('restore', this.activeElement);
+      this.activeElement.focus();
+    } catch (error) {
+      // Squelch
     }
   }
 

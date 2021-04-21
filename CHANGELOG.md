@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.3.1
+
+- Restore focus to the element that had it, after the modal has closed
+
 ## 2.3.0
 
 - Upgrade dependencies
