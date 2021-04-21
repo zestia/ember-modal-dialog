@@ -93,46 +93,6 @@ module('modal-dialog', function (hooks) {
           'root element is informed when a modal dialog is present'
         );
     });
-
-    test('focus', async function (assert) {
-      assert.expect(4);
-
-      await render(hbs`
-        <button type="button" class="external"></button>
-
-        {{#if this.showModal}}
-          <ModalDialog as |modal|>
-            <button type="button" class="internal" {{on "click" modal.close}}></button>
-          </ModalDialog>
-        {{/if}}
-      `);
-
-      await focus('.external');
-
-      assert
-        .dom('.external')
-        .isFocused('initial focus is on an element outside the modal');
-
-      this.set('showModal', true);
-
-      assert
-        .dom('.modal-dialog')
-        .isFocused('modal is focused to respond the keyboard');
-
-      await click('.internal');
-
-      assert
-        .dom('.internal')
-        .isFocused(
-          "focus isn't restored until after the animation (full closure)"
-        );
-
-      await waitForAnimation('.modal-dialog');
-
-      assert
-        .dom('.external')
-        .isFocused('focus is returned to the originally focused element');
-    });
   });
 
   module('loading', function () {
@@ -476,6 +436,84 @@ module('modal-dialog', function (hooks) {
       await settled();
 
       assert.dom(document.body).hasStyle({ overflow: 'visible' });
+    });
+  });
+
+  module('restoring focus', function (hooks) {
+    hooks.beforeEach(async function () {
+      await render(hbs`
+        {{#if this.showButton}}
+          <button type="button" class="external"></button>
+        {{/if}}
+
+        {{#if this.showModal}}
+          <ModalDialog as |modal|>
+            <button type="button" class="internal" {{on "click" modal.close}}></button>
+          </ModalDialog>
+        {{/if}}
+      `);
+    });
+
+    test('focus is restored', async function (assert) {
+      assert.expect(4);
+
+      this.set('showButton', true);
+
+      await focus('.external');
+
+      assert
+        .dom('.external')
+        .isFocused('initial focus is on an element outside the modal');
+
+      this.set('showModal', true);
+
+      assert
+        .dom('.modal-dialog')
+        .isFocused('modal is focused to respond the keyboard');
+
+      await click('.internal');
+
+      assert
+        .dom('.internal')
+        .isFocused(
+          "focus isn't restored until after the animation (full closure)"
+        );
+
+      await waitForAnimation('.modal-dialog');
+
+      assert
+        .dom('.external')
+        .isFocused('focus is returned to the originally focused element');
+    });
+
+    test('does not blow up', async function (assert) {
+      assert.expect(3);
+
+      this.set('showButton', true);
+
+      await focus('.external');
+
+      assert
+        .dom('.external')
+        .isFocused('initial focus is on an element outside the modal');
+
+      this.set('showModal', true);
+      this.set('showButton', false);
+
+      assert
+        .dom('.modal-dialog')
+        .isFocused('modal is focused to respond the keyboard');
+
+      await click('.internal');
+
+      await waitForAnimation('.modal-dialog');
+
+      assert
+        .dom('.internal')
+        .isFocused(
+          'focus is not restored to the original element (.external) ' +
+            'because that element has since been removed'
+        );
     });
   });
 

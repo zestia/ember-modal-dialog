@@ -227,7 +227,6 @@ export default class ModalDialogComponent extends Component {
 
   _restoreFocus() {
     try {
-      console.log('restore', this.activeElement);
       this.activeElement.focus();
     } catch (error) {
       // Squelch
