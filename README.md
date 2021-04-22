@@ -36,8 +36,9 @@ https://zestia.github.io/ember-modal-dialog/
 
 ## Features
 
-- Focus Trap ✔︎
-- Body Scroll Lock ✔︎
+- Focus trap ✔︎
+- Focus restoring ✔︎
+- Body scroll lock ✔︎
 - Class names for animating ✔︎
 - Loading state handling ✔︎
 - Optionally escapable ✔︎
