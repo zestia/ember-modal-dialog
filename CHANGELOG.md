@@ -1,8 +1,9 @@
 # Changelog
 
-## 2.3.1
+## 2.4.0
 
 - Restore focus to the element that had it, after the modal has closed
+- REVERT `keydown` change in 2.3.0.
 
 ## 2.3.0
 

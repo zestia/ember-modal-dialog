@@ -308,7 +308,7 @@ module('modal-dialog', function (hooks) {
           @onClose={{this.close}} />
       `);
 
-      await triggerKeyEvent('.modal-dialog', 'keyup', 27); // Escape
+      await triggerKeyEvent('.modal-dialog', 'keydown', 27); // Escape
 
       await waitForAnimation('.modal-dialog');
 
@@ -327,7 +327,7 @@ module('modal-dialog', function (hooks) {
         <ModalDialog @onClose={{this.close}} />
       `);
 
-      await triggerKeyEvent('.modal-dialog', 'keyup', 27); // Escape
+      await triggerKeyEvent('.modal-dialog', 'keydown', 27); // Escape
 
       assert
         .dom('.modal-dialog')
