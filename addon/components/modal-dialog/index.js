@@ -25,6 +25,7 @@ export default class ModalDialogComponent extends Component {
     super(...arguments);
     this.rootElement = document.querySelector(':root');
     this.documentElement = document.documentElement;
+    this.activeElement = document.activeElement;
     this._load();
   }
 
@@ -57,7 +58,10 @@ export default class ModalDialogComponent extends Component {
 
   @action
   close() {
-    return this._hide().then(() => this.args.onClose?.());
+    return this._hide().then(() => {
+      this._restoreFocus();
+      this.args.onClose?.();
+    });
   }
 
   @action
@@ -69,15 +73,10 @@ export default class ModalDialogComponent extends Component {
 
   @action
   handleKeyDown(e) {
-    if (this._pressedTab(e)) {
-      this._trapFocus(e);
-    }
-  }
-
-  @action
-  handleKeyUp(e) {
     if (this._pressedEscape(e)) {
       this._attemptEscape();
+    } else if (this._pressedTab(e)) {
+      this._trapFocus(e);
     }
   }
 
@@ -218,6 +217,14 @@ export default class ModalDialogComponent extends Component {
     } else if (this._tabbedToEnd(e)) {
       this.firstFocusableElement.focus();
       e.preventDefault();
+    }
+  }
+
+  _restoreFocus() {
+    try {
+      this.activeElement.focus();
+    } catch (error) {
+      // Squelch
     }
   }
 
