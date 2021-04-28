@@ -4,7 +4,7 @@
 
 - Upgrade dependencies
 - Add Embroider support
-- Where possible, `keyup` is [preferred](https://github.com/ember-template-lint/ember-template-lint/blob/master/docs/rule/no-down-event-binding.md) over `keydown`
+- Restore focus to the element that had it, after the modal has closed
 
 ## 2.2.8
 

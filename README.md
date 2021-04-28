@@ -1,9 +1,11 @@
 # @zestia/ember-modal-dialog
 
 <p>
-  <a href="http://travis-ci.org/zestia/ember-modal-dialog">
-    <img src="https://travis-ci.org/zestia/ember-modal-dialog.svg?branch=master">
+  <!--
+  <a href="https://github.com/zestia/ember-modal-dialog/actions/workflows/ci.yml">
+    <img src="https://github.com/zestia/ember-modal-dialog/actions/workflows/ci.yml/badge.svg">
   </a>
+  -->
 
   <a href="https://david-dm.org/zestia/ember-modal-dialog#badge-embed">
     <img src="https://david-dm.org/zestia/ember-modal-dialog.svg">
@@ -34,8 +36,9 @@ https://zestia.github.io/ember-modal-dialog/
 
 ## Features
 
-- Focus Trap ✔︎
-- Body Scroll Lock ✔︎
+- Focus trap ✔︎
+- Focus restoring ✔︎
+- Body scroll lock ✔︎
 - Class names for animating ✔︎
 - Loading state handling ✔︎
 - Optionally escapable ✔︎

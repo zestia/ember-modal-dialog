@@ -1,4 +1,7 @@
 import Component from '@glimmer/component';
+import ModalDialogHeader from './header';
+import ModalDialogContent from './content';
+import ModalDialogFooter from './footer';
 import { Promise, resolve } from 'rsvp';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
@@ -8,6 +11,10 @@ import { modifier } from 'ember-modifier';
 
 export default class ModalDialogComponent extends Component {
   element = null;
+
+  ModalDialogHeader = ModalDialogHeader;
+  ModalDialogContent = ModalDialogContent;
+  ModalDialogFooter = ModalDialogFooter;
 
   @tracked isLoading = false;
   @tracked isShowing = true;
@@ -19,12 +26,18 @@ export default class ModalDialogComponent extends Component {
     super(...arguments);
     this.rootElement = document.querySelector(':root');
     this.documentElement = document.documentElement;
+    this.activeElement = document.activeElement;
     this._load();
   }
 
   get api() {
     return {
-      close: this.close
+      Header: this.ModalDialogHeader,
+      Content: this.ModalDialogContent,
+      Footer: this.ModalDialogFooter,
+      close: this.close,
+      isLoading: this.isLoading,
+      boxElement: this.boxElement
     };
   }
 
@@ -46,7 +59,10 @@ export default class ModalDialogComponent extends Component {
 
   @action
   close() {
-    return this._hide().then(() => this._invokeAction('onClose'));
+    return this._hide().then(() => {
+      this._restoreFocus();
+      this.args.onClose?.();
+    });
   }
 
   @action
@@ -58,15 +74,10 @@ export default class ModalDialogComponent extends Component {
 
   @action
   handleKeyDown(e) {
-    if (this._pressedTab(e)) {
-      this._trapFocus(e);
-    }
-  }
-
-  @action
-  handleKeyUp(e) {
     if (this._pressedEscape(e)) {
       this._attemptEscape();
+    } else if (this._pressedTab(e)) {
+      this._trapFocus(e);
     }
   }
 
@@ -112,15 +123,15 @@ export default class ModalDialogComponent extends Component {
   });
 
   _ready() {
-    this._invokeAction('onReady', this.api);
+    this.args.onReady?.(this.api);
   }
 
   _load() {
     this.isLoading = true;
 
-    resolve(this._invokeAction('onLoad'))
-      .then((data) => this._invokeAction('onLoaded', data))
-      .catch((error) => this._invokeAction('onLoadError', error))
+    resolve(this.args.onLoad?.())
+      .then((data) => this.args.onLoaded?.(data))
+      .catch((error) => this.args.onLoadError?.(error))
       .finally(() => (this.isLoading = false));
   }
 
@@ -191,19 +202,19 @@ export default class ModalDialogComponent extends Component {
     }
   }
 
+  _restoreFocus() {
+    try {
+      this.activeElement.focus();
+    } catch (error) {
+      // Squelch
+    }
+  }
+
   _attemptEscape() {
     if (this.args.escapable) {
       this.close();
     } else {
       this.warn();
-    }
-  }
-
-  _invokeAction(name, ...args) {
-    const action = this.args[name];
-
-    if (typeof action === 'function') {
-      return action(...args);
     }
   }
 }

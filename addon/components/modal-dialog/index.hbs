@@ -13,25 +13,15 @@
   tabindex="0"
   aria-modal="true"
   ...attributes
+  {{auto-focus}}
   {{this.hasModal}}
   {{this.bodyScrollLock}}
   {{this.checkIfTooTall}}
-  {{auto-focus}}
   {{this.handleElementLifecycle}}
   {{on "click" this.handleClick}}
-  {{on "keyup" this.handleKeyUp}}
   {{on "keydown" this.handleKeyDown}}
 >
   <div class="modal-dialog__box" {{this.handleBoxElementLifecycle}}>
-    {{yield
-      (hash
-        Header=(component "modal-dialog/header")
-        Content=(component "modal-dialog/content")
-        Footer=(component "modal-dialog/footer")
-        close=this.close
-        isLoading=this.isLoading
-        boxElement=this.boxElement
-      )
-    }}
+    {{yield this.api}}
   </div>
 </div>

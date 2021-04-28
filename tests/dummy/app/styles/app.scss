@@ -38,6 +38,16 @@
   --modal-box-border-colour: grey;
   --modal-box-padding: 15px;
   --modal-ani-speed: 300ms;
+  --focus-outline-colour: red;
+  --example-text-colour: darkgrey;
+}
+
+.example-text {
+  color: var(--example-text-colour);
+}
+
+:focus {
+  outline: 2px solid var(--focus-outline-colour);
 }
 
 .modal-dialog {
