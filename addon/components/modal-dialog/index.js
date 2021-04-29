@@ -114,7 +114,7 @@ export default class ModalDialogComponent extends Component {
     return () => enableBodyScroll(element);
   });
 
-  checkIfTooTall = modifier((element) => {
+  checkTooTall = modifier((element) => {
     const observer = new MutationObserver(this._contentChanged.bind(this));
 
     observer.observe(element, {
@@ -141,10 +141,10 @@ export default class ModalDialogComponent extends Component {
   }
 
   _contentChanged() {
-    scheduleOnce('afterRender', this, '_checkIfTooTall');
+    scheduleOnce('afterRender', this, '_checkTooTall');
   }
 
-  _checkIfTooTall() {
+  _checkTooTall() {
     if (this.isDestroying || this.isDestroyed) {
       return;
     }
