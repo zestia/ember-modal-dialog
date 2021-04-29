@@ -42,10 +42,16 @@ export default class ModalDialogComponent extends Component {
 
   get focusableElements() {
     return [
-      ...this.element.querySelectorAll(
-        'a, button, textarea, input, select, [tabindex="0"]'
-      )
-    ].filter((element) => !element.disabled);
+      ...this.element.querySelectorAll(`
+        a[href],
+        button:not(disabled),
+        textarea:not(disabled),
+        input:not(disabled),
+        select:not(disabled),
+        [tabindex="0"],
+        [contenteditable="true"]
+      `)
+    ];
   }
 
   get firstFocusableElement() {

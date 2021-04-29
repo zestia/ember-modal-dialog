@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.3.1
+
+- Add `contenteditable="true"` support for focus trap
+
 ## 2.3.0
 
 - Upgrade dependencies
