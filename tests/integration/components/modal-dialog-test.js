@@ -15,6 +15,8 @@ import {
   click
 } from '@ember/test-helpers';
 
+const { keys } = Object;
+
 module('modal-dialog', function (hooks) {
   setupRenderingTest(hooks);
 
@@ -201,6 +203,27 @@ module('modal-dialog', function (hooks) {
   });
 
   module('api', function () {
+    test('ready', async function (assert) {
+      assert.expect(2);
+
+      let api;
+
+      this.ready = (modal) => (api = modal);
+
+      await render(hbs`<ModalDialog @onReady={{this.ready}} />`);
+
+      assert.deepEqual(keys(api), [
+        'Header',
+        'Content',
+        'Footer',
+        'close',
+        'isLoading',
+        'boxElement'
+      ]);
+
+      assert.deepEqual(api.boxElement, find('.modal-dialog__box'));
+    });
+
     test('yielded close', async function (assert) {
       assert.expect(3);
 

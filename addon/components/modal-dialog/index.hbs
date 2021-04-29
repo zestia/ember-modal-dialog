@@ -14,14 +14,15 @@
   aria-modal="true"
   ...attributes
   {{auto-focus}}
+  {{this.registerElement}}
+  {{this.ready}}
   {{this.hasModal}}
   {{this.bodyScrollLock}}
   {{this.checkIfTooTall}}
-  {{this.handleElementLifecycle}}
   {{on "click" this.handleClick}}
   {{on "keydown" this.handleKeyDown}}
 >
-  <div class="modal-dialog__box" {{this.handleBoxElementLifecycle}}>
+  <div class="modal-dialog__box" {{this.registerBoxElement}}>
     {{yield this.api}}
   </div>
 </div>

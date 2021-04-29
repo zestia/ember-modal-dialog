@@ -88,13 +88,16 @@ export default class ModalDialogComponent extends Component {
     }
   }
 
-  handleElementLifecycle = modifier((element) => {
+  registerElement = modifier((element) => {
     this.element = element;
-    this._ready();
   });
 
-  handleBoxElementLifecycle = modifier((element) => {
+  registerBoxElement = modifier((element) => {
     this.boxElement = element;
+  });
+
+  ready = modifier(() => {
+    this.args.onReady?.(this.api);
   });
 
   hasModal = modifier(() => {
@@ -121,10 +124,6 @@ export default class ModalDialogComponent extends Component {
 
     return () => observer.disconnect();
   });
-
-  _ready() {
-    this.args.onReady?.(this.api);
-  }
 
   _load() {
     this.isLoading = true;
