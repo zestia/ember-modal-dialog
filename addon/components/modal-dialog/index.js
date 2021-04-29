@@ -100,7 +100,7 @@ export default class ModalDialogComponent extends Component {
     this.args.onReady?.(this.api);
   });
 
-  hasModal = modifier(() => {
+  notifyRoot = modifier(() => {
     this.rootElement.classList.add('has-modal');
     return () => this.rootElement.classList.remove('has-modal');
   });
