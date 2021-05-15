@@ -77,7 +77,8 @@ export default class MyModal extends Component {
   @onClose={{@onClose}}
   @onLoad={{@onFetchPerson}}
   @onLoaded={{this.loaded}}
-  @onLoadError={{this.failedToLoad}} as |modal|
+  @onLoadError={{this.failedToLoad}}
+  as |modal|
 >
   <modal.Header>
     Welcome
@@ -87,9 +88,11 @@ export default class MyModal extends Component {
     {{#if modal.isLoading}}
       Loading person…
     {{else if this.loadingError}}
-      Unable to load person because {{this.loadingError}}
+      Unable to load person because
+      {{this.loadingError}}
     {{else}}
-      Hello {{this.person.name}}
+      Hello
+      {{this.person.name}}
     {{/if}}
   </modal.Content>
 
