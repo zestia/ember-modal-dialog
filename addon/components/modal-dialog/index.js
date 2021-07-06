@@ -10,7 +10,7 @@ import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 
 export default class ModalDialogComponent extends Component {
   element = null;
-  willAnimate = defer();
+  willAnimate = null;
 
   ModalDialogHeader = ModalDialogHeader;
   ModalDialogContent = ModalDialogContent;
