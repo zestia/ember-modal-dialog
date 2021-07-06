@@ -62,6 +62,9 @@ module('modal-dialog', function (hooks) {
       assert.dom('.modal-dialog__content').hasClass('bar', 'splattributes');
 
       assert.dom('.modal-dialog__footer').hasClass('baz', 'splattributes');
+
+      // Specifically wait for animating in to check initial deferred is OK
+      await waitForAnimation('.modal-dialog');
     });
 
     test('root element', async function (assert) {
