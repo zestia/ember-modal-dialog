@@ -16,6 +16,7 @@
   {{will-destroy this.handleDestroyElement}}
   {{on "click" this.handleClick}}
   {{on "keydown" this.handleKeyDown}}
+  {{on "animationend" this.handleAnimationEnd}}
 >
   <div class="modal-dialog__box" {{did-insert this.handleInsertBoxElement}}>
     {{yield this.api}}
