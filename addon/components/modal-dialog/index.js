@@ -31,6 +31,43 @@ export default class ModalDialogComponent extends Component {
     this._load();
   }
 
+  registerElement = modifier((element) => {
+    this.element = element;
+  });
+
+  registerBoxElement = modifier((element) => {
+    this.boxElement = element;
+  });
+
+  ready = modifier(() => {
+    this.args.onReady?.(this.api);
+  });
+
+  notifyRoot = modifier(() => {
+    this.rootElement.classList.add('has-modal');
+    return () => this.rootElement.classList.remove('has-modal');
+  });
+
+  bodyScrollLock = modifier((element) => {
+    disableBodyScroll(element, {
+      reserveScrollBarGap: true,
+      allowTouchMove: () => this.boxElement.contains(element)
+    });
+
+    return () => enableBodyScroll(element);
+  });
+
+  checkTooTall = modifier((element) => {
+    const observer = new MutationObserver(this._contentChanged.bind(this));
+
+    observer.observe(element, {
+      childList: true,
+      subtree: true
+    });
+
+    return () => observer.disconnect();
+  });
+
   get api() {
     return {
       Header: this.ModalDialogHeader,
@@ -107,43 +144,6 @@ export default class ModalDialogComponent extends Component {
       this._attemptEscape();
     }
   }
-
-  registerElement = modifier((element) => {
-    this.element = element;
-  });
-
-  registerBoxElement = modifier((element) => {
-    this.boxElement = element;
-  });
-
-  ready = modifier(() => {
-    this.args.onReady?.(this.api);
-  });
-
-  notifyRoot = modifier(() => {
-    this.rootElement.classList.add('has-modal');
-    return () => this.rootElement.classList.remove('has-modal');
-  });
-
-  bodyScrollLock = modifier((element) => {
-    disableBodyScroll(element, {
-      reserveScrollBarGap: true,
-      allowTouchMove: () => this.boxElement.contains(element)
-    });
-
-    return () => enableBodyScroll(element);
-  });
-
-  checkTooTall = modifier((element) => {
-    const observer = new MutationObserver(this._contentChanged.bind(this));
-
-    observer.observe(element, {
-      childList: true,
-      subtree: true
-    });
-
-    return () => observer.disconnect();
-  });
 
   _load() {
     this.isLoading = true;
