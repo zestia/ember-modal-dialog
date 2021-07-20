@@ -154,23 +154,6 @@ export default class ModalDialogComponent extends Component {
       .finally(() => (this.isLoading = false));
   }
 
-  _watchForContentChanges() {
-    this._mutationObserver = new MutationObserver(
-      this._contentChanged.bind(this)
-    );
-
-    this._mutationObserver.observe(this.element, {
-      childList: true,
-      subtree: true
-    });
-
-    this._contentChanged();
-  }
-
-  _stopWatchingForChanges() {
-    this._mutationObserver.disconnect();
-  }
-
   _contentChanged() {
     scheduleOnce('afterRender', this, '_checkTooTall');
   }
