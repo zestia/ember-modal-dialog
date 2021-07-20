@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import ModalDialogHeader from './header';
 import ModalDialogContent from './content';
 import ModalDialogFooter from './footer';
-import { Promise, resolve } from 'rsvp';
+import { resolve, defer } from 'rsvp';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { scheduleOnce } from '@ember/runloop';
@@ -11,6 +11,7 @@ import { modifier } from 'ember-modifier';
 
 export default class ModalDialogComponent extends Component {
   element = null;
+  willAnimate = defer();
 
   ModalDialogHeader = ModalDialogHeader;
   ModalDialogContent = ModalDialogContent;
@@ -43,10 +44,16 @@ export default class ModalDialogComponent extends Component {
 
   get focusableElements() {
     return [
-      ...this.element.querySelectorAll(
-        'a, button, textarea, input, select, [tabindex="0"]'
-      )
-    ].filter((element) => !element.disabled);
+      ...this.element.querySelectorAll(`
+        a[href],
+        button:not(disabled),
+        textarea:not(disabled),
+        input:not(disabled),
+        select:not(disabled),
+        [tabindex="0"],
+        [contenteditable="true"]
+      `)
+    ];
   }
 
   get firstFocusableElement() {
@@ -65,11 +72,24 @@ export default class ModalDialogComponent extends Component {
     });
   }
 
+  _hide() {
+    this.isShowing = false;
+
+    return this._waitForAnimation();
+  }
+
   @action
   warn() {
     this.isWarning = true;
 
     this._waitForAnimation().then(() => (this.isWarning = false));
+  }
+
+  @action
+  handleAnimationEnd(event) {
+    if (event.target === this.element) {
+      this.willAnimate.resolve();
+    }
   }
 
   @action
@@ -134,10 +154,21 @@ export default class ModalDialogComponent extends Component {
       .finally(() => (this.isLoading = false));
   }
 
-  _hide() {
-    this.isShowing = false;
+  _watchForContentChanges() {
+    this._mutationObserver = new MutationObserver(
+      this._contentChanged.bind(this)
+    );
 
-    return this._waitForAnimation();
+    this._mutationObserver.observe(this.element, {
+      childList: true,
+      subtree: true
+    });
+
+    this._contentChanged();
+  }
+
+  _stopWatchingForChanges() {
+    this._mutationObserver.disconnect();
   }
 
   _contentChanged() {
@@ -168,11 +199,8 @@ export default class ModalDialogComponent extends Component {
   // }
 
   _waitForAnimation() {
-    return new Promise((resolve) => {
-      this.element.addEventListener('animationend', resolve, {
-        once: true
-      });
-    });
+    this.willAnimate = defer();
+    return this.willAnimate.promise;
   }
 
   _pressedEscape(e) {
