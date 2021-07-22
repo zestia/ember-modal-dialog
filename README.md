@@ -97,7 +97,7 @@ export default class MyModal extends Component {
   </modal.Content>
 
   <modal.Footer>
-    <button {{on "click" modal.close}}>
+    <button {{on 'click' modal.close}}>
       Close
     </button>
   </modal.Footer>
@@ -105,8 +105,8 @@ export default class MyModal extends Component {
 ```
 
 ```javascript
-// application/route.js
-export default class ApplicationRoute extends Route {
+// application/controller.js
+export default class ApplicationController extends Controller {
   @action
   loadPerson() {
     // Fetch remote data
@@ -115,7 +115,7 @@ export default class ApplicationRoute extends Route {
 ```
 
 ```handlebars
-{{! application/route.hbs }}
+{{! application/template.hbs }}
 {{#if this.showMyModal}}
   <MyModal
     @onClose={{this.hideMyModal}}
