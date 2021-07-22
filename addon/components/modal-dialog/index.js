@@ -85,10 +85,8 @@ export default class ModalDialogComponent extends Component {
   }
 
   @action
-  handleAnimationEnd(event) {
-    if (event.target === this.element) {
-      this.willAnimate.resolve();
-    }
+  handleAnimationEnd() {
+    this.willAnimate.resolve();
   }
 
   @action

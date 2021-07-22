@@ -3,7 +3,7 @@
 ## 2.3.2 (not yet published)
 
 - Upgrade dependencies
-- Fix waiting for animation: Make sure the animation happens on the actual modal element, and not a child.
+- Simplify waiting for animation
 
 ## 2.3.1
 
