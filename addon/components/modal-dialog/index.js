@@ -110,8 +110,6 @@ export default class ModalDialogComponent extends Component {
 
   @action
   handleMouseUp(e) {
-    console.log(this.lastMouseDownElement);
-
     if (this.lastMouseDownElement === this.element) {
       this._attemptEscape();
     }
