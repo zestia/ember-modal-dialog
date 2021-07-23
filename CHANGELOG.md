@@ -1,9 +1,13 @@
 # Changelog
 
-## 2.3.2 (not yet published)
+## 2.3.3 (not yet published)
 
 - Upgrade dependencies
-- Fix waiting for animation: Make sure the animation happens on the actual modal element, and not a child.
+
+## 2.3.2
+
+- Simplify waiting for animation
+- Fix holding down the mouse, dragging outside the modal dialog box, and releasing
 
 ## 2.3.1
 

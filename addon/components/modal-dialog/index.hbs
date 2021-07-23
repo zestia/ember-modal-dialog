@@ -18,7 +18,8 @@
   {{this.bodyScrollLock}}
   {{this.checkTooTall}}
   {{this.ready}}
-  {{on "click" this.handleClick}}
+  {{on "mousedown" this.handleMouseDown}}
+  {{on "mouseup" this.handleMouseUp}}
   {{on "keydown" this.handleKeyDown}}
   {{on "animationend" this.handleAnimationEnd}}
 >

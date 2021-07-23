@@ -11,6 +11,7 @@ import {
   render,
   settled,
   focus,
+  triggerEvent,
   triggerKeyEvent,
   click
 } from '@ember/test-helpers';
@@ -20,10 +21,12 @@ const { keys } = Object;
 module('modal-dialog', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function () {
+  hooks.beforeEach(function (assert) {
     const capture = helper(([arg]) => (this.captured = arg));
 
     this.owner.register('helper:capture', capture);
+
+    this.close = () => assert.step('closed');
   });
 
   module('rendering', function () {
@@ -230,8 +233,6 @@ module('modal-dialog', function (hooks) {
     test('yielded close', async function (assert) {
       assert.expect(3);
 
-      this.close = () => assert.step('close');
-
       await render(hbs`
         <ModalDialog @onClose={{this.close}} as |modal|>
           <button type="button" {{on "click" modal.close}}>Close</button>
@@ -247,7 +248,7 @@ module('modal-dialog', function (hooks) {
       await waitForAnimation('.modal-dialog');
 
       assert.verifySteps(
-        ['close'],
+        ['closed'],
         'close action is fired after the hide animation'
       );
     });
@@ -258,7 +259,6 @@ module('modal-dialog', function (hooks) {
       let api;
 
       this.ready = (modal) => (api = modal);
-      this.close = () => assert.step('close');
 
       await render(hbs`
         <ModalDialog
@@ -279,7 +279,7 @@ module('modal-dialog', function (hooks) {
       await waitForAnimation('.modal-dialog');
 
       assert.verifySteps(
-        ['close'],
+        ['closed'],
         'close action is fired after the hide animation'
       );
     });
@@ -294,7 +294,6 @@ module('modal-dialog', function (hooks) {
       `);
 
       await click('button');
-
       await waitForAnimation('.modal-dialog');
 
       assert.ok(true, 'does not blow up if onClose is not a function');
@@ -317,38 +316,34 @@ module('modal-dialog', function (hooks) {
     });
   });
 
-  module('escaping', function () {
+  module('escaping', function (hooks) {
     // Modal dialogs that do not close when escape is pressed add a class name
     // to the modal, so you can add a suitable animation to inform the user
     // that their action was denied. This is useful for preventing accidental
     // data loss, if a user has entered text into a modal, then hits escape
     // without pressing Save for example.
 
-    test('allowed', async function (assert) {
+    test('pressing escape (allowed)', async function (assert) {
       assert.expect(2);
-
-      this.close = () => assert.step('close');
 
       await render(hbs`
         <ModalDialog
           @escapable={{true}}
-          @onClose={{this.close}} />
+          @onClose={{this.close}}
+        />
       `);
 
       await triggerKeyEvent('.modal-dialog', 'keydown', 27); // Escape
-
       await waitForAnimation('.modal-dialog');
 
       assert.verifySteps(
-        ['close'],
+        ['closed'],
         'escapable modal dialogs will close when escape is pressed'
       );
     });
 
-    test('not allowed', async function (assert) {
+    test('pressing escape (not allowed)', async function (assert) {
       assert.expect(3);
-
-      this.close = () => assert.step('close');
 
       await render(hbs`
         <ModalDialog @onClose={{this.close}} />
@@ -373,6 +368,47 @@ module('modal-dialog', function (hooks) {
         );
 
       assert.verifySteps([], 'close action is not fired');
+    });
+
+    test('clicking outside to escape (not allowed)', async function (assert) {
+      assert.expect(1);
+
+      await render(hbs`<ModalDialog @onClose={{this.close}} />`);
+
+      await click('.modal-dialog');
+      await waitForAnimation('.modal-dialog');
+
+      assert.verifySteps([], 'is not escapable');
+    });
+
+    test('clicking outside to escape (allowed)', async function (assert) {
+      assert.expect(2);
+
+      await render(
+        hbs`<ModalDialog @escapable={{true}} @onClose={{this.close}} />`
+      );
+
+      await click('.modal-dialog');
+      await waitForAnimation('.modal-dialog');
+
+      assert.verifySteps(
+        ['closed'],
+        'clicking outside the modal dialog box closes the modal'
+      );
+    });
+
+    test('clicking inside and releasing outside', async function (assert) {
+      assert.expect(1);
+
+      await render(
+        hbs`<ModalDialog @escapable={{true}} @onClose={{this.close}} />`
+      );
+
+      await triggerEvent('.modal-dialog__box', 'mousedown');
+      await triggerEvent('.modal-dialog', 'mouseup');
+      await waitForAnimation('.modal-dialog');
+
+      assert.verifySteps([], 'does not close');
     });
   });
 
@@ -532,7 +568,6 @@ module('modal-dialog', function (hooks) {
         .isFocused('modal is focused to respond the keyboard');
 
       await click('.internal');
-
       await waitForAnimation('.modal-dialog');
 
       assert

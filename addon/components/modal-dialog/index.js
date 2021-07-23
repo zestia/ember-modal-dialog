@@ -11,6 +11,11 @@ import { modifier } from 'ember-modifier';
 
 export default class ModalDialogComponent extends Component {
   element = null;
+  boxElement = null;
+  rootElement = null;
+  documentElement = null;
+  activeElement = null;
+  lastMouseDownElement = null;
   willAnimate = defer();
 
   ModalDialogHeader = ModalDialogHeader;
@@ -123,10 +128,8 @@ export default class ModalDialogComponent extends Component {
   }
 
   @action
-  handleAnimationEnd(event) {
-    if (event.target === this.element) {
-      this.willAnimate.resolve();
-    }
+  handleAnimationEnd() {
+    this.willAnimate.resolve();
   }
 
   @action
@@ -139,8 +142,13 @@ export default class ModalDialogComponent extends Component {
   }
 
   @action
-  handleClick(e) {
-    if (e.target === this.element) {
+  handleMouseDown(e) {
+    this.lastMouseDownElement = e.target;
+  }
+
+  @action
+  handleMouseUp(e) {
+    if (this.lastMouseDownElement === this.element) {
       this._attemptEscape();
     }
   }
