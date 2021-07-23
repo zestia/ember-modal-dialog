@@ -18,10 +18,12 @@ import {
 module('modal-dialog', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function () {
+  hooks.beforeEach(function (assert) {
     const capture = helper(([arg]) => (this.captured = arg));
 
     this.owner.register('helper:capture', capture);
+
+    this.close = () => assert.step('closed');
   });
 
   module('rendering', function () {
@@ -205,8 +207,6 @@ module('modal-dialog', function (hooks) {
     test('yielded close', async function (assert) {
       assert.expect(3);
 
-      this.close = () => assert.step('closed');
-
       await render(hbs`
         <ModalDialog @onClose={{this.close}} as |modal|>
           <button type="button" {{on "click" modal.close}}>Close</button>
@@ -233,7 +233,6 @@ module('modal-dialog', function (hooks) {
       let api;
 
       this.ready = (modal) => (api = modal);
-      this.close = () => assert.step('close');
 
       await render(hbs`
         <ModalDialog
@@ -292,10 +291,6 @@ module('modal-dialog', function (hooks) {
   });
 
   module('escaping', function (hooks) {
-    hooks.beforeEach(function (assert) {
-      this.close = () => assert.step('closed');
-    });
-
     // Modal dialogs that do not close when escape is pressed add a class name
     // to the modal, so you can add a suitable animation to inform the user
     // that their action was denied. This is useful for preventing accidental
