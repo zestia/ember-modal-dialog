@@ -7,6 +7,7 @@ import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { scheduleOnce } from '@ember/runloop';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
+import { modifier } from 'ember-modifier';
 
 export default class ModalDialogComponent extends Component {
   element = null;
@@ -34,6 +35,43 @@ export default class ModalDialogComponent extends Component {
     this.activeElement = document.activeElement;
     this._load();
   }
+
+  registerElement = modifier((element) => {
+    this.element = element;
+  });
+
+  registerBoxElement = modifier((element) => {
+    this.boxElement = element;
+  });
+
+  ready = modifier(() => {
+    this.args.onReady?.(this.api);
+  });
+
+  notifyRoot = modifier(() => {
+    this.rootElement.classList.add('has-modal');
+    return () => this.rootElement.classList.remove('has-modal');
+  });
+
+  bodyScrollLock = modifier((element) => {
+    disableBodyScroll(element, {
+      reserveScrollBarGap: true,
+      allowTouchMove: () => this.boxElement.contains(element)
+    });
+
+    return () => enableBodyScroll(element);
+  });
+
+  checkTooTall = modifier((element) => {
+    const observer = new MutationObserver(this._contentChanged.bind(this));
+
+    observer.observe(element, {
+      childList: true,
+      subtree: true
+    });
+
+    return () => observer.disconnect();
+  });
 
   get api() {
     return {
@@ -115,31 +153,6 @@ export default class ModalDialogComponent extends Component {
     }
   }
 
-  @action
-  handleInsertElement(element) {
-    this.element = element;
-    this.element.focus();
-    this.rootElement.classList.add('has-modal');
-    this._disableBodyScroll();
-    this._watchForContentChanges();
-    this._ready();
-  }
-
-  @action
-  handleDestroyElement() {
-    this._enableBodyScroll();
-    this.rootElement.classList.remove('has-modal');
-  }
-
-  @action
-  handleInsertBoxElement(element) {
-    this.boxElement = element;
-  }
-
-  _ready() {
-    this.args.onReady?.(this.api);
-  }
-
   _load() {
     this.isLoading = true;
 
@@ -149,28 +162,11 @@ export default class ModalDialogComponent extends Component {
       .finally(() => (this.isLoading = false));
   }
 
-  _watchForContentChanges() {
-    this._mutationObserver = new MutationObserver(
-      this._contentChanged.bind(this)
-    );
-
-    this._mutationObserver.observe(this.element, {
-      childList: true,
-      subtree: true
-    });
-
-    this._contentChanged();
-  }
-
-  _stopWatchingForChanges() {
-    this._mutationObserver.disconnect();
-  }
-
   _contentChanged() {
-    scheduleOnce('afterRender', this, '_checkIfTooTall');
+    scheduleOnce('afterRender', this, '_checkTooTall');
   }
 
-  _checkIfTooTall() {
+  _checkTooTall() {
     if (this.isDestroying || this.isDestroyed) {
       return;
     }
@@ -181,32 +177,17 @@ export default class ModalDialogComponent extends Component {
     this.isTooTall = box && doc.clientHeight <= box.clientHeight;
   }
 
-  _inViewport(element) {
-    const rect = element.getBoundingClientRect();
-    const doc = this.documentElement;
+  // _inViewport(element) {
+  //   const rect = element.getBoundingClientRect();
+  //   const doc = this.documentElement;
 
-    return (
-      rect.top >= 0 &&
-      rect.left >= 0 &&
-      rect.bottom <= doc.clientHeight &&
-      rect.right <= doc.clientWidth
-    );
-  }
-
-  _disableBodyScroll() {
-    disableBodyScroll(this.element, {
-      reserveScrollBarGap: true,
-      allowTouchMove: this._allowTouchMove.bind(this)
-    });
-  }
-
-  _enableBodyScroll() {
-    enableBodyScroll(this.element);
-  }
-
-  _allowTouchMove(element) {
-    return this.boxElement.contains(element);
-  }
+  //   return (
+  //     rect.top >= 0 &&
+  //     rect.left >= 0 &&
+  //     rect.bottom <= doc.clientHeight &&
+  //     rect.right <= doc.clientWidth
+  //   );
+  // }
 
   _waitForAnimation() {
     this.willAnimate = defer();

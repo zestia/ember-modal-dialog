@@ -12,14 +12,18 @@
   tabindex="0"
   aria-modal="true"
   ...attributes
-  {{did-insert this.handleInsertElement}}
-  {{will-destroy this.handleDestroyElement}}
+  {{auto-focus}}
+  {{this.registerElement}}
+  {{this.notifyRoot}}
+  {{this.bodyScrollLock}}
+  {{this.checkTooTall}}
+  {{this.ready}}
   {{on "mousedown" this.handleMouseDown}}
   {{on "mouseup" this.handleMouseUp}}
   {{on "keydown" this.handleKeyDown}}
   {{on "animationend" this.handleAnimationEnd}}
 >
-  <div class="modal-dialog__box" {{did-insert this.handleInsertBoxElement}}>
+  <div class="modal-dialog__box" {{this.registerBoxElement}}>
     {{yield this.api}}
   </div>
 </div>

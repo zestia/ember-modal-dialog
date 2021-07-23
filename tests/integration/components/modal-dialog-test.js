@@ -5,6 +5,7 @@ import waitForAnimation from '../../helpers/wait-for-animation';
 import ModalDialogComponent from '@zestia/ember-modal-dialog/components/modal-dialog';
 import { helper } from '@ember/component/helper';
 import { reject, defer } from 'rsvp';
+import { modifier } from 'ember-modifier';
 import {
   find,
   render,
@@ -14,6 +15,8 @@ import {
   triggerKeyEvent,
   click
 } from '@ember/test-helpers';
+
+const { keys } = Object;
 
 module('modal-dialog', function (hooks) {
   setupRenderingTest(hooks);
@@ -113,12 +116,14 @@ module('modal-dialog', function (hooks) {
         return deferred.promise;
       };
 
-      this.inserted = () => assert.step('inserted');
+      this.inserted = modifier(() => {
+        assert.step('inserted');
+      });
 
       await render(hbs`
         <ModalDialog
           @onLoad={{this.load}}
-          {{did-insert this.inserted}}
+          {{this.inserted}}
         />
       `);
 
@@ -204,6 +209,27 @@ module('modal-dialog', function (hooks) {
   });
 
   module('api', function () {
+    test('ready', async function (assert) {
+      assert.expect(2);
+
+      let api;
+
+      this.ready = (modal) => (api = modal);
+
+      await render(hbs`<ModalDialog @onReady={{this.ready}} />`);
+
+      assert.deepEqual(keys(api), [
+        'Header',
+        'Content',
+        'Footer',
+        'close',
+        'isLoading',
+        'boxElement'
+      ]);
+
+      assert.deepEqual(api.boxElement, find('.modal-dialog__box'));
+    });
+
     test('yielded close', async function (assert) {
       assert.expect(3);
 
