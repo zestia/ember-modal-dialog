@@ -1,9 +1,13 @@
 # Changelog
 
-## 2.3.2 (not yet published)
+## 2.3.3 (not yet published)
 
 - Upgrade dependencies
+
+## 2.3.2
+
 - Simplify waiting for animation
+- Fix holding down the mouse, dragging outside the modal dialog box, and releasing
 
 ## 2.3.1
 

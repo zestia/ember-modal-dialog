@@ -10,6 +10,11 @@ import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 
 export default class ModalDialogComponent extends Component {
   element = null;
+  boxElement = null;
+  rootElement = null;
+  documentElement = null;
+  activeElement = null;
+  lastMouseDownElement = null;
   willAnimate = defer();
 
   ModalDialogHeader = ModalDialogHeader;
@@ -99,8 +104,15 @@ export default class ModalDialogComponent extends Component {
   }
 
   @action
-  handleClick(e) {
-    if (e.target === this.element) {
+  handleMouseDown(e) {
+    this.lastMouseDownElement = e.target;
+  }
+
+  @action
+  handleMouseUp(e) {
+    console.log(this.lastMouseDownElement);
+
+    if (this.lastMouseDownElement === this.element) {
       this._attemptEscape();
     }
   }
