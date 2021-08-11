@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.3.3 (not yet published)
+## 2.3.3
 
 - Upgrade dependencies
 
