@@ -6,7 +6,7 @@
     (if this.isShowing "showing" "hiding")
     (if this.isWarning " modal-dialog--warning")
     (if this.isLoading " modal-dialog--loading")
-    (if this.isTooTall " modal-dialog--too-tall")
+    (unless this.inViewport " modal-dialog--exceeds-viewport")
   }}
   role="dialog"
   tabindex="0"

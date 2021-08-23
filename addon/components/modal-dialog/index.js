@@ -12,7 +12,7 @@ export default class ModalDialogComponent extends Component {
   element = null;
   boxElement = null;
   rootElement = null;
-  documentElement = null;
+  window = null;
   activeElement = null;
   lastMouseDownElement = null;
   willAnimate = defer();
@@ -24,13 +24,13 @@ export default class ModalDialogComponent extends Component {
   @tracked isLoading = false;
   @tracked isShowing = true;
   @tracked isWarning = false;
-  @tracked isTooTall = false;
+  @tracked inViewport = false;
   @tracked boxElement = null;
 
   constructor() {
     super(...arguments);
     this.rootElement = document.querySelector(':root');
-    this.documentElement = document.documentElement;
+    this.window = window;
     this.activeElement = document.activeElement;
     this._load();
   }
@@ -167,29 +167,26 @@ export default class ModalDialogComponent extends Component {
   }
 
   _contentChanged() {
-    scheduleOnce('afterRender', this, '_checkIfTooTall');
+    scheduleOnce('afterRender', this, '_checkInViewport');
   }
 
-  _checkIfTooTall() {
+  _checkInViewport() {
     if (this.isDestroying || this.isDestroyed) {
       return;
     }
 
-    const box = this.boxElement;
-    const doc = this.documentElement;
-
-    this.isTooTall = box && doc.clientHeight <= box.clientHeight;
+    this.inViewport = this._inViewport(this.boxElement);
   }
 
   _inViewport(element) {
     const rect = element.getBoundingClientRect();
-    const doc = this.documentElement;
+    const win = this.window;
 
     return (
       rect.top >= 0 &&
       rect.left >= 0 &&
-      rect.bottom <= doc.clientHeight &&
-      rect.right <= doc.clientWidth
+      rect.bottom <= win.innerHeight &&
+      rect.right <= win.innerWidth
     );
   }
 

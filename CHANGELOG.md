@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.0
+
+- Change too-tall detection to exceeds-viewport.
+
 ## 2.3.3
 
 - Upgrade dependencies
