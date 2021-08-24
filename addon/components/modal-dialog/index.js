@@ -5,18 +5,19 @@ import ModalDialogFooter from './footer';
 import { resolve, defer } from 'rsvp';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
-import { scheduleOnce } from '@ember/runloop';
+import { scheduleOnce, debounce } from '@ember/runloop';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 import { modifier } from 'ember-modifier';
 
 export default class ModalDialogComponent extends Component {
-  element = null;
-  boxElement = null;
-  rootElement = null;
-  documentElement = null;
   activeElement = null;
+  boxElement = null;
+  element = null;
   lastMouseDownElement = null;
+  mutationObserver = null;
+  rootElement = null;
   willAnimate = defer();
+  window = null;
 
   ModalDialogHeader = ModalDialogHeader;
   ModalDialogContent = ModalDialogContent;
@@ -25,13 +26,13 @@ export default class ModalDialogComponent extends Component {
   @tracked isLoading = false;
   @tracked isShowing = true;
   @tracked isWarning = false;
-  @tracked isTooTall = false;
+  @tracked inViewport = false;
   @tracked boxElement = null;
 
   constructor() {
     super(...arguments);
     this.rootElement = document.querySelector(':root');
-    this.documentElement = document.documentElement;
+    this.window = window;
     this.activeElement = document.activeElement;
     this._load();
   }
@@ -62,8 +63,10 @@ export default class ModalDialogComponent extends Component {
     return () => enableBodyScroll(element);
   });
 
-  checkTooTall = modifier((element) => {
-    const observer = new MutationObserver(this._contentChanged.bind(this));
+  monitorContent = modifier((element) => {
+    const observer = new MutationObserver(
+      this._handleContentChanged.bind(this)
+    );
 
     observer.observe(element, {
       childList: true,
@@ -71,6 +74,13 @@ export default class ModalDialogComponent extends Component {
     });
 
     return () => observer.disconnect();
+  });
+
+  monitorViewport = modifier(() => {
+    const listener = this._handleViewportResized.bind(this);
+    this.window.addEventListener('resize', listener);
+
+    return () => this.window.removeEventListener('resize', listener);
   });
 
   get api() {
@@ -147,7 +157,7 @@ export default class ModalDialogComponent extends Component {
   }
 
   @action
-  handleMouseUp(e) {
+  handleMouseUp() {
     if (this.lastMouseDownElement === this.element) {
       this._attemptEscape();
     }
@@ -162,32 +172,45 @@ export default class ModalDialogComponent extends Component {
       .finally(() => (this.isLoading = false));
   }
 
-  _contentChanged() {
-    scheduleOnce('afterRender', this, '_checkTooTall');
+  _handleContentChanged() {
+    scheduleOnce('afterRender', this, '_checkInViewport');
   }
 
-  _checkTooTall() {
+  _handleViewportResized() {
+    debounce(this, '_checkInViewport', 100);
+  }
+
+  _checkInViewport() {
     if (this.isDestroying || this.isDestroyed) {
       return;
     }
 
-    const box = this.boxElement;
-    const doc = this.documentElement;
-
-    this.isTooTall = box && doc.clientHeight <= box.clientHeight;
+    this.inViewport = this._inViewport(this.boxElement);
+    console.log('check', this.inViewport);
   }
 
-  // _inViewport(element) {
-  //   const rect = element.getBoundingClientRect();
-  //   const doc = this.documentElement;
+  _inViewport(element) {
+    const rect = element.getBoundingClientRect();
+    const win = this.window;
 
-  //   return (
-  //     rect.top >= 0 &&
-  //     rect.left >= 0 &&
-  //     rect.bottom <= doc.clientHeight &&
-  //     rect.right <= doc.clientWidth
-  //   );
-  // }
+    console.log(
+      rect.top,
+      rect.top > 0,
+      rect.left,
+      rect.left > 0,
+      rect.bototm,
+      rect.bottom < win.innerHeight,
+      rect.right,
+      rect.right < win.innerWidth
+    );
+
+    return (
+      rect.top > 0 &&
+      rect.left > 0 &&
+      rect.bottom < win.innerHeight &&
+      rect.right < win.innerWidth
+    );
+  }
 
   _waitForAnimation() {
     this.willAnimate = defer();

@@ -2,7 +2,6 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import waitForAnimation from '../../helpers/wait-for-animation';
-import ModalDialogComponent from '@zestia/ember-modal-dialog/components/modal-dialog';
 import { helper } from '@ember/component/helper';
 import { reject, defer } from 'rsvp';
 import { modifier } from 'ember-modifier';
@@ -412,20 +411,20 @@ module('modal-dialog', function (hooks) {
     });
   });
 
-  test('height', async function (assert) {
+  test('in viewport?', async function (assert) {
     // You may wonder why this is needed / useful.
     //
     // Consider a modal dialog that fits in the viewport, and has content
     // inside it, that overflows outside the modal.
     // For example: a dropdown menu.
     //
-    // You would not want any overflow css rules, so that dropdown does not
-    // get cut off when opened.
+    // You *would not* want any overflow css rules - because otherwise that dropdown
+    // would get clipped by the overflow when opened.
     //
     // Then consider a modal dialog that is too tall for the viewport, now you
-    // will want to add scrollbars to the modal for it to remain useful.
+    // *would* want to add scrollbars to the modal - for it to remain useful.
     //
-    // The dropdown menu will now open 'inside' the scrollable modal dialog,
+    // The dropdown menu would now open 'inside' the _scrollable_ modal dialog,
     // rather than overflowing outside it.
     //
     // Note that this general problem is also solvable by rendering the dropdown
@@ -433,26 +432,13 @@ module('modal-dialog', function (hooks) {
 
     assert.expect(2);
 
-    const fakeDocumentElement = {
-      clientHeight: 100
-    };
-
-    class TestModalDialogComponent extends ModalDialogComponent {
-      constructor() {
-        super(...arguments);
-        this.documentElement = fakeDocumentElement;
-      }
-    }
-
-    this.owner.register('component:modal-dialog', TestModalDialogComponent);
-
     await render(hbs`
       {{! template-lint-disable no-inline-styles }}
       <ModalDialog>
         {{#if this.makeTooTall}}
-          <div style="height: 100px">I'm too tall</div>
+          <div style="height: 1000px">I'm too tall</div>
         {{else}}
-          <div style="height: 99px">I'm OK</div>
+          I'm OK
         {{/if}}
       </ModalDialog>
     `);
@@ -460,8 +446,8 @@ module('modal-dialog', function (hooks) {
     assert
       .dom('.modal-dialog')
       .doesNotHaveClass(
-        'modal-dialog--too-tall',
-        'does not have a class name when the modal dialog box fits in the window'
+        'modal-dialog--exceeds-viewport',
+        'does not have a class name when the modal dialog box fits in the viewport'
       );
 
     this.set('makeTooTall', true);
@@ -471,8 +457,8 @@ module('modal-dialog', function (hooks) {
     assert
       .dom('.modal-dialog')
       .hasClass(
-        'modal-dialog--too-tall',
-        'has a class name when the modal dialog box does not fits in the window'
+        'modal-dialog--exceeds-viewport',
+        'has a class name when the modal dialog exceeds the viewport'
       );
   });
 

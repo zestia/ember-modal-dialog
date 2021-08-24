@@ -1,6 +1,11 @@
 # Changelog
 
-## 2.3.3 (not yet published)
+## 3.0.0
+
+- Change too-tall detection to exceeds-viewport.
+- Make exceeds viewport detection re-compute on window resize
+
+## 2.3.3
 
 - Upgrade dependencies
 

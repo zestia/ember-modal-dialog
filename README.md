@@ -43,6 +43,7 @@ https://zestia.github.io/ember-modal-dialog/
 - Loading state handling ✔︎
 - Optionally escapable ✔︎
 - Root element notification ✔︎
+- Exceeds viewport detection ✔︎
 - Simple API ✔︎
 
 ## Notes
