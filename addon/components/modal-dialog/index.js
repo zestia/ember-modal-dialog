@@ -16,7 +16,6 @@ export default class ModalDialogComponent extends Component {
   mutationObserver = null;
   rootElement = null;
   willAnimate = defer();
-  willCheckInViewport = null;
   window = null;
 
   ModalDialogHeader = ModalDialogHeader;
