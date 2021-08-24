@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.0.0
+## 3.0.0 (not released yet)
 
 - Change too-tall detection to exceeds-viewport.
 - Make exceeds viewport detection re-compute on window resize
