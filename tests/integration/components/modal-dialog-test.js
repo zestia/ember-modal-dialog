@@ -2,7 +2,6 @@ import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import waitForAnimation from '../../helpers/wait-for-animation';
-import ModalDialogComponent from '@zestia/ember-modal-dialog/components/modal-dialog';
 import { helper } from '@ember/component/helper';
 import { reject, defer } from 'rsvp';
 import {

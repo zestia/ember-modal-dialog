@@ -5,17 +5,19 @@ import ModalDialogFooter from './footer';
 import { resolve, defer } from 'rsvp';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
-import { scheduleOnce } from '@ember/runloop';
+import { scheduleOnce, debounce } from '@ember/runloop';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 
 export default class ModalDialogComponent extends Component {
-  element = null;
-  boxElement = null;
-  rootElement = null;
-  window = null;
   activeElement = null;
+  boxElement = null;
+  element = null;
   lastMouseDownElement = null;
+  mutationObserver = null;
+  rootElement = null;
   willAnimate = defer();
+  willCheckInViewport = null;
+  window = null;
 
   ModalDialogHeader = ModalDialogHeader;
   ModalDialogContent = ModalDialogContent;
@@ -121,13 +123,16 @@ export default class ModalDialogComponent extends Component {
     this.element.focus();
     this.rootElement.classList.add('has-modal');
     this._disableBodyScroll();
-    this._watchForContentChanges();
+    this._startMonitoringContent();
+    this._startMonitoringViewport();
     this._ready();
   }
 
   @action
   handleDestroyElement() {
     this._enableBodyScroll();
+    this._stopMonitoringContent();
+    this._stopMonitoringViewport();
     this.rootElement.classList.remove('has-modal');
   }
 
@@ -149,12 +154,12 @@ export default class ModalDialogComponent extends Component {
       .finally(() => (this.isLoading = false));
   }
 
-  _watchForContentChanges() {
-    this._mutationObserver = new MutationObserver(
+  _startMonitoringContent() {
+    this.mutationObserver = new MutationObserver(
       this._contentChanged.bind(this)
     );
 
-    this._mutationObserver.observe(this.element, {
+    this.mutationObserver.observe(this.element, {
       childList: true,
       subtree: true
     });
@@ -162,12 +167,25 @@ export default class ModalDialogComponent extends Component {
     this._contentChanged();
   }
 
-  _stopWatchingForChanges() {
-    this._mutationObserver.disconnect();
+  _stopMonitoringContent() {
+    this.mutationObserver.disconnect();
   }
 
   _contentChanged() {
     scheduleOnce('afterRender', this, '_checkInViewport');
+  }
+
+  _startMonitoringViewport() {
+    this.resizeListener = this._viewportChanged.bind(this);
+    this.window.addEventListener('resize', this.resizeListener);
+  }
+
+  _stopMonitoringViewport() {
+    this.window.removeEventListener('resize', this.resizeListener);
+  }
+
+  _viewportChanged() {
+    debounce(this, '_checkInViewport', 100);
   }
 
   _checkInViewport() {
@@ -183,10 +201,10 @@ export default class ModalDialogComponent extends Component {
     const win = this.window;
 
     return (
-      rect.top >= 0 &&
-      rect.left >= 0 &&
-      rect.bottom <= win.innerHeight &&
-      rect.right <= win.innerWidth
+      rect.top > 0 &&
+      rect.left > 0 &&
+      rect.bottom < win.innerHeight &&
+      rect.right < win.innerWidth
     );
   }
 
