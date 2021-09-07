@@ -86,8 +86,9 @@ module('modal-dialog', function (hooks) {
       click('button');
       click('.modal-dialog');
 
-      // Wait for the warn animation
-      await waitForAnimation('.modal-dialog');
+      // Don't Wait for the warn animation
+      // It should not run if the closing animation is occurring
+      // await waitForAnimation('.modal-dialog');
 
       // Wait for the hide animation
       await waitForAnimation('.modal-dialog');
