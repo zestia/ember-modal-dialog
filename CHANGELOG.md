@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.3.4
+
+- Fix simultaneous animations
+
 ## 2.3.3
 
 - Upgrade dependencies

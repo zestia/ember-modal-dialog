@@ -15,7 +15,7 @@ export default class ModalDialogComponent extends Component {
   documentElement = null;
   activeElement = null;
   lastMouseDownElement = null;
-  willAnimate = defer();
+  willAnimate = [];
 
   ModalDialogHeader = ModalDialogHeader;
   ModalDialogContent = ModalDialogContent;
@@ -33,6 +33,7 @@ export default class ModalDialogComponent extends Component {
     this.documentElement = document.documentElement;
     this.activeElement = document.activeElement;
     this._load();
+    this._waitForAnimation();
   }
 
   get api() {
@@ -91,7 +92,8 @@ export default class ModalDialogComponent extends Component {
 
   @action
   handleAnimationEnd() {
-    this.willAnimate.resolve();
+    this.willAnimate[0].resolve();
+    this.willAnimate.splice(0, 1);
   }
 
   @action
@@ -109,7 +111,7 @@ export default class ModalDialogComponent extends Component {
   }
 
   @action
-  handleMouseUp(e) {
+  handleMouseUp() {
     if (this.lastMouseDownElement === this.element) {
       this._attemptEscape();
     }
@@ -209,8 +211,9 @@ export default class ModalDialogComponent extends Component {
   }
 
   _waitForAnimation() {
-    this.willAnimate = defer();
-    return this.willAnimate.promise;
+    const deferred = defer();
+    this.willAnimate.push(deferred);
+    return deferred.promise;
   }
 
   _pressedEscape(e) {
