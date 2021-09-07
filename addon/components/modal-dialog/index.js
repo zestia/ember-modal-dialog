@@ -85,6 +85,10 @@ export default class ModalDialogComponent extends Component {
 
   @action
   warn() {
+    if (!this.isShowing) {
+      return;
+    }
+
     this.isWarning = true;
 
     this._waitForAnimation().then(() => (this.isWarning = false));
@@ -110,7 +114,7 @@ export default class ModalDialogComponent extends Component {
   }
 
   @action
-  handleMouseUp(e) {
+  handleMouseUp() {
     if (this.lastMouseDownElement === this.element) {
       this._attemptEscape();
     }

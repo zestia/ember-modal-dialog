@@ -5,6 +5,10 @@
 - Change `modal-dialog--too-tall` class name to `modal-dialog--exceeds-viewport`
 - Make exceeds viewport detection re-compute on window resize
 
+## 2.3.4
+
+- Fix simultaneous animations
+
 ## 2.3.3
 
 - Upgrade dependencies

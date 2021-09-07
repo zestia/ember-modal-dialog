@@ -64,9 +64,35 @@ module('modal-dialog', function (hooks) {
       assert.dom('.modal-dialog__content').hasClass('bar', 'splattributes');
 
       assert.dom('.modal-dialog__footer').hasClass('baz', 'splattributes');
+    });
 
-      // Specifically wait for animating in to check initial deferred is OK
+    test('simultaneous animations', async function (assert) {
+      assert.expect(2);
+
+      await render(hbs`
+        <ModalDialog @onClose={{this.close}} as |modal|>
+          <button type="button" {{on "click" modal.close}}>Close</button>
+        </ModalDialog>
+      `);
+
+      // Wait for the initial show animation
       await waitForAnimation('.modal-dialog');
+
+      // Cause modal to close, so the fade out animation will happen,
+      // Then simultaneously cause the warn animation.
+
+      // Intentionally no await
+      click('button');
+      click('.modal-dialog');
+
+      // Don't Wait for the warn animation
+      // It should not run if the closing animation is occurring
+      // await waitForAnimation('.modal-dialog');
+
+      // Wait for the hide animation
+      await waitForAnimation('.modal-dialog');
+
+      assert.verifySteps(['closed']);
     });
 
     test('root element', async function (assert) {
