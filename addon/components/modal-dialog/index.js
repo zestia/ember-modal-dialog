@@ -15,7 +15,7 @@ export default class ModalDialogComponent extends Component {
   lastMouseDownElement = null;
   mutationObserver = null;
   rootElement = null;
-  willAnimate = defer();
+  willAnimate = null;
   window = null;
 
   ModalDialogHeader = ModalDialogHeader;
@@ -34,6 +34,7 @@ export default class ModalDialogComponent extends Component {
     this.window = window;
     this.activeElement = document.activeElement;
     this._load();
+    this._waitForAnimation();
   }
 
   get api() {
