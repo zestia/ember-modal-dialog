@@ -1,6 +1,6 @@
 # Changelog
 
-## 3.0.0 (not released yet)
+## 3.0.0
 
 - Change `modal-dialog--too-tall` class name to `modal-dialog--exceeds-viewport`
 - Make exceeds viewport detection re-compute on window resize
