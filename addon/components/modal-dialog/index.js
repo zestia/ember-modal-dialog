@@ -179,7 +179,7 @@ export default class ModalDialogComponent extends Component {
   }
 
   _startMonitoringViewport() {
-    this.winResizeListener = this._handleResizeWindow.bind(this);
+    this.winResizeListener = this._handleResizedWindow.bind(this);
     this.winFocusListener = this._handleFocusedWindow.bind(this);
     this.window.addEventListener('resize', this.winResizeListener);
     this.window.addEventListener('focus', this.winFocusListener);
@@ -190,7 +190,7 @@ export default class ModalDialogComponent extends Component {
     this.window.removeEventListener('focus', this.winFocusListener);
   }
 
-  _handleResizeWindow() {
+  _handleResizedWindow() {
     debounce(this, '_checkInViewport', 100);
   }
 
