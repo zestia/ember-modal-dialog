@@ -52,10 +52,10 @@ export default class ModalDialogComponent extends Component {
     return [
       ...this.element.querySelectorAll(`
         a[href],
-        button:not(disabled),
-        textarea:not(disabled),
-        input:not(disabled),
-        select:not(disabled),
+        button:not(:disabled),
+        textarea:not(:disabled),
+        input:not(:disabled),
+        select:not(:disabled),
         [tabindex="0"],
         [contenteditable="true"]
       `)
