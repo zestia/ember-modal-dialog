@@ -1,6 +1,10 @@
 # Changelog
 
-## 3.0.1-beta.0
+## ## 3.1.0
+
+- Release changes from 3.1.0-beta.0
+
+## 3.1.0-beta.0
 
 - Steal focus when window is focused
 
