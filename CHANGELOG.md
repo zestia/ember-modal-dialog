@@ -1,6 +1,6 @@
 # Changelog
 
-## ## 3.1.0
+## 3.1.0
 
 - Release changes from 3.1.0-beta.0
 
