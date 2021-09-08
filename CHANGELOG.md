@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.0.1-beta.0
+
+- Steal focus when window is focused
+
 ## 3.0.0
 
 - Change `modal-dialog--too-tall` class name to `modal-dialog--exceeds-viewport`

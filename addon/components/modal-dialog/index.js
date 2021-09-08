@@ -34,7 +34,6 @@ export default class ModalDialogComponent extends Component {
     this.window = window;
     this.activeElement = document.activeElement;
     this._load();
-    this._waitForAnimation();
   }
 
   get api() {
@@ -126,9 +125,11 @@ export default class ModalDialogComponent extends Component {
     this.element = element;
     this.element.focus();
     this.rootElement.classList.add('has-modal');
+    this._waitForAnimation();
     this._disableBodyScroll();
     this._startMonitoringContent();
     this._startMonitoringViewport();
+    this._handleContentChanged();
     this._ready();
   }
 
@@ -160,36 +161,41 @@ export default class ModalDialogComponent extends Component {
 
   _startMonitoringContent() {
     this.mutationObserver = new MutationObserver(
-      this._contentChanged.bind(this)
+      this._handleContentChanged.bind(this)
     );
 
     this.mutationObserver.observe(this.element, {
       childList: true,
       subtree: true
     });
-
-    this._contentChanged();
   }
 
   _stopMonitoringContent() {
     this.mutationObserver.disconnect();
   }
 
-  _contentChanged() {
+  _handleContentChanged() {
     scheduleOnce('afterRender', this, '_checkInViewport');
   }
 
   _startMonitoringViewport() {
-    this.resizeListener = this._viewportChanged.bind(this);
-    this.window.addEventListener('resize', this.resizeListener);
+    this.winResizeListener = this._handleResizeWindow.bind(this);
+    this.winFocusListener = this._handleFocusedWindow.bind(this);
+    this.window.addEventListener('resize', this.winResizeListener);
+    this.window.addEventListener('focus', this.winFocusListener);
   }
 
   _stopMonitoringViewport() {
-    this.window.removeEventListener('resize', this.resizeListener);
+    this.window.removeEventListener('resize', this.winResizeListener);
+    this.window.removeEventListener('focus', this.winFocusListener);
   }
 
-  _viewportChanged() {
+  _handleResizeWindow() {
     debounce(this, '_checkInViewport', 100);
+  }
+
+  _handleFocusedWindow() {
+    this.element.focus();
   }
 
   _checkInViewport() {

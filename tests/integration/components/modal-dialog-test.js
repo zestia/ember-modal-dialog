@@ -607,4 +607,24 @@ module('modal-dialog', function (hooks) {
       );
     });
   });
+
+  module('window focus', function (hooks) {
+    test('it works', async function (assert) {
+      assert.expect(1);
+
+      await render(hbs`
+        <button type="button">outside</button>
+        <ModalDialog />
+      `);
+
+      await focus('button');
+      await triggerEvent(window, 'focus');
+
+      assert.deepEqual(
+        find('.modal-dialog'),
+        document.activeElement,
+        'when the window is focused, the modal dialog is focused, not the content beneath it'
+      );
+    });
+  });
 });

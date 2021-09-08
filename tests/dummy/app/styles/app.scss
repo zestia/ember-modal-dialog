@@ -60,6 +60,10 @@
   left: 0;
   bottom: 0;
   right: 0;
+
+  &:focus {
+    border: 2px solid var(--focus-outline-colour);
+  }
 }
 
 .modal-dialog--showing {
@@ -83,6 +87,7 @@
   background-color: var(--modal-box-bg-colour);
   border: 1px solid var(--modal-box-border-colour);
   box-sizing: border-box;
+  width: 480px;
 }
 
 .modal-dialog__header {
@@ -102,12 +107,11 @@
 
 @media (min-width: 500px) {
   .modal-dialog__box {
-    width: 480px;
   }
 }
 
 @media (max-width: 500px) {
   .modal-dialog__box {
-    width: calc(100% - 20px);
+    // width: calc(100% - 20px);
   }
 }
