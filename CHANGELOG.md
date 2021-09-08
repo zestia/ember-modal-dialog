@@ -4,7 +4,7 @@
 
 - Change `modal-dialog--too-tall` class name to `modal-dialog--exceeds-viewport`
 - Make exceeds viewport detection re-compute on window resize
-- Fix focus trap including disabled elements [#7](https://github.com/zestia/ember-modal-dialog/issues)
+- Fix focus trap including disabled elements [#6](https://github.com/zestia/ember-modal-dialog/issues/6)
 
 ## 2.3.4
 
