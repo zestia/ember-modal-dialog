@@ -104,14 +104,3 @@
   padding: var(--modal-box-padding);
   border-top: 1px solid var(--modal-box-border-colour);
 }
-
-@media (min-width: 500px) {
-  .modal-dialog__box {
-  }
-}
-
-@media (max-width: 500px) {
-  .modal-dialog__box {
-    // width: calc(100% - 20px);
-  }
-}
