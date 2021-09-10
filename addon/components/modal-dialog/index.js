@@ -195,7 +195,7 @@ export default class ModalDialogComponent extends Component {
   }
 
   _handleFocusedWindow() {
-    this.element.focus();
+    (this.firstFocusableElement ?? this.element).focus();
   }
 
   _checkInViewport() {

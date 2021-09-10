@@ -609,20 +609,40 @@ module('modal-dialog', function (hooks) {
   });
 
   module('window focus', function (hooks) {
-    test('it works', async function (assert) {
+    test('modal with no focusable elements', async function (assert) {
       assert.expect(1);
 
       await render(hbs`
-        <button type="button">outside</button>
+        <button type="button" class="external"></button>
         <ModalDialog />
       `);
 
-      await focus('button');
+      await focus('.external');
       await triggerEvent(window, 'focus');
 
       assert.deepEqual(
-        find('.modal-dialog'),
         document.activeElement,
+        find('.modal-dialog'),
+        'when the window is focused, the modal dialog is focused, not the content beneath it'
+      );
+    });
+
+    test('modal with focusable elements', async function (assert) {
+      assert.expect(1);
+
+      await render(hbs`
+        <button type="button" class="external"></button>
+        <ModalDialog>
+          <button type="button" class="internal"></button>
+        </ModalDialog>
+      `);
+
+      await focus('.external');
+      await triggerEvent(window, 'focus');
+
+      assert.deepEqual(
+        document.activeElement,
+        find('.internal'),
         'when the window is focused, the modal dialog is focused, not the content beneath it'
       );
     });

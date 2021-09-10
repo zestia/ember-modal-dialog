@@ -1,12 +1,16 @@
 # Changelog
 
+## 3.1.1
+
+- Focus first focusable element inside the modal (if present) when window is focused, otherwise focus the modal
+
 ## 3.1.0
 
 - Release changes from 3.1.0-beta.0
 
 ## 3.1.0-beta.0
 
-- Steal focus when window is focused
+- Focus modal when window is focused
 
 ## 3.0.0
 
