@@ -7,6 +7,9 @@ import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { scheduleOnce, debounce } from '@ember/runloop';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
+import { buildWaiter } from '@ember/test-waiters';
+
+const close = buildWaiter('@zestia/ember-modal-dialog:close');
 
 export default class ModalDialogComponent extends Component {
   activeElement = null;
@@ -71,10 +74,13 @@ export default class ModalDialogComponent extends Component {
 
   @action
   close() {
-    return this._hide().then(() => {
-      this._restoreFocus();
-      this.args.onClose?.();
-    });
+    const token = close.beginAsync();
+    return this._hide()
+      .then(() => {
+        this._restoreFocus();
+        this.args.onClose?.();
+      })
+      .then(() => close.endAsync(token));
   }
 
   _hide() {

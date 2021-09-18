@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.0
+
+- The close action uses a test waiter, and so is aware of the hide animation.
+
 ## 3.1.0
 
 - Release changes from 3.1.0-beta.0
