@@ -28,7 +28,7 @@ module('modal-dialog', function (hooks) {
 
   module('rendering', function () {
     test('it works', async function (assert) {
-      assert.expect(9);
+      assert.expect(10);
 
       await render(hbs`
         <ModalDialog as |modal|>
@@ -65,6 +65,13 @@ module('modal-dialog', function (hooks) {
       assert.dom('.modal-dialog__content').hasClass('bar', 'splattributes');
 
       assert.dom('.modal-dialog__footer').hasClass('baz', 'splattributes');
+
+      await waitForAnimation('.modal-dialog');
+
+      assert.ok(
+        true,
+        'does not use a test waiter for the initial show animation'
+      );
     });
 
     test('root element', async function (assert) {

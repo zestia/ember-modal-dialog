@@ -19,15 +19,15 @@ export default class ModalDialogComponent extends Component {
   willAnimate = null;
   window = null;
 
-  ModalDialogHeader = ModalDialogHeader;
   ModalDialogContent = ModalDialogContent;
   ModalDialogFooter = ModalDialogFooter;
+  ModalDialogHeader = ModalDialogHeader;
 
+  @tracked boxElement = null;
+  @tracked inViewport = false;
   @tracked isLoading = false;
   @tracked isShowing = true;
   @tracked isWarning = false;
-  @tracked inViewport = false;
-  @tracked boxElement = null;
 
   constructor() {
     super(...arguments);
@@ -39,12 +39,12 @@ export default class ModalDialogComponent extends Component {
 
   get api() {
     return {
-      Header: this.ModalDialogHeader,
+      boxElement: this.boxElement,
+      close: this.close,
       Content: this.ModalDialogContent,
       Footer: this.ModalDialogFooter,
-      close: this.close,
-      isLoading: this.isLoading,
-      boxElement: this.boxElement
+      Header: this.ModalDialogHeader,
+      isLoading: this.isLoading
     };
   }
 
@@ -96,8 +96,14 @@ export default class ModalDialogComponent extends Component {
   }
 
   @action
-  handleAnimationEnd() {
-    this.willAnimate.resolve();
+  handleAnimationEnd(event) {
+    if (!this.willAnimate) {
+      return;
+    }
+
+    if (event.target === this.element || event.target === this.boxElement) {
+      this.willAnimate.resolve();
+    }
   }
 
   @action
