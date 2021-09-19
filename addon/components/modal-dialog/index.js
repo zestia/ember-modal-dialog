@@ -7,9 +7,7 @@ import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { scheduleOnce, debounce } from '@ember/runloop';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
-import { buildWaiter } from '@ember/test-waiters';
-
-const close = buildWaiter('@zestia/ember-modal-dialog:close');
+import { waitForPromise } from '@ember/test-waiters';
 
 export default class ModalDialogComponent extends Component {
   activeElement = null;
@@ -74,13 +72,10 @@ export default class ModalDialogComponent extends Component {
 
   @action
   close() {
-    const token = close.beginAsync();
-    return this._hide()
-      .then(() => {
-        this._restoreFocus();
-        this.args.onClose?.();
-      })
-      .then(() => close.endAsync(token));
+    return this._hide().then(() => {
+      this._restoreFocus();
+      this.args.onClose?.();
+    });
   }
 
   _hide() {
@@ -131,7 +126,6 @@ export default class ModalDialogComponent extends Component {
     this.element = element;
     this.element.focus();
     this.rootElement.classList.add('has-modal');
-    this._waitForAnimation();
     this._disableBodyScroll();
     this._startMonitoringContent();
     this._startMonitoringViewport();
@@ -241,7 +235,7 @@ export default class ModalDialogComponent extends Component {
 
   _waitForAnimation() {
     this.willAnimate = defer();
-    return this.willAnimate.promise;
+    return waitForPromise(this.willAnimate.promise);
   }
 
   _pressedEscape(e) {

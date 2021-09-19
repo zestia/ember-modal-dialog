@@ -7,6 +7,7 @@ import { reject, defer } from 'rsvp';
 import {
   find,
   render,
+  waitFor,
   settled,
   focus,
   triggerEvent,
@@ -201,7 +202,7 @@ module('modal-dialog', function (hooks) {
 
   module('api', function () {
     test('yielded close', async function (assert) {
-      assert.expect(2);
+      assert.expect(3);
 
       await render(hbs`
         <ModalDialog @onClose={{this.close}} as |modal|>
@@ -210,6 +211,8 @@ module('modal-dialog', function (hooks) {
       `);
 
       click('button');
+
+      assert.verifySteps([]);
 
       await waitForAnimation('.modal-dialog');
 
@@ -305,7 +308,9 @@ module('modal-dialog', function (hooks) {
         <ModalDialog @onClose={{this.close}} />
       `);
 
-      await triggerKeyEvent('.modal-dialog', 'keydown', 27); // Escape
+      triggerKeyEvent('.modal-dialog', 'keydown', 27); // Escape
+
+      await waitFor('.modal-dialog');
 
       assert
         .dom('.modal-dialog')
@@ -360,7 +365,6 @@ module('modal-dialog', function (hooks) {
 
       await triggerEvent('.modal-dialog__box', 'mousedown');
       await triggerEvent('.modal-dialog', 'mouseup');
-      await waitForAnimation('.modal-dialog');
 
       assert.verifySteps([], 'does not close');
     });
@@ -626,9 +630,6 @@ module('modal-dialog', function (hooks) {
         </ModalDialog>
       `);
 
-      // Wait for the initial show animation
-      await waitForAnimation('.modal-dialog');
-
       // Cause modal to close, so the fade out animation will happen,
       // Then simultaneously cause the warn animation.
 
@@ -637,9 +638,8 @@ module('modal-dialog', function (hooks) {
       click('.modal-dialog');
 
       // Don't Wait for the warn animation
-      // It should not run if the closing animation is occurring
-
-      // Wait for the hide animation
+      // It should not run if the closing animation is occurring,
+      // Instead, wait for the hide animation
       await waitForAnimation('.modal-dialog');
 
       assert.verifySteps(['closed']);
