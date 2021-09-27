@@ -631,7 +631,9 @@ module('modal-dialog', function (hooks) {
         .dom('.modal-dialog')
         .doesNotExist('close action uses a test waiter (aware of animation)');
     });
+  });
 
+  module('animations', function () {
     test('simultaneous animations', async function (assert) {
       assert.expect(2);
 
@@ -654,6 +656,32 @@ module('modal-dialog', function (hooks) {
       await waitForAnimation('.modal-dialog', 'hide');
 
       assert.verifySteps(['closed']);
+    });
+
+    test('bubbling animations', async function (assert) {
+      assert.expect(1);
+
+      await render(hbs`
+      <style>
+        @keyframes move {
+          to {
+            transform: translateX(100px);
+          }
+        }
+
+        .modal-dialog__box.animate {
+          animation: move 100ms forwards;
+        }
+      </style>
+
+      <ModalDialog />
+    `);
+
+      find('.modal-dialog__box').classList.add('animate');
+
+      await waitForAnimation('.modal-dialog__box', 'move');
+
+      assert.ok(true, 'ignores bubbling child animations');
     });
   });
 });
