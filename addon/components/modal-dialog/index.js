@@ -7,6 +7,7 @@ import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { scheduleOnce, debounce } from '@ember/runloop';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
+import { waitForPromise } from '@ember/test-waiters';
 
 export default class ModalDialogComponent extends Component {
   activeElement = null;
@@ -18,15 +19,15 @@ export default class ModalDialogComponent extends Component {
   willAnimate = null;
   window = null;
 
-  ModalDialogHeader = ModalDialogHeader;
   ModalDialogContent = ModalDialogContent;
   ModalDialogFooter = ModalDialogFooter;
+  ModalDialogHeader = ModalDialogHeader;
 
+  @tracked boxElement = null;
+  @tracked inViewport = false;
   @tracked isLoading = false;
   @tracked isShowing = true;
   @tracked isWarning = false;
-  @tracked inViewport = false;
-  @tracked boxElement = null;
 
   constructor() {
     super(...arguments);
@@ -38,12 +39,12 @@ export default class ModalDialogComponent extends Component {
 
   get api() {
     return {
-      Header: this.ModalDialogHeader,
+      boxElement: this.boxElement,
+      close: this.close,
       Content: this.ModalDialogContent,
       Footer: this.ModalDialogFooter,
-      close: this.close,
-      isLoading: this.isLoading,
-      boxElement: this.boxElement
+      Header: this.ModalDialogHeader,
+      isLoading: this.isLoading
     };
   }
 
@@ -95,8 +96,14 @@ export default class ModalDialogComponent extends Component {
   }
 
   @action
-  handleAnimationEnd() {
-    this.willAnimate.resolve();
+  handleAnimationEnd(event) {
+    if (!this.willAnimate) {
+      return;
+    }
+
+    if (event.target === this.element || event.target === this.boxElement) {
+      this.willAnimate.resolve();
+    }
   }
 
   @action
@@ -125,7 +132,6 @@ export default class ModalDialogComponent extends Component {
     this.element = element;
     this.element.focus();
     this.rootElement.classList.add('has-modal');
-    this._waitForAnimation();
     this._disableBodyScroll();
     this._startMonitoringContent();
     this._startMonitoringViewport();
@@ -235,7 +241,7 @@ export default class ModalDialogComponent extends Component {
 
   _waitForAnimation() {
     this.willAnimate = defer();
-    return this.willAnimate.promise;
+    return waitForPromise(this.willAnimate.promise);
   }
 
   _pressedEscape(e) {

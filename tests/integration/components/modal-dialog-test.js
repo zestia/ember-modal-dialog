@@ -9,6 +9,7 @@ import {
   render,
   settled,
   focus,
+  waitFor,
   triggerEvent,
   triggerKeyEvent,
   click
@@ -27,7 +28,7 @@ module('modal-dialog', function (hooks) {
 
   module('rendering', function () {
     test('it works', async function (assert) {
-      assert.expect(9);
+      assert.expect(10);
 
       await render(hbs`
         <ModalDialog as |modal|>
@@ -64,35 +65,13 @@ module('modal-dialog', function (hooks) {
       assert.dom('.modal-dialog__content').hasClass('bar', 'splattributes');
 
       assert.dom('.modal-dialog__footer').hasClass('baz', 'splattributes');
-    });
 
-    test('simultaneous animations', async function (assert) {
-      assert.expect(2);
+      await waitForAnimation('.modal-dialog', 'show');
 
-      await render(hbs`
-        <ModalDialog @onClose={{this.close}} as |modal|>
-          <button type="button" {{on "click" modal.close}}>Close</button>
-        </ModalDialog>
-      `);
-
-      // Wait for the initial show animation
-      await waitForAnimation('.modal-dialog');
-
-      // Cause modal to close, so the fade out animation will happen,
-      // Then simultaneously cause the warn animation.
-
-      // Intentionally no await
-      click('button');
-      click('.modal-dialog');
-
-      // Don't Wait for the warn animation
-      // It should not run if the closing animation is occurring
-      // await waitForAnimation('.modal-dialog');
-
-      // Wait for the hide animation
-      await waitForAnimation('.modal-dialog');
-
-      assert.verifySteps(['closed']);
+      assert.ok(
+        true,
+        'does not use a test waiter for the initial show animation'
+      );
     });
 
     test('root element', async function (assert) {
@@ -238,13 +217,11 @@ module('modal-dialog', function (hooks) {
         </ModalDialog>
       `);
 
-      await click('button');
+      click('button');
 
-      assert
-        .dom('.modal-dialog')
-        .hasClass('modal-dialog--hiding', 'has a class whilst hiding');
+      assert.verifySteps([]);
 
-      await waitForAnimation('.modal-dialog');
+      await waitForAnimation('.modal-dialog', 'hide');
 
       assert.verifySteps(
         ['closed'],
@@ -253,7 +230,7 @@ module('modal-dialog', function (hooks) {
     });
 
     test('callback close', async function (assert) {
-      assert.expect(3);
+      assert.expect(2);
 
       let api;
 
@@ -267,15 +244,7 @@ module('modal-dialog', function (hooks) {
         </ModalDialog>
       `);
 
-      api.close();
-
-      await settled();
-
-      assert
-        .dom('.modal-dialog')
-        .hasClass('modal-dialog--hiding', 'has a class whilst hiding');
-
-      await waitForAnimation('.modal-dialog');
+      await api.close();
 
       assert.verifySteps(
         ['closed'],
@@ -293,7 +262,6 @@ module('modal-dialog', function (hooks) {
       `);
 
       await click('button');
-      await waitForAnimation('.modal-dialog');
 
       assert.ok(true, 'does not blow up if onClose is not a function');
     });
@@ -333,7 +301,6 @@ module('modal-dialog', function (hooks) {
       `);
 
       await triggerKeyEvent('.modal-dialog', 'keydown', 27); // Escape
-      await waitForAnimation('.modal-dialog');
 
       assert.verifySteps(
         ['closed'],
@@ -348,7 +315,11 @@ module('modal-dialog', function (hooks) {
         <ModalDialog @onClose={{this.close}} />
       `);
 
-      await triggerKeyEvent('.modal-dialog', 'keydown', 27); // Escape
+      await waitForAnimation('.modal-dialog', 'show');
+
+      triggerKeyEvent('.modal-dialog', 'keydown', 27); // Escape
+
+      await waitFor('.modal-dialog');
 
       assert
         .dom('.modal-dialog')
@@ -357,7 +328,9 @@ module('modal-dialog', function (hooks) {
           'when the user presses escape the modal dialog has a warning class'
         );
 
-      await waitForAnimation('.modal-dialog');
+      await waitForAnimation('.modal-dialog__box', 'warn');
+
+      await waitFor('.modal-dialog');
 
       assert
         .dom('.modal-dialog')
@@ -375,7 +348,6 @@ module('modal-dialog', function (hooks) {
       await render(hbs`<ModalDialog @onClose={{this.close}} />`);
 
       await click('.modal-dialog');
-      await waitForAnimation('.modal-dialog');
 
       assert.verifySteps([], 'is not escapable');
     });
@@ -388,7 +360,6 @@ module('modal-dialog', function (hooks) {
       );
 
       await click('.modal-dialog');
-      await waitForAnimation('.modal-dialog');
 
       assert.verifySteps(
         ['closed'],
@@ -405,7 +376,6 @@ module('modal-dialog', function (hooks) {
 
       await triggerEvent('.modal-dialog__box', 'mousedown');
       await triggerEvent('.modal-dialog', 'mouseup');
-      await waitForAnimation('.modal-dialog');
 
       assert.verifySteps([], 'does not close');
     });
@@ -504,7 +474,7 @@ module('modal-dialog', function (hooks) {
     });
 
     test('focus is restored', async function (assert) {
-      assert.expect(4);
+      assert.expect(3);
 
       this.set('showButton', true);
 
@@ -521,14 +491,6 @@ module('modal-dialog', function (hooks) {
         .isFocused('modal is focused to respond the keyboard');
 
       await click('.internal');
-
-      assert
-        .dom('.internal')
-        .isFocused(
-          "focus isn't restored until after the animation (full closure)"
-        );
-
-      await waitForAnimation('.modal-dialog');
 
       assert
         .dom('.external')
@@ -554,7 +516,6 @@ module('modal-dialog', function (hooks) {
         .isFocused('modal is focused to respond the keyboard');
 
       await click('.internal');
-      await waitForAnimation('.modal-dialog');
 
       assert
         .dom('.internal')
@@ -645,6 +606,54 @@ module('modal-dialog', function (hooks) {
         find('.internal'),
         'when the window is focused, the modal dialog is focused, not the content beneath it'
       );
+    });
+  });
+
+  module('closing', function () {
+    test('action', async function (assert) {
+      assert.expect(1);
+
+      this.close = () => this.set('showModal', false);
+
+      this.showModal = true;
+
+      await render(hbs`
+        {{#if this.showModal}}
+          <ModalDialog @onClose={{this.close}} as |modal|>
+            <button type="button" {{on "click" modal.close}}>Close</button>
+          </ModalDialog>
+        {{/if}}
+      `);
+
+      await click('button');
+
+      assert
+        .dom('.modal-dialog')
+        .doesNotExist('close action uses a test waiter (aware of animation)');
+    });
+
+    test('simultaneous animations', async function (assert) {
+      assert.expect(2);
+
+      await render(hbs`
+        <ModalDialog @onClose={{this.close}} as |modal|>
+          <button type="button" {{on "click" modal.close}}>Close</button>
+        </ModalDialog>
+      `);
+
+      // Cause modal to close, so the fade out animation will happen,
+      // Then simultaneously cause the warn animation.
+
+      // Intentionally no await
+      click('button');
+      click('.modal-dialog');
+
+      // Don't Wait for the warn animation
+      // It should not run if the closing animation is occurring,
+      // Instead, wait for the hide animation
+      await waitForAnimation('.modal-dialog', 'hide');
+
+      assert.verifySteps(['closed']);
     });
   });
 });
