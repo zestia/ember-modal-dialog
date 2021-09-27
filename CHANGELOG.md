@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.1
+
+- Clear animation deferred once used
+
 ## 3.2.0
 
 - The close action uses a test waiter, and so is aware of the hide animation.
