@@ -1,9 +1,7 @@
 import { Promise } from 'rsvp';
-import { find, waitFor } from '@ember/test-helpers';
+import { find } from '@ember/test-helpers';
 
-export default async function waitForAnimation(selector, animationName) {
-  await waitFor(selector);
-
+export default function waitForAnimation(selector, animationName) {
   const el = typeof selector === 'string' ? find(selector) : selector;
 
   return new Promise((resolve) => {
