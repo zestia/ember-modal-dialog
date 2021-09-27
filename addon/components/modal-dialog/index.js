@@ -103,6 +103,7 @@ export default class ModalDialogComponent extends Component {
 
     if (event.target === this.element || event.target === this.boxElement) {
       this.willAnimate.resolve();
+      this.willAnimate = null;
     }
   }
 
