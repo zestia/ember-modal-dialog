@@ -98,7 +98,7 @@ export default class MyModal extends Component {
   </modal.Content>
 
   <modal.Footer>
-    <button {{on "click" modal.close}}>
+    <button {{on 'click' modal.close}}>
       Close
     </button>
   </modal.Footer>
@@ -123,4 +123,18 @@ export default class ApplicationRoute extends Route {
     @onFetchPerson={{fn this.loadPerson 123}}
   />
 {{/if}}
+```
+
+## Animating
+
+This addon expects animations be configured for the modal to show and hide.
+
+```css
+.modal-dialog--showing {
+  animation: your-show-animation;
+}
+
+.modal-dialog--hiding {
+  animation: your-hide-animation;
+}
 ```
