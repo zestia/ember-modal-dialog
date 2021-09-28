@@ -98,7 +98,7 @@ export default class MyModal extends Component {
   </modal.Content>
 
   <modal.Footer>
-    <button {{on 'click' modal.close}}>
+    <button {{on "click" modal.close}}>
       Close
     </button>
   </modal.Footer>
