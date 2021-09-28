@@ -651,7 +651,6 @@ module('modal-dialog', function (hooks) {
 
       // Don't Wait for the warn animation
       // It should not run if the closing animation is occurring,
-      // Instead, wait for the hide animation
       await waitForAnimation('.modal-dialog', 'fade-out');
 
       assert.verifySteps(['closed']);
