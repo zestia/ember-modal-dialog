@@ -66,7 +66,7 @@ module('modal-dialog', function (hooks) {
 
       assert.dom('.modal-dialog__footer').hasClass('baz', 'splattributes');
 
-      await waitForAnimation('.modal-dialog', 'show');
+      await waitForAnimation('.modal-dialog', 'fade-in');
 
       assert.ok(
         true,
@@ -220,7 +220,7 @@ module('modal-dialog', function (hooks) {
 
       assert.verifySteps([]);
 
-      await waitForAnimation('.modal-dialog', 'hide');
+      await waitForAnimation('.modal-dialog', 'fade-out');
 
       assert.verifySteps(
         ['closed'],
@@ -314,7 +314,7 @@ module('modal-dialog', function (hooks) {
         <ModalDialog @onClose={{this.close}} />
       `);
 
-      await waitForAnimation('.modal-dialog', 'show');
+      await waitForAnimation('.modal-dialog', 'fade-in');
 
       triggerKeyEvent('.modal-dialog', 'keydown', 27); // Escape
 
@@ -327,7 +327,7 @@ module('modal-dialog', function (hooks) {
           'when the user presses escape the modal dialog has a warning class'
         );
 
-      await waitForAnimation('.modal-dialog__box', 'warn');
+      await waitForAnimation('.modal-dialog__box', 'pulse');
 
       await waitFor('.modal-dialog');
 
@@ -652,7 +652,7 @@ module('modal-dialog', function (hooks) {
       // Don't Wait for the warn animation
       // It should not run if the closing animation is occurring,
       // Instead, wait for the hide animation
-      await waitForAnimation('.modal-dialog', 'hide');
+      await waitForAnimation('.modal-dialog', 'fade-out');
 
       assert.verifySteps(['closed']);
     });

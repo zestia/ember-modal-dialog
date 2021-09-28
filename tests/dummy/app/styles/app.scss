@@ -1,4 +1,4 @@
-@keyframes warn {
+@keyframes pulse {
   0% {
     transform: scale(1);
   }
@@ -12,7 +12,7 @@
   }
 }
 
-@keyframes show {
+@keyframes fade-in {
   0% {
     opacity: 0;
   }
@@ -22,7 +22,7 @@
   }
 }
 
-@keyframes hide {
+@keyframes fade-out {
   0% {
     opacity: 1;
   }
@@ -67,15 +67,15 @@
 }
 
 .modal-dialog--showing {
-  animation: show var(--modal-ani-speed);
+  animation: fade-in var(--modal-ani-speed);
 }
 
 .modal-dialog--hiding {
-  animation: hide var(--modal-ani-speed);
+  animation: fade-out var(--modal-ani-speed);
 }
 
 .modal-dialog--warning .modal-dialog__box {
-  animation: warn var(--modal-ani-speed);
+  animation: pulse var(--modal-ani-speed);
 }
 
 .modal-dialog--exceeds-viewport .modal-dialog__box {
