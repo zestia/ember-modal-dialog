@@ -76,8 +76,7 @@ module('modal-dialog', function (hooks) {
 
     test('root element', async function (assert) {
       // It's useful to inform the root element that a modal dialog is present
-      // in the DOM, because you may wish to add styles to prevent document
-      // scrolling or blur the background for example.
+      // in the DOM, because you may wish to add styles to blur the background for example.
 
       assert.expect(2);
 
