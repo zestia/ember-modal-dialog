@@ -81,7 +81,7 @@ export default class ModalDialogComponent extends Component {
   _hide() {
     this.isShowing = false;
 
-    return this._waitForAnimation();
+    return this._waitForAnimation('hide');
   }
 
   @action
@@ -92,7 +92,7 @@ export default class ModalDialogComponent extends Component {
 
     this.isWarning = true;
 
-    this._waitForAnimation().then(() => (this.isWarning = false));
+    this._waitForAnimation('warn').then(() => (this.isWarning = false));
   }
 
   @action
@@ -240,9 +240,13 @@ export default class ModalDialogComponent extends Component {
     return this.boxElement.contains(element);
   }
 
-  _waitForAnimation() {
+  _waitForAnimation(label) {
     this.willAnimate = defer();
-    return waitForPromise(this.willAnimate.promise);
+
+    return waitForPromise(
+      this.willAnimate.promise,
+      `@zestia/ember-modal-dialog:${label}`
+    );
   }
 
   _pressedEscape(e) {

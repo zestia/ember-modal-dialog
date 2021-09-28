@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.2.2
+
+- Add debug label to test waiter
+
 ## 3.2.1
 
 - Clear animation deferred once used
