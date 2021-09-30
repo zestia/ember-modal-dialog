@@ -16,7 +16,7 @@ export default class ModalDialogComponent extends Component {
   lastMouseDownElement = null;
   mutationObserver = null;
   rootElement = null;
-  willAnimate = null;
+  animation = null;
   window = null;
 
   ModalDialogContent = ModalDialogContent;
@@ -97,13 +97,13 @@ export default class ModalDialogComponent extends Component {
 
   @action
   handleAnimationEnd(event) {
-    if (!this.willAnimate) {
+    if (!this.animation) {
       return;
     }
 
     if (event.target === this.element || event.target === this.boxElement) {
-      this.willAnimate.resolve();
-      this.willAnimate = null;
+      this.animation.resolve();
+      this.animation = null;
     }
   }
 
@@ -241,10 +241,10 @@ export default class ModalDialogComponent extends Component {
   }
 
   _waitForAnimation(label) {
-    this.willAnimate = defer();
+    this.animation = defer();
 
     return waitForPromise(
-      this.willAnimate.promise,
+      this.animation.promise,
       `@zestia/ember-modal-dialog:${label}`
     );
   }
