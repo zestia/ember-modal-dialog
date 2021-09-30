@@ -2,21 +2,20 @@ import Component from '@glimmer/component';
 import ModalDialogHeader from './header';
 import ModalDialogContent from './content';
 import ModalDialogFooter from './footer';
-import { resolve, defer } from 'rsvp';
+import { race } from 'rsvp';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { scheduleOnce, debounce } from '@ember/runloop';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
-import { waitForPromise } from '@ember/test-waiters';
+import { waitFor } from '@ember/test-waiters';
+import { waitForAnimation } from '@zestia/animation-utils';
 
 export default class ModalDialogComponent extends Component {
   activeElement = null;
-  boxElement = null;
   element = null;
   lastMouseDownElement = null;
   mutationObserver = null;
   rootElement = null;
-  willAnimate = null;
   window = null;
 
   ModalDialogContent = ModalDialogContent;
@@ -71,40 +70,25 @@ export default class ModalDialogComponent extends Component {
   }
 
   @action
-  close() {
-    return this._hide().then(() => {
-      this._restoreFocus();
-      this.args.onClose?.();
-    });
+  async close() {
+    await this._hide();
+    this._restoreFocus();
+    this.args.onClose?.();
   }
 
   _hide() {
     this.isShowing = false;
 
-    return this._waitForAnimation('hide');
+    return this._waitForAnimation();
   }
 
   @action
-  warn() {
-    if (!this.isShowing) {
-      return;
-    }
-
+  async warn() {
     this.isWarning = true;
 
-    this._waitForAnimation('warn').then(() => (this.isWarning = false));
-  }
+    await this._waitForAnimation();
 
-  @action
-  handleAnimationEnd(event) {
-    if (!this.willAnimate) {
-      return;
-    }
-
-    if (event.target === this.element || event.target === this.boxElement) {
-      this.willAnimate.resolve();
-      this.willAnimate = null;
-    }
+    this.isWarning = false;
   }
 
   @action
@@ -157,13 +141,17 @@ export default class ModalDialogComponent extends Component {
     this.args.onReady?.(this.api);
   }
 
-  _load() {
+  async _load() {
     this.isLoading = true;
 
-    resolve(this.args.onLoad?.())
-      .then((data) => this.args.onLoaded?.(data))
-      .catch((error) => this.args.onLoadError?.(error))
-      .finally(() => (this.isLoading = false));
+    try {
+      const data = await this.args.onLoad?.();
+      this.args.onLoaded?.(data);
+    } catch (error) {
+      this.args.onLoadError?.(error);
+    } finally {
+      this.isLoading = false;
+    }
   }
 
   _startMonitoringContent() {
@@ -240,15 +228,6 @@ export default class ModalDialogComponent extends Component {
     return this.boxElement.contains(element);
   }
 
-  _waitForAnimation(label) {
-    this.willAnimate = defer();
-
-    return waitForPromise(
-      this.willAnimate.promise,
-      `@zestia/ember-modal-dialog:${label}`
-    );
-  }
-
   _pressedEscape(e) {
     return e.keyCode === 27;
   }
@@ -289,5 +268,13 @@ export default class ModalDialogComponent extends Component {
     } else {
       this.warn();
     }
+  }
+
+  @waitFor
+  async _waitForAnimation() {
+    await race([
+      waitForAnimation(this.element),
+      waitForAnimation(this.boxElement)
+    ]);
   }
 }

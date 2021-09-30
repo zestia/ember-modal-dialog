@@ -1,17 +1,8 @@
-import { Promise } from 'rsvp';
 import { find } from '@ember/test-helpers';
+import { waitForAnimation } from '@zestia/animation-utils';
 
-export default function waitForAnimation(selector, animationName) {
-  const el = typeof selector === 'string' ? find(selector) : selector;
+export default function (selector, propertyName) {
+  const element = typeof selector === 'string' ? find(selector) : selector;
 
-  return new Promise((resolve) => {
-    function handler(event) {
-      if (el === event.target && animationName === event.animationName) {
-        el.removeEventListener('animationend', handler);
-        resolve();
-      }
-    }
-
-    el.addEventListener('animationend', handler);
-  });
+  return waitForAnimation(element, propertyName);
 }

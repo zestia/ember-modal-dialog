@@ -222,6 +222,8 @@ module('modal-dialog', function (hooks) {
 
       await waitForAnimation('.modal-dialog', 'fade-out');
 
+      await settled();
+
       assert.verifySteps(
         ['closed'],
         'close action is fired after the hide animation'
@@ -652,6 +654,8 @@ module('modal-dialog', function (hooks) {
       // Don't Wait for the warn animation
       // It should not run if the closing animation is occurring,
       await waitForAnimation('.modal-dialog', 'fade-out');
+
+      await settled();
 
       assert.verifySteps(['closed']);
     });
