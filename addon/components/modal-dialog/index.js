@@ -2,7 +2,6 @@ import Component from '@glimmer/component';
 import ModalDialogHeader from './header';
 import ModalDialogContent from './content';
 import ModalDialogFooter from './footer';
-import { race } from 'rsvp';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { scheduleOnce, debounce } from '@ember/runloop';
@@ -272,9 +271,6 @@ export default class ModalDialogComponent extends Component {
 
   @waitFor
   async _waitForAnimation() {
-    await race([
-      waitForAnimation(this.element),
-      waitForAnimation(this.boxElement)
-    ]);
+    await waitForAnimation(this.element);
   }
 }

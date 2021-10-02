@@ -1,8 +1,8 @@
 import { find } from '@ember/test-helpers';
 import { waitForAnimation } from '@zestia/animation-utils';
 
-export default function (selector, propertyName) {
+export default function (selector, options) {
   const element = typeof selector === 'string' ? find(selector) : selector;
 
-  return waitForAnimation(element, propertyName);
+  return waitForAnimation(element, options);
 }

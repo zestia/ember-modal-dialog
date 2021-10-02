@@ -66,7 +66,7 @@ module('modal-dialog', function (hooks) {
 
       assert.dom('.modal-dialog__footer').hasClass('baz', 'splattributes');
 
-      await waitForAnimation('.modal-dialog', 'fade-in');
+      await waitForAnimation('.modal-dialog', { animationName: 'fade-in' });
 
       assert.ok(
         true,
@@ -220,7 +220,7 @@ module('modal-dialog', function (hooks) {
 
       assert.verifySteps([]);
 
-      await waitForAnimation('.modal-dialog', 'fade-out');
+      await waitForAnimation('.modal-dialog', { animationName: 'fade-out' });
 
       await settled();
 
@@ -316,8 +316,6 @@ module('modal-dialog', function (hooks) {
         <ModalDialog @onClose={{this.close}} />
       `);
 
-      await waitForAnimation('.modal-dialog', 'fade-in');
-
       triggerKeyEvent('.modal-dialog', 'keydown', 27); // Escape
 
       await waitFor('.modal-dialog');
@@ -329,7 +327,7 @@ module('modal-dialog', function (hooks) {
           'when the user presses escape the modal dialog has a warning class'
         );
 
-      await waitForAnimation('.modal-dialog__box', 'pulse');
+      await waitForAnimation('.modal-dialog__box', { animationName: 'pulse' });
 
       await waitFor('.modal-dialog');
 
@@ -653,7 +651,7 @@ module('modal-dialog', function (hooks) {
 
       // Don't Wait for the warn animation
       // It should not run if the closing animation is occurring,
-      await waitForAnimation('.modal-dialog', 'fade-out');
+      await waitForAnimation('.modal-dialog', { animationName: 'fade-out' });
 
       await settled();
 
@@ -681,7 +679,7 @@ module('modal-dialog', function (hooks) {
 
       find('.modal-dialog__box').classList.add('animate');
 
-      await waitForAnimation('.modal-dialog__box', 'move');
+      await waitForAnimation('.modal-dialog__box', { animationName: 'move' });
 
       assert.ok(true, 'ignores bubbling child animations');
     });
