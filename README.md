@@ -124,17 +124,3 @@ export default class ApplicationRoute extends Route {
   />
 {{/if}}
 ```
-
-## Animating
-
-This addon expects animations be configured for the modal to show and hide.
-
-```css
-.modal-dialog--showing {
-  animation: your-show-animation;
-}
-
-.modal-dialog--hiding {
-  animation: your-hide-animation;
-}
-```
