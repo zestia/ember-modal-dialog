@@ -4,6 +4,7 @@ import ModalDialogContent from './content';
 import ModalDialogFooter from './footer';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
+import { all } from 'rsvp';
 import { scheduleOnce, debounce } from '@ember/runloop';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 import { waitFor } from '@ember/test-waiters';
@@ -271,6 +272,9 @@ export default class ModalDialogComponent extends Component {
 
   @waitFor
   async _waitForAnimation() {
-    await waitForAnimation(this.element);
+    await all([
+      waitForAnimation(this.element),
+      waitForAnimation(this.boxElement)
+    ]);
   }
 }
