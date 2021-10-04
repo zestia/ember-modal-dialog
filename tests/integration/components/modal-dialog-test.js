@@ -66,13 +66,13 @@ module('modal-dialog', function (hooks) {
 
       assert.dom('.modal-dialog__footer').hasClass('baz', 'splattributes');
 
-      const animations = await waitForAnimation('.modal-dialog', {
+      await waitForAnimation('.modal-dialog', {
         animationName: 'fade-in'
       });
 
       assert.true(
-        animations.length > 0,
-        'does not use a test waiter for the initial show animation'
+        true,
+        'Does not use a test waiter for the initial show animation'
       );
     });
 
@@ -210,7 +210,7 @@ module('modal-dialog', function (hooks) {
 
   module('api', function () {
     test('yielded close', async function (assert) {
-      assert.expect(4);
+      assert.expect(3);
 
       await render(hbs`
         <ModalDialog @onClose={{this.close}} as |modal|>
@@ -222,11 +222,9 @@ module('modal-dialog', function (hooks) {
 
       assert.verifySteps([]);
 
-      const animations = await waitForAnimation('.modal-dialog', {
+      await waitForAnimation('.modal-dialog', {
         animationName: 'fade-out'
       });
-
-      assert.true(animations.length > 0, 'animates before closing');
 
       await settled();
 
@@ -316,7 +314,7 @@ module('modal-dialog', function (hooks) {
     });
 
     test('pressing escape (not allowed)', async function (assert) {
-      assert.expect(4);
+      assert.expect(3);
 
       await render(hbs`
         <ModalDialog @onClose={{this.close}} />
@@ -333,11 +331,9 @@ module('modal-dialog', function (hooks) {
           'when the user presses escape the modal dialog has a warning class'
         );
 
-      const animations = await waitForAnimation('.modal-dialog__box', {
+      await waitForAnimation('.modal-dialog__box', {
         animationName: 'pulse'
       });
-
-      assert.true(animations.length > 0, 'performs warning animation');
 
       await waitFor('.modal-dialog');
 
