@@ -66,10 +66,12 @@ module('modal-dialog', function (hooks) {
 
       assert.dom('.modal-dialog__footer').hasClass('baz', 'splattributes');
 
-      await waitForAnimation('.modal-dialog', { animationName: 'fade-in' });
+      const animations = await waitForAnimation('.modal-dialog', {
+        animationName: 'fade-in'
+      });
 
-      assert.ok(
-        true,
+      assert.true(
+        animations.length > 0,
         'does not use a test waiter for the initial show animation'
       );
     });
@@ -208,7 +210,7 @@ module('modal-dialog', function (hooks) {
 
   module('api', function () {
     test('yielded close', async function (assert) {
-      assert.expect(3);
+      assert.expect(4);
 
       await render(hbs`
         <ModalDialog @onClose={{this.close}} as |modal|>
@@ -220,7 +222,11 @@ module('modal-dialog', function (hooks) {
 
       assert.verifySteps([]);
 
-      await waitForAnimation('.modal-dialog', { animationName: 'fade-out' });
+      const animations = await waitForAnimation('.modal-dialog', {
+        animationName: 'fade-out'
+      });
+
+      assert.true(animations.length > 0, 'animates before closing');
 
       await settled();
 
@@ -310,7 +316,7 @@ module('modal-dialog', function (hooks) {
     });
 
     test('pressing escape (not allowed)', async function (assert) {
-      assert.expect(3);
+      assert.expect(4);
 
       await render(hbs`
         <ModalDialog @onClose={{this.close}} />
@@ -327,7 +333,11 @@ module('modal-dialog', function (hooks) {
           'when the user presses escape the modal dialog has a warning class'
         );
 
-      await waitForAnimation('.modal-dialog__box', { animationName: 'pulse' });
+      const animations = await waitForAnimation('.modal-dialog__box', {
+        animationName: 'pulse'
+      });
+
+      assert.true(animations.length > 0, 'performs warning animation');
 
       await waitFor('.modal-dialog');
 
@@ -629,59 +639,6 @@ module('modal-dialog', function (hooks) {
       assert
         .dom('.modal-dialog')
         .doesNotExist('close action uses a test waiter (aware of animation)');
-    });
-  });
-
-  module('animations', function () {
-    test('simultaneous animations', async function (assert) {
-      assert.expect(2);
-
-      await render(hbs`
-        <ModalDialog @onClose={{this.close}} as |modal|>
-          <button type="button" {{on "click" modal.close}}>Close</button>
-        </ModalDialog>
-      `);
-
-      // Cause modal to close, so the fade out animation will happen,
-      // Then simultaneously cause the warn animation.
-
-      // Intentionally no await
-      click('button');
-      click('.modal-dialog');
-
-      // Don't Wait for the warn animation
-      // It should not run if the closing animation is occurring,
-      await waitForAnimation('.modal-dialog', { animationName: 'fade-out' });
-
-      await settled();
-
-      assert.verifySteps(['closed']);
-    });
-
-    test('bubbling animations', async function (assert) {
-      assert.expect(1);
-
-      await render(hbs`
-      <style>
-        @keyframes move {
-          to {
-            transform: translateX(100px);
-          }
-        }
-
-        .modal-dialog__box.animate {
-          animation: move 100ms forwards;
-        }
-      </style>
-
-      <ModalDialog />
-    `);
-
-      find('.modal-dialog__box').classList.add('animate');
-
-      await waitForAnimation('.modal-dialog__box', { animationName: 'move' });
-
-      assert.ok(true, 'ignores bubbling child animations');
     });
   });
 });
