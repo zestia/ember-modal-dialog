@@ -9,9 +9,11 @@ import { scheduleOnce, debounce } from '@ember/runloop';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 import { waitFor } from '@ember/test-waiters';
 import { waitForAnimation } from '@zestia/animation-utils';
+import focus from '@zestia/ember-auto-focus/utils/focus';
 
 export default class ModalDialogComponent extends Component {
-  activeElement = null;
+  activeExternalElement = null;
+  activeInternalElement = null;
   element = null;
   lastMouseDownElement = null;
   mutationObserver = null;
@@ -32,7 +34,7 @@ export default class ModalDialogComponent extends Component {
     super(...arguments);
     this.rootElement = document.querySelector(':root');
     this.window = window;
-    this.activeElement = document.activeElement;
+    this.activeExternalElement = document.activeElement;
     this._load();
   }
 
@@ -115,12 +117,13 @@ export default class ModalDialogComponent extends Component {
   @action
   handleInsertElement(element) {
     this.element = element;
-    this.element.focus();
+    focus(this.element);
     this.rootElement.classList.add('has-modal');
     this._disableBodyScroll();
     this._startMonitoringContent();
     this._startMonitoringViewport();
     this._handleContentChanged();
+    this._handleInitialRender();
     this._ready();
   }
 
@@ -173,6 +176,15 @@ export default class ModalDialogComponent extends Component {
     scheduleOnce('afterRender', this, '_checkInViewport');
   }
 
+  _handleInitialRender() {
+    scheduleOnce('afterRender', this, '_checkActiveInternalElement');
+  }
+
+  _checkActiveInternalElement() {
+    console.log(document.activeElement);
+    this.activeInternalElement = document.activeElement;
+  }
+
   _startMonitoringViewport() {
     this.winResizeListener = this._handleResizedWindow.bind(this);
     this.winFocusListener = this._handleFocusedWindow.bind(this);
@@ -190,7 +202,7 @@ export default class ModalDialogComponent extends Component {
   }
 
   _handleFocusedWindow() {
-    (this.firstFocusableElement ?? this.element).focus();
+    focus(this.activeInternalElement ?? this.element);
   }
 
   _checkInViewport() {
@@ -246,17 +258,17 @@ export default class ModalDialogComponent extends Component {
 
   _trapFocus(e) {
     if (this._tabbedToStart(e)) {
-      this.lastFocusableElement.focus();
+      focus(this.lastFocusableElement);
       e.preventDefault();
     } else if (this._tabbedToEnd(e)) {
-      this.firstFocusableElement.focus();
+      focus(this.firstFocusableElement);
       e.preventDefault();
     }
   }
 
   _restoreFocus() {
     try {
-      this.activeElement.focus();
+      focus(this.activeExternalElement);
     } catch (error) {
       // Squelch
     }

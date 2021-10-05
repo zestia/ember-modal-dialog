@@ -491,9 +491,7 @@ module('modal-dialog', function (hooks) {
 
       this.set('showModal', true);
 
-      assert
-        .dom('.modal-dialog')
-        .isFocused('modal is focused to respond the keyboard');
+      assert.dom('.modal-dialog').isFocused('modal is focused');
 
       await click('.internal');
 
@@ -574,7 +572,7 @@ module('modal-dialog', function (hooks) {
     });
   });
 
-  module('window focus', function (hooks) {
+  module('window focus', function () {
     test('modal with no focusable elements', async function (assert) {
       assert.expect(1);
 
@@ -599,7 +597,8 @@ module('modal-dialog', function (hooks) {
       await render(hbs`
         <button type="button" class="external"></button>
         <ModalDialog>
-          <button type="button" class="internal"></button>
+          <input class="internal1">
+          <input class="internal2" {{auto-focus}}>
         </ModalDialog>
       `);
 
@@ -608,7 +607,7 @@ module('modal-dialog', function (hooks) {
 
       assert.deepEqual(
         document.activeElement,
-        find('.internal'),
+        find('.internal2'),
         'when the window is focused, the modal dialog is focused, not the content beneath it'
       );
     });
