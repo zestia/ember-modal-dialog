@@ -180,7 +180,6 @@ export default class ModalDialogComponent extends Component {
   }
 
   _checkActiveInternalElement() {
-    console.log(document.activeElement);
     this.activeInternalElement = document.activeElement;
   }
 
