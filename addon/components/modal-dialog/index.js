@@ -9,7 +9,6 @@ import { scheduleOnce, debounce } from '@ember/runloop';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 import { waitFor } from '@ember/test-waiters';
 import { waitForAnimation } from '@zestia/animation-utils';
-import focus from '@zestia/ember-auto-focus/utils/focus';
 
 export default class ModalDialogComponent extends Component {
   activeExternalElement = null;
@@ -117,7 +116,7 @@ export default class ModalDialogComponent extends Component {
   @action
   handleInsertElement(element) {
     this.element = element;
-    focus(this.element);
+    this.element.focus();
     this.rootElement.classList.add('has-modal');
     this._disableBodyScroll();
     this._startMonitoringContent();
@@ -202,7 +201,7 @@ export default class ModalDialogComponent extends Component {
   }
 
   _handleFocusedWindow() {
-    focus(this.activeInternalElement ?? this.element);
+    (this.activeInternalElement ?? this.element).focus();
   }
 
   _checkInViewport() {
@@ -258,17 +257,17 @@ export default class ModalDialogComponent extends Component {
 
   _trapFocus(e) {
     if (this._tabbedToStart(e)) {
-      focus(this.lastFocusableElement);
+      this.lastFocusableElement.focus();
       e.preventDefault();
     } else if (this._tabbedToEnd(e)) {
-      focus(this.firstFocusableElement);
+      this.firstFocusableElement.focus();
       e.preventDefault();
     }
   }
 
   _restoreFocus() {
     try {
-      focus(this.activeExternalElement);
+      this.activeExternalElement.focus();
     } catch (error) {
       // Squelch
     }
