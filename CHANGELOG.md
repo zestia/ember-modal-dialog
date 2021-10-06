@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.3.1
+
+- Bump `@zestia-animation-utils`
+
 ## 3.3.0
 
 - Utilise `@zestia/animation-utils`
