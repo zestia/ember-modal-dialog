@@ -9,6 +9,7 @@ import {
   render,
   settled,
   focus,
+  blur,
   waitFor,
   triggerEvent,
   triggerKeyEvent,
@@ -69,6 +70,8 @@ module('modal-dialog', function (hooks) {
       await waitForAnimation('.modal-dialog', {
         animationName: 'fade-in'
       });
+
+      await settled();
 
       assert.true(
         true,
@@ -344,6 +347,8 @@ module('modal-dialog', function (hooks) {
           'class removed after animation has finished'
         );
 
+      await settled();
+
       assert.verifySteps([], 'close action is not fired');
     });
 
@@ -478,7 +483,7 @@ module('modal-dialog', function (hooks) {
       `);
     });
 
-    test('focus is restored', async function (assert) {
+    test('focus is restored after close', async function (assert) {
       assert.expect(3);
 
       this.set('showButton', true);
@@ -578,10 +583,18 @@ module('modal-dialog', function (hooks) {
 
       await render(hbs`
         <button type="button" class="external"></button>
-        <ModalDialog />
+
+        {{#if this.show}}
+          <ModalDialog />
+        {{/if}}
       `);
 
       await focus('.external');
+
+      this.set('show', true);
+
+      await settled();
+      await triggerEvent(window, 'blur');
       await triggerEvent(window, 'focus');
 
       assert.deepEqual(
@@ -596,19 +609,28 @@ module('modal-dialog', function (hooks) {
 
       await render(hbs`
         <button type="button" class="external"></button>
-        <ModalDialog>
-          <input class="internal1">
-          <input class="internal2" {{auto-focus}}>
-        </ModalDialog>
+
+        {{#if this.show}}
+          <ModalDialog>
+            <input class="internal1">
+            <input class="internal2">
+          </ModalDialog>
+        {{/if}}
       `);
 
       await focus('.external');
+
+      this.set('show', true);
+
+      await settled();
+      await focus('.internal2');
+      await triggerEvent(window, 'blur');
       await triggerEvent(window, 'focus');
 
       assert.deepEqual(
         document.activeElement,
         find('.internal2'),
-        'when the window is focused, the modal dialog is focused, not the content beneath it'
+        'when the window is focused, the last focused element inside the modal still has focus, not the content beneath it'
       );
     });
   });

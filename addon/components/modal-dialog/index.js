@@ -11,8 +11,8 @@ import { waitFor } from '@ember/test-waiters';
 import { waitForAnimation } from '@zestia/animation-utils';
 
 export default class ModalDialogComponent extends Component {
-  activeExternalElement = null;
-  activeInternalElement = null;
+  lastFocusedExternalElement = null;
+  lastFocusedInternalElement = null;
   element = null;
   lastMouseDownElement = null;
   mutationObserver = null;
@@ -33,7 +33,7 @@ export default class ModalDialogComponent extends Component {
     super(...arguments);
     this.rootElement = document.querySelector(':root');
     this.window = window;
-    this.activeExternalElement = document.activeElement;
+    this.lastFocusedExternalElement = document.activeElement;
     this._load();
   }
 
@@ -73,7 +73,7 @@ export default class ModalDialogComponent extends Component {
   @action
   async close() {
     await this._hide();
-    this._restoreFocus();
+    this._focus(this.lastFocusedExternalElement);
     this.args.onClose?.();
   }
 
@@ -122,7 +122,6 @@ export default class ModalDialogComponent extends Component {
     this._startMonitoringContent();
     this._startMonitoringViewport();
     this._handleContentChanged();
-    this._handleInitialRender();
     this._ready();
   }
 
@@ -175,19 +174,13 @@ export default class ModalDialogComponent extends Component {
     scheduleOnce('afterRender', this, '_checkInViewport');
   }
 
-  _handleInitialRender() {
-    scheduleOnce('afterRender', this, '_checkActiveInternalElement');
-  }
-
-  _checkActiveInternalElement() {
-    this.activeInternalElement = document.activeElement;
-  }
-
   _startMonitoringViewport() {
     this.winResizeListener = this._handleResizedWindow.bind(this);
     this.winFocusListener = this._handleFocusedWindow.bind(this);
+    this.winBlurListener = this._handleBlurredWindow.bind(this);
     this.window.addEventListener('resize', this.winResizeListener);
     this.window.addEventListener('focus', this.winFocusListener);
+    this.window.addEventListener('blur', this.winBlurListener);
   }
 
   _stopMonitoringViewport() {
@@ -199,8 +192,12 @@ export default class ModalDialogComponent extends Component {
     debounce(this, '_checkInViewport', 100);
   }
 
+  _handleBlurredWindow() {
+    this.lastFocusedInternalElement = document.activeElement;
+  }
+
   _handleFocusedWindow() {
-    (this.activeInternalElement ?? this.element).focus();
+    this._focus(this.lastFocusedInternalElement);
   }
 
   _checkInViewport() {
@@ -264,9 +261,9 @@ export default class ModalDialogComponent extends Component {
     }
   }
 
-  _restoreFocus() {
+  _focus(element) {
     try {
-      this.activeExternalElement.focus();
+      element.focus();
     } catch (error) {
       // Squelch
     }
