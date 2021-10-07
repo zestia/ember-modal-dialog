@@ -1,8 +1,12 @@
 # Changelog
 
-## 3.3.1
+## 3.3.2
 
 - When the window is focused, restore focus to element that was originally focused first
+
+## 3.3.1
+
+- Bump `@zestia-animation-utils`
 
 ## 3.3.0
 
