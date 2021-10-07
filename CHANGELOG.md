@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.3.3
+
+- Remove blur listener
+
 ## 3.3.2
 
 - When the window is focused, restore focus to the last focused element inside the modal

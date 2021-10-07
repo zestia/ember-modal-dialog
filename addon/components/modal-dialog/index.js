@@ -186,6 +186,7 @@ export default class ModalDialogComponent extends Component {
   _stopMonitoringViewport() {
     this.window.removeEventListener('resize', this.winResizeListener);
     this.window.removeEventListener('focus', this.winFocusListener);
+    this.window.removeEventListener('blur', this.winBlurListener);
   }
 
   _handleResizedWindow() {
