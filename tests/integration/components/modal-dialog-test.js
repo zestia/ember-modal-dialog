@@ -9,7 +9,6 @@ import {
   render,
   settled,
   focus,
-  blur,
   waitFor,
   triggerEvent,
   triggerKeyEvent,
