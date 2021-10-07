@@ -2,7 +2,7 @@
 
 ## 3.3.2
 
-- When the window is focused, restore focus to element that was originally focused first
+- When the window is focused, restore focus to the last focused element inside the modal
 
 ## 3.3.1
 
