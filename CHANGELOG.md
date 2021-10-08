@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.3.4
+
+- Bump `@zestia/animation-utils`
+
 ## 3.3.3
 
 - Remove blur listener
