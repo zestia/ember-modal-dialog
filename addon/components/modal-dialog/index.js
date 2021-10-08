@@ -77,12 +77,6 @@ export default class ModalDialogComponent extends Component {
     this.args.onClose?.();
   }
 
-  _hide() {
-    this.isShowing = false;
-
-    return this._waitForAnimation();
-  }
-
   @action
   async warn() {
     this.isWarning = true;
@@ -136,6 +130,12 @@ export default class ModalDialogComponent extends Component {
   @action
   handleInsertBoxElement(element) {
     this.boxElement = element;
+  }
+
+  _hide() {
+    this.isShowing = false;
+
+    return this._waitForAnimation();
   }
 
   _ready() {
@@ -271,7 +271,13 @@ export default class ModalDialogComponent extends Component {
   }
 
   _attemptEscape() {
-    if (this.args.escapable) {
+    let escapable = this.args.escapable;
+
+    if (typeof this.args.onEscape === 'function') {
+      escapable = this.args.onEscape();
+    }
+
+    if (escapable) {
       this.close();
     } else {
       this.warn();

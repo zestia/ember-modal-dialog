@@ -1,5 +1,9 @@
 # Changelog
 
+## 3.4.0
+
+- Add `@onEscape` (return true to close, false to remain open)
+
 ## 3.3.4
 
 - Bump `@zestia/animation-utils`

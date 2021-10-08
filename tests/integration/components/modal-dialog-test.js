@@ -388,6 +388,42 @@ module('modal-dialog', function (hooks) {
 
       assert.verifySteps([], 'does not close');
     });
+
+    test('conditional escape (allowed)', async function (assert) {
+      assert.expect(2);
+
+      this.confirm = () => true;
+
+      await render(hbs`
+        <ModalDialog
+          @escapable={{true}}
+          @onEscape={{this.confirm}}
+          @onClose={{this.close}}
+        />
+      `);
+
+      await triggerKeyEvent('.modal-dialog', 'keydown', 27); // Escape
+
+      assert.verifySteps(['closed'], 'closes modal due to confirming escape');
+    });
+
+    test('conditional escape (not allowed)', async function (assert) {
+      assert.expect(1);
+
+      this.confirm = () => false;
+
+      await render(hbs`
+        <ModalDialog
+          @escapable={{true}}
+          @onEscape={{this.confirm}}
+          @onClose={{this.close}}
+        />
+      `);
+
+      await triggerKeyEvent('.modal-dialog', 'keydown', 27); // Escape
+
+      assert.verifySteps([], 'modal not closed because escape was cancelled');
+    });
   });
 
   test('in viewport?', async function (assert) {
