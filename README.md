@@ -102,6 +102,16 @@ export default class MyModal extends Component {
   failedToLoad(error) {
     this.loadingError = error.message;
   }
+}
+```
+
+```javascript
+// application/controller.js
+export default class ApplicationController extends Controller {
+  @action
+  loadPerson() {
+    // Fetch remote data
+  }
 
   @action
   confirmEscape() {
@@ -110,18 +120,8 @@ export default class MyModal extends Component {
 }
 ```
 
-```javascript
-// application/route.js
-export default class ApplicationRoute extends Route {
-  @action
-  loadPerson() {
-    // Fetch remote data
-  }
-}
-```
-
 ```handlebars
-{{! application/route.hbs }}
+{{! application/template.hbs }}
 {{#if this.showMyModal}}
   <MyModal
     @onClose={{this.hideMyModal}}
