@@ -58,6 +58,7 @@ The modal dialog component isn't designed to be used on its own, but rather used
 {{! my-modal.hbs }}
 <ModalDialog
   @onClose={{@onClose}}
+  @onEscape={{@onEscape}}
   @onLoad={{@onFetchPerson}}
   @onLoaded={{this.loaded}}
   @onLoadError={{this.failedToLoad}}
