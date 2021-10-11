@@ -270,11 +270,11 @@ export default class ModalDialogComponent extends Component {
     }
   }
 
-  _attemptEscape() {
+  async _attemptEscape() {
     let escapable = this.args.escapable;
 
     if (typeof this.args.onEscape === 'function') {
-      escapable = this.args.onEscape();
+      escapable = await this.args.onEscape();
     }
 
     if (escapable) {

@@ -3,7 +3,7 @@ import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import waitForAnimation from '../../helpers/wait-for-animation';
 import { helper } from '@ember/component/helper';
-import { reject, defer } from 'rsvp';
+import { reject, resolve, defer } from 'rsvp';
 import {
   find,
   render,
@@ -392,7 +392,7 @@ module('modal-dialog', function (hooks) {
     test('conditional escape (allowed)', async function (assert) {
       assert.expect(2);
 
-      this.confirm = () => true;
+      this.confirm = () => resolve(true);
 
       await render(hbs`
         <ModalDialog
@@ -410,7 +410,7 @@ module('modal-dialog', function (hooks) {
     test('conditional escape (not allowed)', async function (assert) {
       assert.expect(1);
 
-      this.confirm = () => false;
+      this.confirm = () => resolve(false);
 
       await render(hbs`
         <ModalDialog
