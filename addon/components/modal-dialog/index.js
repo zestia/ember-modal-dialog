@@ -277,7 +277,7 @@ export default class ModalDialogComponent extends Component {
       escapable = await this.args.onEscape();
     }
 
-    if (escapable) {
+    if (escapable === true) {
       this.close();
     } else {
       this.warn();
