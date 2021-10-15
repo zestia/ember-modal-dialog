@@ -1,3 +1,5 @@
+/* eslint-disable no-alert */
+
 import Controller from '@ember/controller';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
@@ -5,30 +7,53 @@ import { Promise } from 'rsvp';
 import { later } from '@ember/runloop';
 
 export default class ApplicationController extends Controller {
-  testModalIsEscapable = false;
-  testModalLoadDelay = false;
-  @tracked showTestModal = false;
-  @tracked showMoreContent = false;
+  @tracked isEscapable = false;
+  @tracked clickOutsideToEscape = true;
+  @tracked loadDelay = false;
+  @tracked confirmEscape = false;
+  @tracked escapeOnFocusLeave = false;
+  @tracked showExampleModal = false;
 
   @action
-  openTestModal() {
-    this.showTestModal = true;
+  openExampleModal() {
+    this.showExampleModal = true;
   }
 
   @action
-  closeTestModal() {
-    this.showTestModal = false;
-    this.showMoreContent = false;
+  closeExampleModal() {
+    this.showExampleModal = false;
   }
 
   @action
-  addMoreContent() {
-    this.showMoreContent = true;
+  resetClickOutsideToEscape() {
+    this.clickOutsideToEscape = true;
   }
 
   @action
-  loadTestModal() {
-    if (!this.testModalLoadDelay) {
+  handleEscapeExampleModal(modal, event) {
+    const escapable =
+      this.isEscapable &&
+      ((this.clickOutsideToEscape && event instanceof MouseEvent) ||
+        event instanceof KeyboardEvent);
+
+    if (!escapable) {
+      return;
+    }
+
+    let close = true;
+
+    if (this.confirmEscape) {
+      close = confirm('Are you sure?');
+    }
+
+    if (close) {
+      modal.close();
+    }
+  }
+
+  @action
+  loadExampleModal() {
+    if (!this.loadDelay) {
       return;
     }
 

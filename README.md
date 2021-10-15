@@ -54,28 +54,11 @@ https://zestia.github.io/ember-modal-dialog/
 
 The modal dialog component isn't designed to be used on its own, but rather used to compose a new modal dialog component... in this example it's called "my-modal"
 
-```javascript
-// my-modal.js
-export default class MyModal extends Component {
-  @tracked person;
-  @tracked loadingError;
-
-  @action
-  loaded(person) {
-    this.person = person;
-  }
-
-  @action
-  failedToLoad(error) {
-    this.loadingError = error.message;
-  }
-}
-```
-
 ```handlebars
 {{! my-modal.hbs }}
 <ModalDialog
   @onClose={{@onClose}}
+  @onEscape={{@onEscape}}
   @onLoad={{@onFetchPerson}}
   @onLoaded={{this.loaded}}
   @onLoadError={{this.failedToLoad}}
@@ -106,20 +89,44 @@ export default class MyModal extends Component {
 ```
 
 ```javascript
-// application/route.js
-export default class ApplicationRoute extends Route {
+// my-modal.js
+export default class MyModal extends Component {
+  @tracked person;
+  @tracked loadingError;
+
+  @action
+  loaded(person) {
+    this.person = person;
+  }
+
+  @action
+  failedToLoad(error) {
+    this.loadingError = error.message;
+  }
+}
+```
+
+```javascript
+// application/controller.js
+export default class ApplicationController extends Controller {
   @action
   loadPerson() {
     // Fetch remote data
+  }
+
+  @action
+  confirmEscape() {
+    return confirm('Are you sure?')
   }
 }
 ```
 
 ```handlebars
-{{! application/route.hbs }}
+{{! application/template.hbs }}
 {{#if this.showMyModal}}
   <MyModal
     @onClose={{this.hideMyModal}}
+    @onEscape={{this.confirmEscape}}
     @onFetchPerson={{fn this.loadPerson 123}}
   />
 {{/if}}
