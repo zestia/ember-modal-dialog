@@ -1,14 +1,13 @@
 # Changelog
 
-## 4.0.0
+## 4.0.0-beta.0
 
-- Previously `@escapable` meant two things. 1. Pressing escape would close the modal, and 2. Clicking outside the dialog box would close the modal. In v4, `@escapable` now only means 1 thing. And that is, pressing escape will close the modal. You can still achieve the same behaviour as before using `@onFocusLeave`
-- Adds `@onFocusLeave`. This action fires when focus leaves the dialog box. Focus is returned straight away due to the focus trap, but this gives developers the opportunity to implement 'on click outside' behaviour.
-- Adds `@onEscape`. If provided, this action will fire when escape is pressed. The return value should be a promise that resolves to a boolean. True will acknowledge the attempt to escape, and close the modal. False will keep the modal open. This allows developers to implement a confirmation dialog before closing.
-
-## 3.4.0
-
-- Add `@onEscape` (return true to close, false to remain open)
+- Change: The modal dialog box is now focused initially
+- Change: The exceeds viewport class has is now on the modal dialog box
+- Removed: Header, Content and Footer components
+- Removed: Warning class name
+- Removed: `@escapable`
+- Added `@onEscape`
 
 ## 3.3.4
 
