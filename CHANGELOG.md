@@ -3,7 +3,7 @@
 ## 4.0.0-beta.0
 
 - Change: The modal dialog box is now focused initially
-- Change: The exceeds viewport class has is now on the modal dialog box
+- Change: The exceeds viewport class is now on the modal dialog box
 - Removed: Header, Content and Footer components
 - Removed: Warning class name
 - Removed: `@escapable`
