@@ -26,7 +26,6 @@ module('modal-dialog', function (hooks) {
     this.owner.register('helper:capture', capture);
 
     this.close = () => assert.step('closed');
-    this.escape = () => assert.step('escaped');
   });
 
   module('rendering', function () {
@@ -460,25 +459,33 @@ module('modal-dialog', function (hooks) {
     test('pressing escape', async function (assert) {
       assert.expect(2);
 
+      this.escape = (api, event) =>
+        assert.step(`${event instanceof KeyboardEvent}`);
+
       await render(hbs`<ModalDialog @onEscape={{this.escape}} />`);
 
       await triggerKeyEvent('.modal-dialog', 'keydown', 'Escape');
 
-      assert.verifySteps(['escaped']);
+      assert.verifySteps(['true']);
     });
 
     test('clicking outside', async function (assert) {
       assert.expect(2);
 
+      this.escape = (api, event) =>
+        assert.step(`${event instanceof MouseEvent}`);
+
       await render(hbs`<ModalDialog @onEscape={{this.escape}} />`);
 
       await click('.modal-dialog');
 
-      assert.verifySteps(['escaped']);
+      assert.verifySteps(['true']);
     });
 
     test('clicking inside and releasing outside', async function (assert) {
       assert.expect(1);
+
+      this.escape = () => assert.step('escaped');
 
       await render(hbs`<ModalDialog @onEscape={{this.escape}} />`);
 
