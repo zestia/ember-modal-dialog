@@ -64,27 +64,19 @@ The modal dialog component isn't designed to be used on its own, but rather used
   @onLoadError={{this.failedToLoad}}
   as |modal|
 >
-  <modal.Header>
-    Welcome
-  </modal.Header>
+  {{#if modal.isLoading}}
+    Loading person…
+  {{else if this.loadingError}}
+    Unable to load person because
+    {{this.loadingError}}
+  {{else}}
+    Hello
+    {{this.person.name}}
+  {{/if}}
 
-  <modal.Content>
-    {{#if modal.isLoading}}
-      Loading person…
-    {{else if this.loadingError}}
-      Unable to load person because
-      {{this.loadingError}}
-    {{else}}
-      Hello
-      {{this.person.name}}
-    {{/if}}
-  </modal.Content>
-
-  <modal.Footer>
-    <button {{on "click" modal.close}}>
-      Close
-    </button>
-  </modal.Footer>
+  <button {{on "click" modal.close}}>
+    Close
+  </button>
 </ModalDialog>
 ```
 
