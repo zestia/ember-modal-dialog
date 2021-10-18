@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.0.0-beta.1
+
+- Fix body scroll lock on mobile devices
+
 ## 4.0.0-beta.0
 
 - Change: The modal dialog box is now focused initially

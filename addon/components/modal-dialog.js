@@ -69,7 +69,10 @@ export default class ModalDialogComponent extends Component {
   });
 
   bodyScrollLock = modifier((element) => {
-    disableBodyScroll(element);
+    disableBodyScroll(element, {
+      reserveScrollBarGap: true,
+      allowTouchMove: (element) => this.boxElement.contains(element)
+    });
 
     return () => enableBodyScroll(element);
   });
