@@ -132,6 +132,14 @@ module('modal-dialog', function (hooks) {
 
       assert.deepEqual(document.activeElement, find('.internal2'));
     });
+
+    test('ie', async function (assert) {
+      assert.expect(0);
+
+      await render(hbs`<ModalDialog />`);
+
+      await triggerEvent(window, 'focus');
+    });
   });
 
   module('external focus', function (hooks) {
