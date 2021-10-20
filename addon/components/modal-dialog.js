@@ -142,7 +142,7 @@ export default class ModalDialogComponent extends Component {
   internalFocus = modifier(() => {
     let last;
 
-    const focused = () => last.focus();
+    const focused = () => last?.focus();
     const blurred = () => (last = document.activeElement);
 
     window.addEventListener('focus', focused);
