@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.0.0-beta.1
+
+- Fix body scroll lock on mobile devices
+
+## 4.0.0-beta.0
+
+- Change: The modal dialog box is now focused initially
+- Change: The exceeds viewport class is now on the modal dialog box
+- Removed: Header, Content and Footer components
+- Removed: Warning class name
+- Removed: `@escapable`
+- Added `@onEscape`
+
 ## 3.3.4
 
 - Bump `@zestia/animation-utils`

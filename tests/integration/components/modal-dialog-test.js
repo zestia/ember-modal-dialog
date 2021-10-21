@@ -3,17 +3,19 @@ import { setupRenderingTest } from 'ember-qunit';
 import hbs from 'htmlbars-inline-precompile';
 import waitForAnimation from '../../helpers/wait-for-animation';
 import { helper } from '@ember/component/helper';
-import { reject, defer } from 'rsvp';
+import { reject, resolve, defer } from 'rsvp';
 import {
+  click,
   find,
+  focus,
+  getRootElement,
   render,
   settled,
-  focus,
-  waitFor,
   triggerEvent,
-  triggerKeyEvent,
-  click
+  triggerKeyEvent
 } from '@ember/test-helpers';
+
+const { keys } = Object;
 
 module('modal-dialog', function (hooks) {
   setupRenderingTest(hooks);
@@ -28,60 +30,44 @@ module('modal-dialog', function (hooks) {
 
   module('rendering', function () {
     test('it works', async function (assert) {
-      assert.expect(10);
+      assert.expect(7);
+
+      let api;
+
+      this.handleReady = (modal) => (api = modal);
 
       await render(hbs`
-        <ModalDialog as |modal|>
-          <modal.Header class="foo">
-            Header goes here
-          </modal.Header>
-
-          <modal.Content class="bar">
-            Content goes here
-          </modal.Content>
-
-          <modal.Footer class="baz">
-            Footer goes here
-          </modal.Footer>
+        <ModalDialog
+          class="foo"
+          @onReady={{this.handleReady}}
+          as |modal|
+        >
+          Content goes here
         </ModalDialog>
       `);
 
-      assert
-        .dom('.modal-dialog')
-        .hasClass('modal-dialog--showing', 'showing by default');
+      assert.dom('.modal-dialog').hasClass('modal-dialog--showing');
+      assert.dom('.modal-dialog').hasClass('foo', 'splattributes');
+      assert.dom('.modal-dialog__box').isFocused();
+      assert.dom('.modal-dialog__box').hasAttribute('role', 'dialog');
+      assert.dom('.modal-dialog__box').hasAttribute('aria-modal', 'true');
 
-      assert.dom('.modal-dialog').hasAttribute('role', 'dialog');
+      assert.deepEqual(keys(api), [
+        'close',
+        'isLoading',
+        'element',
+        'boxElement'
+      ]);
 
-      assert.dom('.modal-dialog').hasAttribute('aria-modal', 'true');
-
-      assert.dom('.modal-dialog__header').exists('can render the header');
-
-      assert.dom('.modal-dialog__header').exists('can render the content');
-
-      assert.dom('.modal-dialog__header').exists('can render the footer');
-
-      assert.dom('.modal-dialog__header').hasClass('foo', 'splattributes');
-
-      assert.dom('.modal-dialog__content').hasClass('bar', 'splattributes');
-
-      assert.dom('.modal-dialog__footer').hasClass('baz', 'splattributes');
-
-      await waitForAnimation('.modal-dialog', {
-        animationName: 'fade-in'
-      });
-
+      await waitForAnimation('.modal-dialog', { animationName: 'fade-in' });
       await settled();
 
-      assert.true(
-        true,
-        'Does not use a test waiter for the initial show animation'
-      );
+      assert.true(true, 'does not use a test waiter');
     });
+  });
 
-    test('root element', async function (assert) {
-      // It's useful to inform the root element that a modal dialog is present
-      // in the DOM, because you may wish to add styles to blur the background for example.
-
+  module('notify root', function () {
+    test('it works', async function (assert) {
       assert.expect(2);
 
       await render(hbs`
@@ -90,359 +76,189 @@ module('modal-dialog', function (hooks) {
         {{/if}}
       `);
 
-      assert
-        .dom(document.documentElement)
-        .doesNotHaveClass(
-          'has-modal',
-          'root element knows a modal dialog is not present'
-        );
+      assert.dom(document.documentElement).doesNotHaveClass('has-modal');
 
       this.set('show', true);
 
-      assert
-        .dom(document.documentElement)
-        .hasClass(
-          'has-modal',
-          'root element is informed when a modal dialog is present'
-        );
+      assert.dom(document.documentElement).hasClass('has-modal');
     });
   });
 
-  module('loading', function () {
-    test('action order', async function (assert) {
-      assert.expect(3);
-
-      const deferred = defer();
-
-      this.load = () => {
-        assert.step('load');
-
-        return deferred.promise;
-      };
-
-      this.inserted = () => assert.step('inserted');
+  module('internal focus', function () {
+    test('no focusable elements', async function (assert) {
+      assert.expect(1);
 
       await render(hbs`
-        <ModalDialog
-          @onLoad={{this.load}}
-          {{did-insert this.inserted}}
-        />
+        <button type="button" class="external"></button>
+
+        {{#if this.show}}
+          <ModalDialog />
+        {{/if}}
       `);
 
-      assert.verifySteps(
-        ['load', 'inserted'],
-        'load action fires before dom node is inserted. ' +
-          'this is so a loading state will be immediately visible'
-      );
-    });
+      await focus('.external');
 
-    test('success', async function (assert) {
-      assert.expect(4);
-
-      const deferred = defer();
-
-      this.load = () => deferred.promise;
-      this.loaded = (data) => (this.name = data);
-
-      await render(hbs`
-        <ModalDialog
-          @onLoad={{this.load}}
-          @onLoaded={{this.loaded}} as |modal|>
-          {{#if modal.isLoading}}
-            Please wait…
-          {{else}}
-            Hello {{this.name}}
-          {{/if}}
-        </ModalDialog>
-      `);
-
-      assert
-        .dom('.modal-dialog')
-        .hasClass(
-          'modal-dialog--loading',
-          'modal dialog is in a loading state'
-        );
-
-      assert
-        .dom('.modal-dialog')
-        .hasText('Please wait…', 'yields whether or not the modal is loading');
-
-      deferred.resolve('World');
+      this.set('show', true);
 
       await settled();
+      await triggerEvent(window, 'blur');
+      await triggerEvent(window, 'focus');
 
-      assert
-        .dom('.modal-dialog')
-        .doesNotHaveClass(
-          'modal-dialog--loading',
-          'loading class removed after loaded'
-        );
-
-      assert
-        .dom('.modal-dialog')
-        .hasText('Hello World', 'yields correctly after loading has finished');
+      assert.deepEqual(document.activeElement, find('.modal-dialog__box'));
     });
 
-    test('failure', async function (assert) {
-      assert.expect(2);
-
-      this.load = () => reject({ message: 'sorry' });
-      this.loadError = (error) => this.set('error', error);
+    test('with focusable elements', async function (assert) {
+      assert.expect(1);
 
       await render(hbs`
-        <ModalDialog @onLoad={{this.load}} @onLoadError={{this.loadError}}>
-          {{#if this.error}}
-            Failed {{this.error.message}}
-          {{/if}}
-        </ModalDialog>
+        <button type="button" class="external"></button>
+
+        {{#if this.show}}
+          <ModalDialog>
+            <input class="internal1">
+            <input class="internal2">
+          </ModalDialog>
+        {{/if}}
       `);
 
-      assert
-        .dom('.modal-dialog')
-        .doesNotHaveClass(
-          'modal-dialog--loading',
-          'loading class removed after failure to load'
-        );
+      await focus('.external');
 
-      assert
-        .dom('.modal-dialog')
-        .hasText('Failed sorry', 'yields correctly after loading has failed');
+      this.set('show', true);
+
+      await settled();
+      await focus('.internal2');
+      await triggerEvent(window, 'blur');
+      await triggerEvent(window, 'focus');
+
+      assert.deepEqual(document.activeElement, find('.internal2'));
+    });
+
+    test('ie', async function (assert) {
+      assert.expect(0);
+
+      await render(hbs`<ModalDialog />`);
+
+      await triggerEvent(window, 'focus');
     });
   });
 
-  module('api', function () {
-    test('yielded close', async function (assert) {
+  module('external focus', function (hooks) {
+    hooks.beforeEach(async function () {
+      await render(hbs`
+        {{#if this.showButton}}
+          <button type="button" class="external"></button>
+        {{/if}}
+
+        {{#if this.showModal}}
+          <ModalDialog>
+             <button type="button" class="internal"></button>
+          </ModalDialog>
+        {{/if}}
+      `);
+    });
+
+    test('focus is restored after close', async function (assert) {
       assert.expect(3);
 
+      this.set('showButton', true);
+
+      await focus('.external');
+
+      assert.dom('.external').isFocused();
+
+      this.set('showModal', true);
+
+      assert.dom('.modal-dialog__box').isFocused();
+
+      this.set('showModal', false);
+
+      assert.dom('.external').isFocused();
+    });
+
+    test('does not blow up', async function (assert) {
+      assert.expect(3);
+
+      this.set('showButton', true);
+
+      await focus('.external');
+
+      assert.dom('.external').isFocused();
+
+      this.set('showModal', true);
+      this.set('showButton', false);
+
+      assert.dom('.modal-dialog__box').isFocused();
+
+      this.set('showModal', false);
+
+      assert.dom(document.body).isFocused();
+    });
+  });
+
+  module('focus trap', function (hooks) {
+    hooks.beforeEach(async function () {
       await render(hbs`
-        <ModalDialog @onClose={{this.close}} as |modal|>
-          <button type="button" {{on "click" modal.close}}>Close</button>
+        <button type="button" class="external"></button>
+
+        <ModalDialog as |modal|>
+          <button type="button" class="first"></button>
+          <button type="button" class="second"></button>
+          <button type="button" class="third"></button>
         </ModalDialog>
-      `);
+     `);
+    });
 
-      click('button');
+    test('tabbing forwards', async function (assert) {
+      assert.expect(1);
 
-      assert.verifySteps([]);
+      await focus('.third');
+      await triggerKeyEvent('.modal-dialog__box', 'keydown', 'Tab');
 
-      await waitForAnimation('.modal-dialog', {
-        animationName: 'fade-out'
+      assert.deepEqual(find('.first'), document.activeElement);
+    });
+
+    test('tabbing backwards', async function (assert) {
+      assert.expect(1);
+
+      await focus('.first');
+      await triggerKeyEvent('.modal-dialog__box', 'keydown', 'Tab', {
+        shiftKey: true
       });
 
-      await settled();
-
-      assert.verifySteps(
-        ['closed'],
-        'close action is fired after the hide animation'
-      );
+      assert.deepEqual(find('.third'), document.activeElement);
     });
+  });
 
-    test('callback close', async function (assert) {
+  module('in viewport', function () {
+    test('changing content', async function (assert) {
       assert.expect(2);
 
-      let api;
-
-      this.ready = (modal) => (api = modal);
-
-      await render(hbs`
-        <ModalDialog
-          @onReady={{this.ready}}
-          @onClose={{this.close}} as |modal|>
-          <button type="button" {{on "click" modal.close}}>Close</button>
-        </ModalDialog>
-      `);
-
-      await api.close();
-
-      assert.verifySteps(
-        ['closed'],
-        'close action is fired after the hide animation'
-      );
-    });
-
-    test('missing close argument', async function (assert) {
-      assert.expect(1);
-
-      await render(hbs`
-        <ModalDialog @onClose={{null}} as |modal|>
-          <button type="button" {{on "click" modal.close}}>Close</button>
-        </ModalDialog>
-      `);
-
-      await click('button');
-
-      assert.ok(true, 'does not blow up if onClose is not a function');
-    });
-
-    test('box element', async function (assert) {
-      assert.expect(1);
+      getRootElement().parentNode.classList.add('full-screen');
 
       await render(hbs`
         <ModalDialog as |modal|>
-          {{capture modal}}
+          <div class="internal"></div>
         </ModalDialog>
       `);
 
-      assert.deepEqual(
-        this.captured.boxElement,
-        find('.modal-dialog__box'),
-        'exposes the modal dialog box element via the yielded api'
-      );
-    });
-  });
-
-  module('escaping', function (hooks) {
-    // Modal dialogs that do not close when escape is pressed add a class name
-    // to the modal, so you can add a suitable animation to inform the user
-    // that their action was denied. This is useful for preventing accidental
-    // data loss, if a user has entered text into a modal, then hits escape
-    // without pressing Save for example.
-
-    test('pressing escape (allowed)', async function (assert) {
-      assert.expect(2);
-
-      await render(hbs`
-        <ModalDialog
-          @escapable={{true}}
-          @onClose={{this.close}}
-        />
-      `);
-
-      await triggerKeyEvent('.modal-dialog', 'keydown', 27); // Escape
-
-      assert.verifySteps(
-        ['closed'],
-        'escapable modal dialogs will close when escape is pressed'
-      );
-    });
-
-    test('pressing escape (not allowed)', async function (assert) {
-      assert.expect(3);
-
-      await render(hbs`
-        <ModalDialog @onClose={{this.close}} />
-      `);
-
-      triggerKeyEvent('.modal-dialog', 'keydown', 27); // Escape
-
-      await waitFor('.modal-dialog');
-
       assert
-        .dom('.modal-dialog')
-        .hasClass(
-          'modal-dialog--warning',
-          'when the user presses escape the modal dialog has a warning class'
-        );
+        .dom('.modal-dialog__box')
+        .doesNotHaveClass('modal-dialog__box--exceeds-viewport');
 
-      await waitForAnimation('.modal-dialog__box', {
-        animationName: 'pulse'
-      });
-
-      await waitFor('.modal-dialog');
-
-      assert
-        .dom('.modal-dialog')
-        .doesNotHaveClass(
-          'modal-dialog--warning',
-          'class removed after animation has finished'
-        );
+      find('.internal').innerHTML = '<br>'.repeat(10000);
 
       await settled();
 
-      assert.verifySteps([], 'close action is not fired');
+      assert
+        .dom('.modal-dialog__box')
+        .hasClass('modal-dialog__box--exceeds-viewport');
+
+      getRootElement().parentNode.classList.remove('full-screen');
     });
-
-    test('clicking outside to escape (not allowed)', async function (assert) {
-      assert.expect(1);
-
-      await render(hbs`<ModalDialog @onClose={{this.close}} />`);
-
-      await click('.modal-dialog');
-
-      assert.verifySteps([], 'is not escapable');
-    });
-
-    test('clicking outside to escape (allowed)', async function (assert) {
-      assert.expect(2);
-
-      await render(
-        hbs`<ModalDialog @escapable={{true}} @onClose={{this.close}} />`
-      );
-
-      await click('.modal-dialog');
-
-      assert.verifySteps(
-        ['closed'],
-        'clicking outside the modal dialog box closes the modal'
-      );
-    });
-
-    test('clicking inside and releasing outside', async function (assert) {
-      assert.expect(1);
-
-      await render(
-        hbs`<ModalDialog @escapable={{true}} @onClose={{this.close}} />`
-      );
-
-      await triggerEvent('.modal-dialog__box', 'mousedown');
-      await triggerEvent('.modal-dialog', 'mouseup');
-
-      assert.verifySteps([], 'does not close');
-    });
-  });
-
-  test('in viewport?', async function (assert) {
-    // You may wonder why this is needed / useful.
-    //
-    // Consider a modal dialog that fits in the viewport, and has content
-    // inside it, that overflows outside the modal.
-    // For example: a dropdown menu.
-    //
-    // You *would not* want any overflow css rules - because otherwise that dropdown
-    // would get clipped by the overflow when opened.
-    //
-    // Then consider a modal dialog that is too tall for the viewport, now you
-    // *would* want to add scrollbars to the modal - for it to remain useful.
-    //
-    // The dropdown menu would now open 'inside' the _scrollable_ modal dialog,
-    // rather than overflowing outside it.
-    //
-    // Note that this general problem is also solvable by rendering the dropdown
-    // elsewhere in the DOM (aka 'wormhole'), but this is not always possible.
-
-    assert.expect(2);
-
-    await render(hbs`
-      {{! template-lint-disable no-inline-styles }}
-      <ModalDialog>
-        {{#if this.makeTooTall}}
-          <div style="height: 1000px">I'm too tall</div>
-        {{else}}
-          I'm OK
-        {{/if}}
-      </ModalDialog>
-    `);
-
-    assert
-      .dom('.modal-dialog')
-      .doesNotHaveClass(
-        'modal-dialog--exceeds-viewport',
-        'does not have a class name when the modal dialog box fits in the viewport'
-      );
-
-    this.set('makeTooTall', true);
-
-    await settled();
-
-    assert
-      .dom('.modal-dialog')
-      .hasClass(
-        'modal-dialog--exceeds-viewport',
-        'has a class name when the modal dialog exceeds the viewport'
-      );
   });
 
   module('body scroll lock', function () {
-    test('third party addon is installed', async function (assert) {
+    test('it works', async function (assert) {
       assert.expect(3);
 
       await render(hbs`
@@ -467,183 +283,138 @@ module('modal-dialog', function (hooks) {
     });
   });
 
-  module('restoring focus', function (hooks) {
-    hooks.beforeEach(async function () {
-      await render(hbs`
-        {{#if this.showButton}}
-          <button type="button" class="external"></button>
-        {{/if}}
+  module('loading', function () {
+    test('action order', async function (assert) {
+      assert.expect(3);
 
-        {{#if this.showModal}}
-          <ModalDialog as |modal|>
-            <button type="button" class="internal" {{on "click" modal.close}}></button>
-          </ModalDialog>
-        {{/if}}
+      const deferred = defer();
+
+      this.load = () => {
+        assert.step('load');
+
+        return deferred.promise;
+      };
+
+      this.inserted = () => assert.step('inserted');
+
+      await render(hbs`
+        <ModalDialog
+          @onLoad={{this.load}}
+          {{did-insert this.inserted}}
+        />
       `);
+
+      assert.verifySteps(['load', 'inserted']);
     });
 
-    test('focus is restored after close', async function (assert) {
-      assert.expect(3);
+    test('success', async function (assert) {
+      assert.expect(4);
 
-      this.set('showButton', true);
+      const deferred = defer();
 
-      await focus('.external');
+      this.load = () => deferred.promise;
+      this.loaded = (data) => (this.name = data);
 
-      assert
-        .dom('.external')
-        .isFocused('initial focus is on an element outside the modal');
-
-      this.set('showModal', true);
-
-      assert.dom('.modal-dialog').isFocused('modal is focused');
-
-      await click('.internal');
-
-      assert
-        .dom('.external')
-        .isFocused('focus is returned to the originally focused element');
-    });
-
-    test('does not blow up', async function (assert) {
-      assert.expect(3);
-
-      this.set('showButton', true);
-
-      await focus('.external');
-
-      assert
-        .dom('.external')
-        .isFocused('initial focus is on an element outside the modal');
-
-      this.set('showModal', true);
-      this.set('showButton', false);
-
-      assert
-        .dom('.modal-dialog')
-        .isFocused('modal is focused to respond the keyboard');
-
-      await click('.internal');
-
-      assert
-        .dom('.internal')
-        .isFocused(
-          'focus is not restored to the original element (.external) ' +
-            'because that element has since been removed'
-        );
-    });
-  });
-
-  module('focus trap', function (hooks) {
-    // We specifically use keydown and not keyup,
-    // because keyup, is too late to prevent default.
-
-    hooks.beforeEach(async function () {
       await render(hbs`
-        <button type="button" class="external"></button>
-
-        <ModalDialog>
-          <button type="button" class="first"></button>
-          <button type="button" class="second"></button>
-          <button type="button" class="third"></button>
+        <ModalDialog
+          @onLoad={{this.load}}
+          @onLoaded={{this.loaded}}
+          as |modal|
+        >
+          {{#if modal.isLoading}}
+            Please wait…
+          {{else}}
+            Hello {{this.name}}
+          {{/if}}
         </ModalDialog>
-     `);
-    });
-
-    test('tabbing forwards', async function (assert) {
-      assert.expect(1);
-
-      await focus('.third');
-      await triggerKeyEvent('.modal-dialog', 'keydown', 9); // Tab
-
-      assert.deepEqual(
-        find('.first'),
-        document.activeElement,
-        'loops back to the beginning and focuses the first element'
-      );
-    });
-
-    test('tabbing backwards', async function (assert) {
-      assert.expect(1);
-
-      await focus('.first');
-      await triggerKeyEvent('.modal-dialog', 'keydown', 9, { shiftKey: true }); // Tab
-
-      assert.deepEqual(
-        find('.third'),
-        document.activeElement,
-        'loops back to the end and focuses the last element'
-      );
-    });
-  });
-
-  module('window focus', function () {
-    test('modal with no focusable elements', async function (assert) {
-      assert.expect(1);
-
-      await render(hbs`
-        <button type="button" class="external"></button>
-
-        {{#if this.show}}
-          <ModalDialog />
-        {{/if}}
       `);
 
-      await focus('.external');
+      assert.dom('.modal-dialog').hasClass('modal-dialog--loading');
+      assert.dom('.modal-dialog').hasText('Please wait…');
 
-      this.set('show', true);
+      deferred.resolve('World');
 
       await settled();
-      await triggerEvent(window, 'blur');
-      await triggerEvent(window, 'focus');
 
-      assert.deepEqual(
-        document.activeElement,
-        find('.modal-dialog'),
-        'when the window is focused, the modal dialog is focused, not the content beneath it'
-      );
+      assert.dom('.modal-dialog').doesNotHaveClass('modal-dialog--loading');
+      assert.dom('.modal-dialog').hasText('Hello World');
     });
 
-    test('modal with focusable elements', async function (assert) {
-      assert.expect(1);
+    test('failure', async function (assert) {
+      assert.expect(2);
+
+      this.load = () => reject({ message: 'sorry' });
+      this.loadError = (error) => this.set('error', error);
 
       await render(hbs`
-        <button type="button" class="external"></button>
-
-        {{#if this.show}}
-          <ModalDialog>
-            <input class="internal1">
-            <input class="internal2">
-          </ModalDialog>
-        {{/if}}
+        <ModalDialog @onLoad={{this.load}} @onLoadError={{this.loadError}}>
+          {{#if this.error}}
+            Failed {{this.error.message}}
+          {{/if}}
+        </ModalDialog>
       `);
 
-      await focus('.external');
+      assert.dom('.modal-dialog').doesNotHaveClass('modal-dialog--loading');
+      assert.dom('.modal-dialog').hasText('Failed sorry');
+    });
 
-      this.set('show', true);
+    test('infinite revalidation', async function (assert) {
+      assert.expect(0);
 
-      await settled();
-      await focus('.internal2');
-      await triggerEvent(window, 'blur');
-      await triggerEvent(window, 'focus');
+      /* eslint-disable no-console */
 
-      assert.deepEqual(
-        document.activeElement,
-        find('.internal2'),
-        'when the window is focused, the last focused element inside the modal still has focus, not the content beneath it'
-      );
+      const warn = console.warn;
+
+      console.warn = () => {
+        console.warn = warn;
+
+        throw new Error('autotracking.mutation-after-consumption');
+      };
+
+      this.handleReady = () => {};
+      this.load = () => resolve();
+
+      await render(hbs`
+        <ModalDialog
+          @onReady={{this.handleReady}}
+          @onLoad={{@onLoad}}
+        />
+      `);
     });
   });
 
   module('closing', function () {
-    test('action', async function (assert) {
-      assert.expect(1);
-
-      this.close = () => this.set('showModal', false);
-
-      this.showModal = true;
+    test('waits for animation', async function (assert) {
+      assert.expect(3);
 
       await render(hbs`
-        {{#if this.showModal}}
+        <ModalDialog @onClose={{this.close}} as |modal|>
+          <button type="button" {{on "click" modal.close}}>Close</button>
+        </ModalDialog>
+      `);
+
+      click('button');
+
+      assert.verifySteps([]);
+
+      await waitForAnimation('.modal-dialog', {
+        animationName: 'fade-out'
+      });
+
+      await settled();
+
+      assert.verifySteps(['closed']);
+    });
+
+    test('test waiter', async function (assert) {
+      assert.expect(1);
+
+      this.close = () => this.set('show', false);
+
+      this.show = true;
+
+      await render(hbs`
+        {{#if this.show}}
           <ModalDialog @onClose={{this.close}} as |modal|>
             <button type="button" {{on "click" modal.close}}>Close</button>
           </ModalDialog>
@@ -652,9 +423,84 @@ module('modal-dialog', function (hooks) {
 
       await click('button');
 
-      assert
-        .dom('.modal-dialog')
-        .doesNotExist('close action uses a test waiter (aware of animation)');
+      assert.dom('.modal-dialog').doesNotExist();
+    });
+
+    test('api close', async function (assert) {
+      assert.expect(2);
+
+      let api;
+
+      this.handleReady = (modal) => (api = modal);
+
+      await render(hbs`
+        <ModalDialog
+          @onReady={{this.handleReady}}
+          @onClose={{this.close}}
+          as |modal|
+        >
+          <button type="button" {{on "click" modal.close}}>Close</button>
+        </ModalDialog>
+      `);
+
+      await api.close();
+
+      assert.verifySteps(['closed']);
+    });
+
+    test('missing close argument', async function (assert) {
+      assert.expect(1);
+
+      await render(hbs`
+        <ModalDialog @onClose={{null}} as |modal|>
+          <button type="button" {{on "click" modal.close}}>Close</button>
+        </ModalDialog>
+      `);
+
+      await click('button');
+
+      assert.ok(true, 'does not blow up if onClose is not a function');
+    });
+  });
+
+  module('escaping', function (hooks) {
+    test('pressing escape', async function (assert) {
+      assert.expect(2);
+
+      this.escape = (api, event) =>
+        assert.step(`${event instanceof KeyboardEvent}`);
+
+      await render(hbs`<ModalDialog @onEscape={{this.escape}} />`);
+
+      await triggerKeyEvent('.modal-dialog', 'keydown', 'Escape');
+
+      assert.verifySteps(['true']);
+    });
+
+    test('clicking outside', async function (assert) {
+      assert.expect(2);
+
+      this.escape = (api, event) =>
+        assert.step(`${event instanceof MouseEvent}`);
+
+      await render(hbs`<ModalDialog @onEscape={{this.escape}} />`);
+
+      await click('.modal-dialog');
+
+      assert.verifySteps(['true']);
+    });
+
+    test('clicking inside and releasing outside', async function (assert) {
+      assert.expect(1);
+
+      this.escape = () => assert.step('escaped');
+
+      await render(hbs`<ModalDialog @onEscape={{this.escape}} />`);
+
+      await triggerEvent('.modal-dialog__box', 'mousedown');
+      await triggerEvent('.modal-dialog', 'mouseup');
+
+      assert.verifySteps([]);
     });
   });
 });

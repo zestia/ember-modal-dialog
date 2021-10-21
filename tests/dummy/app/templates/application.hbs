@@ -21,14 +21,40 @@
       Options
     </legend>
     <label>
-      <Input @type="checkbox" @checked={{this.testModalIsEscapable}} />
+      <Input
+        @type="checkbox"
+        @checked={{this.isEscapable}}
+        {{on "click" this.resetClickOutsideToEscape}}
+      />
       Escapable
     </label>
 
     <br />
 
     <label>
-      <Input @type="checkbox" @checked={{this.testModalLoadDelay}} />
+      <Input
+        @type="checkbox"
+        @checked={{this.clickOutsideToEscape}}
+        disabled={{if this.isEscapable false true}}
+      />
+      Click outside to escape
+    </label>
+
+    <br />
+
+    <label>
+      <Input
+        @type="checkbox"
+        @checked={{this.confirmEscape}}
+        disabled={{if this.isEscapable false true}}
+      />
+      Confirm escape
+    </label>
+
+    <br />
+
+    <label>
+      <Input @type="checkbox" @checked={{this.loadDelay}} />
       Load delay
     </label>
   </fieldset>
@@ -36,19 +62,39 @@
   <br />
   <br />
 
-  <button type="button" {{on "click" this.openTestModal}}>
+  <button type="button" {{on "click" this.openExampleModal}}>
     Open
   </button>
 
-  <p>
-    The body will not be scrollable when the modal dialog is open, and focus
-    will be trapped within the modal.
-  </p>
+  <ul>
+    <li>
+      The body will not be scrollable when the modal dialog is open.
+    </li>
 
-  <p>
-    When closing the modal, focus will be restored to the element that was
-    originally focused.
-  </p>
+    <li>
+      The root element is informed when a modal dialog is open.
+    </li>
+
+    <li>
+      When closing the modal, focus will be restored to the element that was
+      originally focused.
+    </li>
+
+    <li>
+      Tabbing through focusable elements will not escape to outside of the
+      modal.
+    </li>
+
+    <li>
+      When changing browser tab, and returning, focus is maintained inside the
+      modal dialog.
+    </li>
+
+    <li>
+      The content of the modal dialog box becomes scrollable, only if it doesn't
+      fit into the viewport.
+    </li>
+  </ul>
 
   <div class="example-text">
     <p>
@@ -158,136 +204,11 @@
 </div>
 
 <div class="outside-the-application">
-  {{#if this.showTestModal}}
-    <ModalDialog
-      @onClose={{this.closeTestModal}}
-      @onLoad={{this.loadTestModal}}
-      @escapable={{this.testModalIsEscapable}}
-      as |modal|
-    >
-      <modal.Header>
-        Header
-      </modal.Header>
-
-      <modal.Content>
-        {{#if modal.isLoading}}
-          Please wait...
-        {{else}}
-          <p>
-            The content of the modal dialog box is scrollable if it doesn't fit
-            into the viewport.
-          </p>
-
-          <p>
-            Tabbing through focusable elements will not escape to outside of the
-            modal.
-          </p>
-
-          <input
-            aria-label="Example input"
-            type="text"
-            placeholder="Example input"
-          />
-
-          {{#if this.showMoreContent}}
-            <p>
-              <strong>
-                When there is too much vertical content for the size of the
-                viewport, a class is added to the modal dialog.
-              </strong>
-            </p>
-          {{/if}}
-
-          <div class="example-text">
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut
-              est eget nulla malesuada pretium id eu ipsum. Nam eu turpis et
-              quam rutrum molestie a vitae tortor. Maecenas nec ex est. Nulla
-              quis leo id leo commodo sagittis. Nullam diam dolor, semper sed
-              convallis ut, facilisis sollicitudin quam. Ut a fermentum turpis,
-              ac gravida elit. Fusce sed leo mollis nibh tincidunt ornare.
-              Quisque convallis sodales erat, eget ultricies nulla pellentesque
-              ut. Curabitur nec sem lorem.
-            </p>
-
-            <p>
-              Vivamus malesuada arcu vitae mauris fringilla, sed lacinia nunc
-              porta. Nullam id eros vitae arcu blandit tincidunt. Fusce porta
-              sed mi sit amet varius. Proin congue accumsan rutrum. Aenean ac
-              cursus ex. Sed sed venenatis urna. Aliquam elementum felis et eros
-              egestas pellentesque. Nulla vulputate libero non cursus hendrerit.
-            </p>
-
-            <p>
-              Aenean suscipit rhoncus sapien a blandit. Morbi urna nisi,
-              porttitor sit amet lacus vitae, suscipit porta ipsum. Fusce
-              blandit orci nec faucibus malesuada. In feugiat libero id nisl
-              egestas, vel cursus nisi pulvinar. Pellentesque accumsan libero id
-              nulla tincidunt tristique. Sed eget ligula enim. Cras iaculis
-              lacinia ipsum id sodales. In sagittis tempus maximus. Duis
-              ultrices urna magna, vitae vestibulum augue eleifend vitae. Cras
-              tristique est quis ipsum ullamcorper tincidunt. Phasellus non
-              dolor in urna scelerisque gravida. Ut volutpat tortor vitae risus
-              tristique placerat. Vivamus iaculis varius nunc, nec tincidunt
-              lorem facilisis non. Maecenas ultricies risus urna, finibus luctus
-              erat posuere vitae.
-            </p>
-
-            {{#if this.showMoreContent}}
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla
-                ut est eget nulla malesuada pretium id eu ipsum. Nam eu turpis
-                et quam rutrum molestie a vitae tortor. Maecenas nec ex est.
-                Nulla quis leo id leo commodo sagittis. Nullam diam dolor,
-                semper sed convallis ut, facilisis sollicitudin quam. Ut a
-                fermentum turpis, ac gravida elit. Fusce sed leo mollis nibh
-                tincidunt ornare. Quisque convallis sodales erat, eget ultricies
-                nulla pellentesque ut. Curabitur nec sem lorem.
-              </p>
-
-              <p>
-                Vivamus malesuada arcu vitae mauris fringilla, sed lacinia nunc
-                porta. Nullam id eros vitae arcu blandit tincidunt. Fusce porta
-                sed mi sit amet varius. Proin congue accumsan rutrum. Aenean ac
-                cursus ex. Sed sed venenatis urna. Aliquam elementum felis et
-                eros egestas pellentesque. Nulla vulputate libero non cursus
-                hendrerit.
-              </p>
-
-              <p>
-                Aenean suscipit rhoncus sapien a blandit. Morbi urna nisi,
-                porttitor sit amet lacus vitae, suscipit porta ipsum. Fusce
-                blandit orci nec faucibus malesuada. In feugiat libero id nisl
-                egestas, vel cursus nisi pulvinar. Pellentesque accumsan libero
-                id nulla tincidunt tristique. Sed eget ligula enim. Cras iaculis
-                lacinia ipsum id sodales. In sagittis tempus maximus. Duis
-                ultrices urna magna, vitae vestibulum augue eleifend vitae. Cras
-                tristique est quis ipsum ullamcorper tincidunt. Phasellus non
-                dolor in urna scelerisque gravida. Ut volutpat tortor vitae
-                risus tristique placerat. Vivamus iaculis varius nunc, nec
-                tincidunt lorem facilisis non. Maecenas ultricies risus urna,
-                finibus luctus erat posuere vitae.
-              </p>
-            {{/if}}
-          </div>
-        {{/if}}
-      </modal.Content>
-
-      <modal.Footer>
-        Footer
-
-        <button
-          type="button"
-          disabled={{this.showMoreContent}}
-          {{on "click" this.addMoreContent}}
-        >
-          Add more content
-        </button>
-
-        <button type="button" {{on "click" modal.close}}>
-          Close
-        </button>
-      </modal.Footer>
-    </ModalDialog>
+  {{#if this.showExampleModal}}
+    <ExampleModal
+      @onClose={{this.closeExampleModal}}
+      @onLoad={{this.loadExampleModal}}
+      @onEscape={{this.handleEscapeExampleModal}}
+    />
   {{/if}}
 </div>

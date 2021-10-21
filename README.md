@@ -54,6 +54,32 @@ https://zestia.github.io/ember-modal-dialog/
 
 The modal dialog component isn't designed to be used on its own, but rather used to compose a new modal dialog component... in this example it's called "my-modal"
 
+```handlebars
+{{! my-modal.hbs }}
+<ModalDialog
+  @onClose={{@onClose}}
+  @onEscape={{@onEscape}}
+  @onLoad={{@onFetchPerson}}
+  @onLoaded={{this.loaded}}
+  @onLoadError={{this.failedToLoad}}
+  as |modal|
+>
+  {{#if modal.isLoading}}
+    Loading person…
+  {{else if this.loadingError}}
+    Unable to load person because
+    {{this.loadingError}}
+  {{else}}
+    Hello
+    {{this.person.name}}
+  {{/if}}
+
+  <button {{on "click" modal.close}}>
+    Close
+  </button>
+</ModalDialog>
+```
+
 ```javascript
 // my-modal.js
 export default class MyModal extends Component {
@@ -72,54 +98,27 @@ export default class MyModal extends Component {
 }
 ```
 
-```handlebars
-{{! my-modal.hbs }}
-<ModalDialog
-  @onClose={{@onClose}}
-  @onLoad={{@onFetchPerson}}
-  @onLoaded={{this.loaded}}
-  @onLoadError={{this.failedToLoad}}
-  as |modal|
->
-  <modal.Header>
-    Welcome
-  </modal.Header>
-
-  <modal.Content>
-    {{#if modal.isLoading}}
-      Loading person…
-    {{else if this.loadingError}}
-      Unable to load person because
-      {{this.loadingError}}
-    {{else}}
-      Hello
-      {{this.person.name}}
-    {{/if}}
-  </modal.Content>
-
-  <modal.Footer>
-    <button {{on "click" modal.close}}>
-      Close
-    </button>
-  </modal.Footer>
-</ModalDialog>
-```
-
 ```javascript
-// application/route.js
-export default class ApplicationRoute extends Route {
+// application/controller.js
+export default class ApplicationController extends Controller {
   @action
   loadPerson() {
     // Fetch remote data
+  }
+
+  @action
+  confirmEscape() {
+    return confirm('Are you sure?')
   }
 }
 ```
 
 ```handlebars
-{{! application/route.hbs }}
+{{! application/template.hbs }}
 {{#if this.showMyModal}}
   <MyModal
     @onClose={{this.hideMyModal}}
+    @onEscape={{this.confirmEscape}}
     @onFetchPerson={{fn this.loadPerson 123}}
   />
 {{/if}}
