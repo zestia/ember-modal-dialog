@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.0.0
+
+- Release changes from 4.0.0-beta
+
 ## 4.0.0-beta.1
 
 - Fix body scroll lock on mobile devices
