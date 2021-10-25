@@ -234,11 +234,12 @@ module('modal-dialog', function (hooks) {
       await render(hbs`
         <ModalDialog>
           <button type="button" class="first"></button>
+          <button type="button" class="second"></button>
 
           {{#if this.showInnerModal}}
             <ModalDialog class="inner-modal">
-              <button type="button" class="inner-first">Inner First</button>
-              <button type="button" class="inner-second">Inner Second</button>
+              <button type="button" class="inner-first"></button>
+              <button type="button" class="inner-second"></button>
             </ModalDialog>
           {{/if}}
         </ModalDialog>
