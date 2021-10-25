@@ -111,6 +111,10 @@ export default class ModalDialogComponent extends Component {
         return;
       }
 
+      if (element.querySelector('.modal-dialog--showing')) {
+        return;
+      }
+
       const focusable = element.querySelectorAll(`
         a[href],
         button:not(:disabled),
@@ -128,11 +132,9 @@ export default class ModalDialogComponent extends Component {
       if (event.shiftKey && focused === first) {
         last.focus();
         event.preventDefault();
-        event.stopPropagation();
       } else if (!event.shiftKey && focused === last) {
         first.focus();
         event.preventDefault();
-        event.stopPropagation();
       }
     };
 
