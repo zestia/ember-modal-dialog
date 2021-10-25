@@ -200,7 +200,7 @@ module('modal-dialog', function (hooks) {
       await render(hbs`
         <button type="button" class="external"></button>
 
-        <ModalDialog as |modal|>
+        <ModalDialog>
           <button type="button" class="first"></button>
           <button type="button" class="second"></button>
           <button type="button" class="third"></button>
@@ -226,6 +226,44 @@ module('modal-dialog', function (hooks) {
       });
 
       assert.deepEqual(find('.third'), document.activeElement);
+    });
+
+    test('tabbing in inner modal', async function (assert) {
+      assert.expect(2);
+
+      await render(hbs`
+        <ModalDialog>
+          <button type="button" class="first"></button>
+
+          {{#if this.showInnerModal}}
+            <ModalDialog class="inner-modal">
+              <button type="button" class="inner-first">Inner First</button>
+              <button type="button" class="inner-second">Inner Second</button>
+            </ModalDialog>
+          {{/if}}
+        </ModalDialog>
+      `);
+
+      this.set('showInnerModal', true);
+
+      await settled();
+
+      await focus('.inner-first');
+      await triggerKeyEvent(
+        '.inner-modal .modal-dialog__box',
+        'keydown',
+        'Tab'
+      );
+
+      assert.deepEqual(find('.inner-second'), document.activeElement);
+
+      await triggerKeyEvent(
+        '.inner-modal .modal-dialog__box',
+        'keydown',
+        'Tab'
+      );
+
+      assert.deepEqual(find('.inner-first'), document.activeElement);
     });
   });
 
