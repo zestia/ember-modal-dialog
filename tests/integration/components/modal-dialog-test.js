@@ -228,8 +228,8 @@ module('modal-dialog', function (hooks) {
       assert.deepEqual(find('.third'), document.activeElement);
     });
 
-    test('tabbing in inner modal', async function (assert) {
-      assert.expect(2);
+    test('tabbing forwards in inner modal', async function (assert) {
+      assert.expect(1);
 
       await render(hbs`
         <ModalDialog>
@@ -247,17 +247,7 @@ module('modal-dialog', function (hooks) {
 
       this.set('showInnerModal', true);
 
-      await settled();
-
-      await focus('.inner-first');
-      await triggerKeyEvent(
-        '.inner-modal .modal-dialog__box',
-        'keydown',
-        'Tab'
-      );
-
-      assert.deepEqual(find('.inner-second'), document.activeElement);
-
+      await focus('.inner-second');
       await triggerKeyEvent(
         '.inner-modal .modal-dialog__box',
         'keydown',
@@ -265,6 +255,36 @@ module('modal-dialog', function (hooks) {
       );
 
       assert.deepEqual(find('.inner-first'), document.activeElement);
+    });
+
+    test('tabbing backwards in inner modal', async function (assert) {
+      assert.expect(1);
+
+      await render(hbs`
+        <ModalDialog>
+          <button type="button" class="first"></button>
+          <button type="button" class="second"></button>
+
+          {{#if this.showInnerModal}}
+            <ModalDialog class="inner-modal">
+              <button type="button" class="inner-first"></button>
+              <button type="button" class="inner-second"></button>
+            </ModalDialog>
+          {{/if}}
+        </ModalDialog>
+      `);
+
+      this.set('showInnerModal', true);
+
+      await focus('.inner-first');
+      await triggerKeyEvent(
+        '.inner-modal .modal-dialog__box',
+        'keydown',
+        'Tab',
+        { shiftKey: true }
+      );
+
+      assert.deepEqual(find('.inner-second'), document.activeElement);
     });
   });
 
