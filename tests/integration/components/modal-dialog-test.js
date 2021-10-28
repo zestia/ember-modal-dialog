@@ -228,63 +228,21 @@ module('modal-dialog', function (hooks) {
       assert.deepEqual(find('.third'), document.activeElement);
     });
 
-    test('tabbing forwards in inner modal', async function (assert) {
+    test('nested modals', async function (assert) {
       assert.expect(1);
 
       await render(hbs`
         <ModalDialog>
-          <button type="button" class="first"></button>
-          <button type="button" class="second"></button>
-
-          {{#if this.showInnerModal}}
-            <ModalDialog class="inner-modal">
-              <button type="button" class="inner-first"></button>
-              <button type="button" class="inner-second"></button>
-            </ModalDialog>
-          {{/if}}
+          <ModalDialog class="nested">
+            <button type="button"></button>
+          </ModalDialog>
         </ModalDialog>
       `);
 
-      this.set('showInnerModal', true);
+      await focus('.nested button');
+      await triggerKeyEvent('.nested .modal-dialog__box', 'keydown', 'Tab');
 
-      await focus('.inner-second');
-      await triggerKeyEvent(
-        '.inner-modal .modal-dialog__box',
-        'keydown',
-        'Tab'
-      );
-
-      assert.deepEqual(find('.inner-first'), document.activeElement);
-    });
-
-    test('tabbing backwards in inner modal', async function (assert) {
-      assert.expect(1);
-
-      await render(hbs`
-        <ModalDialog>
-          <button type="button" class="first"></button>
-          <button type="button" class="second"></button>
-
-          {{#if this.showInnerModal}}
-            <ModalDialog class="inner-modal">
-              <button type="button" class="inner-first"></button>
-              <button type="button" class="inner-second"></button>
-            </ModalDialog>
-          {{/if}}
-        </ModalDialog>
-      `);
-
-      this.set('showInnerModal', true);
-
-      await focus('.inner-first');
-      await triggerKeyEvent(
-        '.inner-modal .modal-dialog__box',
-        'keydown',
-        'Tab',
-        { shiftKey: true }
-      );
-
-      assert.deepEqual(find('.inner-second'), document.activeElement);
+      assert.dom('.nested button').isFocused();
     });
   });
 
@@ -531,7 +489,7 @@ module('modal-dialog', function (hooks) {
 
       await render(hbs`<ModalDialog @onEscape={{this.escape}} />`);
 
-      await triggerKeyEvent('.modal-dialog', 'keydown', 'Escape');
+      await triggerKeyEvent(window, 'keydown', 'Escape');
 
       assert.verifySteps(['true']);
     });
@@ -560,6 +518,23 @@ module('modal-dialog', function (hooks) {
       await triggerEvent('.modal-dialog', 'mouseup');
 
       assert.verifySteps([]);
+    });
+
+    test('nested modals', async function (assert) {
+      assert.expect(2);
+
+      this.escape1 = () => assert.step('escaped 1');
+      this.escape2 = () => assert.step('escaped 2');
+
+      await render(hbs`
+        <ModalDialog @onEscape={{this.escape1}}>
+          <ModalDialog @onEscape={{this.escape2}} />
+        </ModalDialog>
+      `);
+
+      await triggerKeyEvent(window, 'keydown', 'Escape');
+
+      assert.verifySteps(['escaped 2']);
     });
   });
 });

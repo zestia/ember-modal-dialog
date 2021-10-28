@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.1.0
+
+- Add support for nested modals
+
 ## 4.0.0
 
 - Release changes from 4.0.0-beta

@@ -31,6 +31,10 @@ export default class ModalDialogComponent extends Component {
     };
   }
 
+  get containsModal() {
+    return !!this.boxElement.querySelector('.modal-dialog');
+  }
+
   @action
   async close() {
     this.isShowing = false;
@@ -107,11 +111,7 @@ export default class ModalDialogComponent extends Component {
 
   trapFocus = modifier((element) => {
     const handler = (event) => {
-      if (event.key !== 'Tab') {
-        return;
-      }
-
-      if (element.querySelector('.modal-dialog--showing')) {
+      if (this.containsModal || event.key !== 'Tab') {
         return;
       }
 
@@ -172,9 +172,11 @@ export default class ModalDialogComponent extends Component {
 
   escapable = modifier(() => {
     const handler = (event) => {
-      if (event.key === 'Escape') {
-        this._escape(event);
+      if (this.containsModal || event.key !== 'Escape') {
+        return;
       }
+
+      this._escape(event);
     };
 
     window.addEventListener('keydown', handler);
