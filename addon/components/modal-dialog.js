@@ -111,6 +111,10 @@ export default class ModalDialogComponent extends Component {
         return;
       }
 
+      if (element.querySelector('.modal-dialog--showing')) {
+        return;
+      }
+
       const focusable = element.querySelectorAll(`
         a[href],
         button:not(:disabled),
