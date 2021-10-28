@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.1.1
+
+- Fix: Allow auto focusing of child elements
+
 ## 4.1.0
 
 - Add support for nested modals

@@ -30,7 +30,7 @@ module('modal-dialog', function (hooks) {
 
   module('rendering', function () {
     test('it works', async function (assert) {
-      assert.expect(7);
+      assert.expect(6);
 
       let api;
 
@@ -48,7 +48,6 @@ module('modal-dialog', function (hooks) {
 
       assert.dom('.modal-dialog').hasClass('modal-dialog--showing');
       assert.dom('.modal-dialog').hasClass('foo', 'splattributes');
-      assert.dom('.modal-dialog__box').isFocused();
       assert.dom('.modal-dialog__box').hasAttribute('role', 'dialog');
       assert.dom('.modal-dialog__box').hasAttribute('aria-modal', 'true');
 
@@ -63,6 +62,28 @@ module('modal-dialog', function (hooks) {
       await settled();
 
       assert.true(true, 'does not use a test waiter');
+    });
+  });
+
+  module('auto focus', function () {
+    test('default', async function (assert) {
+      assert.expect(1);
+
+      await render(hbs`<ModalDialog />`);
+
+      assert.dom('.modal-dialog__box').isFocused();
+    });
+
+    test('with child focus', async function (assert) {
+      assert.expect(1);
+
+      await render(hbs`
+        <ModalDialog>
+          <input {{auto-focus}} />
+        </ModalDialog>
+      `);
+
+      assert.dom('input').isFocused();
     });
   });
 
