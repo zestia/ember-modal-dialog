@@ -105,7 +105,7 @@ export default class ModalDialogComponent extends Component {
 
     return () => {
       observer.disconnect();
-      window.addEventListener('resize', handler);
+      window.removeEventListener('resize', handler);
     };
   });
 
