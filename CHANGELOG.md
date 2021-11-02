@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.1.2
+
+- Fix: Remove event listener in teardown [#15](https://github.com/zestia/ember-modal-dialog/pull/15)
+
 ## 4.1.1
 
 - Fix: Allow auto focusing of child elements
