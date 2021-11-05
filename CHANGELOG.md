@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.1.3
+
+- When body scroll lock is enabled, only allow scrolling on _scrollable_ children, not all children of the modal.
+
 ## 4.1.2
 
 - Fix: Remove event listener in teardown [#15](https://github.com/zestia/ember-modal-dialog/pull/15)
