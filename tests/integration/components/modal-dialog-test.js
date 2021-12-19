@@ -4,6 +4,7 @@ import hbs from 'htmlbars-inline-precompile';
 import waitForAnimation from '../../helpers/wait-for-animation';
 import { helper } from '@ember/component/helper';
 import { reject, resolve, defer } from 'rsvp';
+import { modifier } from 'ember-modifier';
 import {
   click,
   find,
@@ -333,12 +334,12 @@ module('modal-dialog', function (hooks) {
         return deferred.promise;
       };
 
-      this.inserted = () => assert.step('inserted');
+      this.inserted = modifier(() => assert.step('inserted'));
 
       await render(hbs`
         <ModalDialog
           @onLoad={{this.load}}
-          {{did-insert this.inserted}}
+          {{this.inserted}}
         />
       `);
 
