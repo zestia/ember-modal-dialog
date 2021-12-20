@@ -31,7 +31,7 @@ module('modal-dialog', function (hooks) {
 
   module('rendering', function () {
     test('it works', async function (assert) {
-      assert.expect(6);
+      assert.expect(7);
 
       let api;
 
@@ -48,6 +48,7 @@ module('modal-dialog', function (hooks) {
       `);
 
       assert.dom('.modal-dialog').hasClass('modal-dialog--showing');
+      assert.dom('.modal-dialog').doesNotHaveClass('modal-dialog--loading');
       assert.dom('.modal-dialog').hasClass('foo', 'splattributes');
       assert.dom('.modal-dialog__box').hasAttribute('role', 'dialog');
       assert.dom('.modal-dialog__box').hasAttribute('aria-modal', 'true');

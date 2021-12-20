@@ -13,7 +13,7 @@ export default class ModalDialogComponent extends Component {
   lastMouseDownElement = null;
 
   @tracked isInViewport = false;
-  @tracked isLoading = typeof this.args.onLoad === 'function';
+  @tracked isLoading = false;
   @tracked isShowing = true;
 
   constructor() {
@@ -197,8 +197,14 @@ export default class ModalDialogComponent extends Component {
   }
 
   async _load() {
+    if (typeof this.args.onLoad !== 'function') {
+      return;
+    }
+
+    this.isLoading = true;
+
     try {
-      const data = await this.args.onLoad?.();
+      const data = await this.args.onLoad();
       this.args.onLoaded?.(data);
     } catch (error) {
       this.args.onLoadError?.(error);
