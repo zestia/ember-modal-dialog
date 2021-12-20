@@ -1,7 +1,6 @@
 /* eslint-disable no-alert */
 
 import Controller from '@ember/controller';
-import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
 import { Promise } from 'rsvp';
 import { later } from '@ember/runloop';
@@ -14,23 +13,19 @@ export default class ApplicationController extends Controller {
   @tracked escapeOnFocusLeave = false;
   @tracked showExampleModal = false;
 
-  @action
-  openExampleModal() {
+  openExampleModal = () => {
     this.showExampleModal = true;
-  }
+  };
 
-  @action
-  closeExampleModal() {
+  closeExampleModal = () => {
     this.showExampleModal = false;
-  }
+  };
 
-  @action
-  resetClickOutsideToEscape() {
+  resetClickOutsideToEscape = () => {
     this.clickOutsideToEscape = true;
-  }
+  };
 
-  @action
-  handleEscapeExampleModal(modal, event) {
+  handleEscapeExampleModal = (modal, event) => {
     const escapable =
       this.isEscapable &&
       ((this.clickOutsideToEscape && event instanceof MouseEvent) ||
@@ -49,10 +44,9 @@ export default class ApplicationController extends Controller {
     if (close) {
       modal.close();
     }
-  }
+  };
 
-  @action
-  loadExampleModal() {
+  loadExampleModal = () => {
     if (!this.loadDelay) {
       return;
     }
@@ -60,5 +54,5 @@ export default class ApplicationController extends Controller {
     return new Promise((resolve) => {
       later(resolve, 2000);
     });
-  }
+  };
 }

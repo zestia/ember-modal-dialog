@@ -2,7 +2,6 @@ import Component from '@glimmer/component';
 import { modifier } from 'ember-modifier';
 import { tracked } from '@glimmer/tracking';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
-import { action } from '@ember/object';
 import { all } from 'rsvp';
 import { waitFor } from '@ember/test-waiters';
 import { waitForAnimation } from '@zestia/animation-utils';
@@ -35,26 +34,23 @@ export default class ModalDialogComponent extends Component {
     return !!this.boxElement.querySelector('.modal-dialog');
   }
 
-  @action
-  async close() {
+  close = async () => {
     this.isShowing = false;
 
     await this._waitForAnimation();
 
     this.args.onClose?.();
-  }
+  };
 
-  @action
-  handleMouseDown(event) {
+  handleMouseDown = (event) => {
     this.lastMouseDownElement = event.target;
-  }
+  };
 
-  @action
-  handleMouseUp(event) {
+  handleMouseUp = (event) => {
     if (this.lastMouseDownElement === this.element) {
       this._escape(event);
     }
-  }
+  };
 
   registerElement = modifier((element) => {
     this.element = element;
