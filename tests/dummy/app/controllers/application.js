@@ -3,6 +3,7 @@
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
 import { Promise } from 'rsvp';
+import { action } from '@ember/object';
 import { later } from '@ember/runloop';
 
 export default class ApplicationController extends Controller {
@@ -13,19 +14,23 @@ export default class ApplicationController extends Controller {
   @tracked escapeOnFocusLeave = false;
   @tracked showExampleModal = false;
 
-  openExampleModal = () => {
+  @action
+  openExampleModal() {
     this.showExampleModal = true;
-  };
+  }
 
-  closeExampleModal = () => {
+  @action
+  closeExampleModal() {
     this.showExampleModal = false;
-  };
+  }
 
-  resetClickOutsideToEscape = () => {
+  @action
+  resetClickOutsideToEscape() {
     this.clickOutsideToEscape = true;
-  };
+  }
 
-  handleEscapeExampleModal = (modal, event) => {
+  @action
+  handleEscapeExampleModal(modal, event) {
     const escapable =
       this.isEscapable &&
       ((this.clickOutsideToEscape && event instanceof MouseEvent) ||
@@ -44,9 +49,10 @@ export default class ApplicationController extends Controller {
     if (close) {
       modal.close();
     }
-  };
+  }
 
-  loadExampleModal = () => {
+  @action
+  loadExampleModal() {
     if (!this.loadDelay) {
       return;
     }
@@ -54,5 +60,5 @@ export default class ApplicationController extends Controller {
     return new Promise((resolve) => {
       later(resolve, 2000);
     });
-  };
+  }
 }
