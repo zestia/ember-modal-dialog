@@ -38,7 +38,6 @@
     "deploy": "ember build --environment production && ember github-pages:commit --message \"Deploy gh-pages from commit $(git rev-parse HEAD)\" && git push origin gh-pages:gh-pages"
   },
   "dependencies": {
-    "@ember/render-modifiers": "^1.0.2",
     "@ember/test-waiters": "^3.0.0",
     "@zestia/animation-utils": "^3.0.2",
     "@zestia/ember-auto-focus": "^4.2.0",
