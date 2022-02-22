@@ -3,6 +3,7 @@
 ## 4.1.3
 
 - When body scroll lock is enabled, only allow scrolling on _scrollable_ children, not all children of the modal.
+- Remove `@ember/render-modifiers`
 
 ## 4.1.2
 
