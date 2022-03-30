@@ -37,7 +37,6 @@ https://zestia.github.io/ember-modal-dialog/
 ## Features
 
 - Focus trap ✔︎
-- Focus restoring ✔︎
 - Body scroll lock ✔︎
 - Loading state handling ✔︎
 - Optionally escapable ✔︎
@@ -49,7 +48,11 @@ https://zestia.github.io/ember-modal-dialog/
 ## Notes
 
 - This addon intentionally does not come with any styles.
-- Does not use `dialog` yet, because `::backdrop` do not work with CSS variables, nor are they animatable.
+- Does not use native `dialog` yet, because:
+  - Can't animate `::backdrop`
+  - Can't use `::backdrop` with CSS variables
+  - Does not provide a focus trap
+  - Does not provide a scroll lock
 
 ## Example
 
