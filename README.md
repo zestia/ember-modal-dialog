@@ -49,6 +49,7 @@ https://zestia.github.io/ember-modal-dialog/
 ## Notes
 
 - This addon intentionally does not come with any styles.
+- Does not use `dialog` yet, because `::backdrop` do not work with CSS variables, nor are they animatable.
 
 ## Example
 
@@ -74,7 +75,7 @@ The modal dialog component isn't designed to be used on its own, but rather used
     {{this.person.name}}
   {{/if}}
 
-  <button {{on "click" modal.close}}>
+  <button {{on 'click' modal.close}}>
     Close
   </button>
 </ModalDialog>
@@ -108,7 +109,7 @@ export default class ApplicationController extends Controller {
 
   @action
   confirmEscape() {
-    return confirm('Are you sure?')
+    return confirm('Are you sure?');
   }
 }
 ```
