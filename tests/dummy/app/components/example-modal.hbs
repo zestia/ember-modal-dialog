@@ -7,7 +7,12 @@
   {{#if modal.isLoading}}
     <p>Please wait...</p>
   {{else}}
-    <input aria-label="Example input" type="text" placeholder="Example input" />
+    <input
+      aria-label="Example input"
+      type="text"
+      placeholder="Example input"
+      {{auto-focus}}
+    />
 
     <div class="example-text">
       <p>
