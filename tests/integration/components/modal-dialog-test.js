@@ -67,28 +67,6 @@ module('modal-dialog', function (hooks) {
     });
   });
 
-  module('auto focus', function () {
-    test('default', async function (assert) {
-      assert.expect(1);
-
-      await render(hbs`<ModalDialog />`);
-
-      assert.dom('.modal-dialog__box').isFocused();
-    });
-
-    test('with child focus', async function (assert) {
-      assert.expect(1);
-
-      await render(hbs`
-        <ModalDialog>
-          <input {{auto-focus}} />
-        </ModalDialog>
-      `);
-
-      assert.dom('input').isFocused();
-    });
-  });
-
   module('notify root', function () {
     test('it works', async function (assert) {
       assert.expect(2);
@@ -127,7 +105,7 @@ module('modal-dialog', function (hooks) {
       await triggerEvent(window, 'blur');
       await triggerEvent(window, 'focus');
 
-      assert.deepEqual(document.activeElement, find('.modal-dialog__box'));
+      assert.deepEqual(document.activeElement, find('.external'));
     });
 
     test('with focusable elements', async function (assert) {
@@ -174,7 +152,7 @@ module('modal-dialog', function (hooks) {
 
         {{#if this.showModal}}
           <ModalDialog>
-             <button type="button" class="internal"></button>
+             <button type="button" class="internal" {{auto-focus}}></button>
           </ModalDialog>
         {{/if}}
       `);
@@ -191,7 +169,7 @@ module('modal-dialog', function (hooks) {
 
       this.set('showModal', true);
 
-      assert.dom('.modal-dialog__box').isFocused();
+      assert.dom('.internal').isFocused();
 
       this.set('showModal', false);
 
@@ -210,7 +188,7 @@ module('modal-dialog', function (hooks) {
       this.set('showModal', true);
       this.set('showButton', false);
 
-      assert.dom('.modal-dialog__box').isFocused();
+      assert.dom('.internal').isFocused();
 
       this.set('showModal', false);
 

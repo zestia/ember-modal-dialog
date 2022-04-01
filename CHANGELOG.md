@@ -4,6 +4,10 @@
 
 - Ember Auto Import 2x
 
+## 4.1.4
+
+- Remove `tabindex="0"` from the modal.
+
 ## 4.1.3
 
 - When body scroll lock is enabled, only allow scrolling on _scrollable_ children, not all children of the modal.
