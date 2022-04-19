@@ -1,26 +1,15 @@
 # @zestia/ember-modal-dialog
 
-<p>
-  <!--
-  <a href="https://github.com/zestia/ember-modal-dialog/actions/workflows/ci.yml">
-    <img src="https://github.com/zestia/ember-modal-dialog/actions/workflows/ci.yml/badge.svg">
-  </a>
-  -->
+[![Latest npm release][npm-badge]][npm-badge-url]
+[![GitHub Actions][github-actions-badge]][github-actions-url]
+[![Ember Observer][ember-observer-badge]][ember-observer-url]
 
-  <a href="https://david-dm.org/zestia/ember-modal-dialog#badge-embed">
-    <img src="https://david-dm.org/zestia/ember-modal-dialog.svg">
-  </a>
-
-  <a href="https://david-dm.org/zestia/ember-modal-dialog#dev-badge-embed">
-    <img src="https://david-dm.org/zestia/ember-modal-dialog/dev-status.svg">
-  </a>
-
-  <a href="https://emberobserver.com/addons/@zestia/ember-modal-dialog">
-    <img src="https://emberobserver.com/badges/-zestia-ember-modal-dialog.svg">
-  </a>
-
-  <img src="https://img.shields.io/badge/Ember-%3E%3D%203.16-brightgreen">
-</p>
+[npm-badge]: https://img.shields.io/npm/v/@zestia/ember-modal-dialog.svg
+[npm-badge-url]: https://www.npmjs.com/package/@zestia/ember-modal-dialog
+[github-actions-badge]: https://github.com/zestia/ember-modal-dialog/workflows/CI/badge.svg
+[github-actions-url]: https://github.com/zestia/ember-modal-dialog/actions
+[ember-observer-badge]: https://emberobserver.com/badges/-zestia-ember-modal-dialog.svg
+[ember-observer-url]: https://emberobserver.com/addons/@zestia/ember-modal-dialog
 
 This addon provides a simple Modal Dialog component.
 
