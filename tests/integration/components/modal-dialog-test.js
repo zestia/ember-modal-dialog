@@ -313,7 +313,7 @@ module('modal-dialog', function (hooks) {
         return deferred.promise;
       };
 
-      this.inserted = modifier(() => assert.step('inserted'));
+      this.inserted = modifier(() => assert.step('inserted'), { eager: false });
 
       await render(hbs`
         <ModalDialog
