@@ -1,14 +1,11 @@
 # Changelog
 
-## 4.2.1
-
-- Fix backtrack deprecation
-
 ## 4.2.0
 
 - Ember Auto Import 2x
 - Upgrade dependencies
 - Run ember-cli-update
+- Fix backtrack deprecation
 
 ## 4.1.4
 
