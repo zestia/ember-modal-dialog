@@ -13,13 +13,20 @@ export default class ModalDialogComponent extends Component {
   lastMouseDownElement = null;
 
   @tracked isInViewport = false;
-  @tracked isLoading = false;
+  @tracked isLoading = this.shouldLoad;
   @tracked isShowing = true;
 
   constructor() {
     super(...arguments);
     this.args.onReady?.(this.api);
-    this._load();
+
+    if (this.shouldLoad) {
+      this._load();
+    }
+  }
+
+  get shouldLoad() {
+    return typeof this.args.onLoad === 'function';
   }
 
   get api() {
@@ -224,12 +231,6 @@ export default class ModalDialogComponent extends Component {
   }
 
   async _load() {
-    if (typeof this.args.onLoad !== 'function') {
-      return;
-    }
-
-    this.isLoading = true;
-
     try {
       const data = await this.args.onLoad();
       this.args.onLoaded?.(data);

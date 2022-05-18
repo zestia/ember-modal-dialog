@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.2.1
+
+- Fix backtrack deprecation
+
 ## 4.2.0
 
 - Ember Auto Import 2x
