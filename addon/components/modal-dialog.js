@@ -147,14 +147,14 @@ export default class ModalDialogComponent extends Component {
         }
 
         const focusable = element.querySelectorAll(`
-        a[href],
-        button:not(:disabled),
-        textarea:not(:disabled),
-        input:not(:disabled),
-        select:not(:disabled),
-        [tabindex="0"],
-        [contenteditable="true"]
-      `);
+          a[href],
+          button:not(:disabled),
+          textarea:not(:disabled),
+          input:not(:disabled),
+          select:not(:disabled),
+          [tabindex="0"],
+          [contenteditable="true"]
+        `);
 
         const first = focusable.item(0);
         const last = focusable.item(focusable.length - 1);
