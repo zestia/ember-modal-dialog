@@ -26,6 +26,9 @@
   --modal-ani-speed: 300ms;
   --focus-outline-colour: red;
   --example-text-colour: darkgrey;
+  --space: 20px;
+  --width: 480px;
+  --height: 508px;
 }
 
 .example-text {
@@ -48,6 +51,15 @@
   right: 0;
 }
 
+.modal-dialog__box {
+  background-color: var(--modal-box-bg-colour);
+  border: 1px solid var(--modal-box-border-colour);
+  box-sizing: border-box;
+  width: var(--width);
+  padding: var(--space);
+  margin: var(--space);
+}
+
 .modal-dialog--showing {
   animation: fade-in var(--modal-ani-speed);
 }
@@ -56,22 +68,14 @@
   animation: fade-out var(--modal-ani-speed);
 }
 
-.modal-dialog__box--exceeds-viewport {
-  overflow-y: scroll;
-  max-height: 100%;
-}
-
 .modal-dialog--loading .modal-dialog__box {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 508px;
+  min-height: var(--height);
 }
 
-.modal-dialog__box {
-  background-color: var(--modal-box-bg-colour);
-  border: 1px solid var(--modal-box-border-colour);
-  box-sizing: border-box;
-  width: 480px;
-  padding: 20px;
+.modal-dialog__box--exceeds-viewport {
+  overflow-y: scroll;
+  max-height: 100%;
 }
