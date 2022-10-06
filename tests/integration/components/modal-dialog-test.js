@@ -47,11 +47,11 @@ module('modal-dialog', function (hooks) {
         </ModalDialog>
       `);
 
-      assert.dom('.modal-dialog').hasClass('modal-dialog--showing');
-      assert.dom('.modal-dialog').doesNotHaveClass('modal-dialog--loading');
+      assert.dom('.modal-dialog').hasAttribute('data-showing', 'true');
       assert.dom('.modal-dialog').hasClass('foo', 'splattributes');
       assert.dom('.modal-dialog__box').hasAttribute('role', 'dialog');
       assert.dom('.modal-dialog__box').hasAttribute('aria-modal', 'true');
+      assert.dom('.modal-dialog__box').hasAttribute('aria-busy', 'false');
 
       assert.deepEqual(keys(api), [
         'close',
@@ -259,9 +259,7 @@ module('modal-dialog', function (hooks) {
         </ModalDialog>
       `);
 
-      assert
-        .dom('.modal-dialog__box')
-        .doesNotHaveClass('modal-dialog__box--exceeds-viewport');
+      assert.dom('.modal-dialog__box').hasAttribute('data-in-viewport', 'true');
 
       find('.internal').innerHTML = '<br>'.repeat(10000);
 
@@ -269,7 +267,7 @@ module('modal-dialog', function (hooks) {
 
       assert
         .dom('.modal-dialog__box')
-        .hasClass('modal-dialog__box--exceeds-viewport');
+        .hasAttribute('data-in-viewport', 'false');
 
       getRootElement().parentNode.classList.remove('full-screen');
     });
@@ -347,15 +345,15 @@ module('modal-dialog', function (hooks) {
         </ModalDialog>
       `);
 
-      assert.dom('.modal-dialog').hasClass('modal-dialog--loading');
-      assert.dom('.modal-dialog').hasText('Please wait…');
+      assert.dom('.modal-dialog__box').hasAttribute('aria-busy', 'true');
+      assert.dom('.modal-dialog__box').hasText('Please wait…');
 
       deferred.resolve('World');
 
       await settled();
 
-      assert.dom('.modal-dialog').doesNotHaveClass('modal-dialog--loading');
-      assert.dom('.modal-dialog').hasText('Hello World');
+      assert.dom('.modal-dialog__box').hasAttribute('aria-busy', 'false');
+      assert.dom('.modal-dialog__box').hasText('Hello World');
     });
 
     test('failure', async function (assert) {
@@ -372,8 +370,8 @@ module('modal-dialog', function (hooks) {
         </ModalDialog>
       `);
 
-      assert.dom('.modal-dialog').doesNotHaveClass('modal-dialog--loading');
-      assert.dom('.modal-dialog').hasText('Failed sorry');
+      assert.dom('.modal-dialog__box').hasAttribute('aria-busy', 'false');
+      assert.dom('.modal-dialog__box').hasText('Failed sorry');
     });
 
     test('infinite revalidation', async function (assert) {

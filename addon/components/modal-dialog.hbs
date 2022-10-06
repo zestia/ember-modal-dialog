@@ -1,23 +1,18 @@
 {{! template-lint-disable no-down-event-binding no-invalid-interactive }}
 <div
-  class={{concat
-    "modal-dialog"
-    " modal-dialog--"
-    (if this.isShowing "showing" "hiding")
-    (if this.isLoading " modal-dialog--loading")
-  }}
+  class="modal-dialog"
+  data-showing="{{this.isShowing}}"
   {{on "mousedown" this.handleMouseDown}}
   {{on "mouseup" this.handleMouseUp}}
   {{this.registerElement}}
   ...attributes
 >
   <div
-    class={{concat
-      "modal-dialog__box"
-      (unless this.isInViewport " modal-dialog__box--exceeds-viewport")
-    }}
+    class="modal-dialog__box"
     role="dialog"
     aria-modal="true"
+    aria-busy="{{this.isLoading}}"
+    data-in-viewport="{{this.isInViewport}}"
     {{this.registerBoxElement}}
     {{this.notifyRoot}}
     {{this.bodyScrollLock}}
