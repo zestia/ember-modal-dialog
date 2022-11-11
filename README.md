@@ -69,27 +69,27 @@ The modal dialog component isn't designed to be used on its own, but rather used
 
 ## Arguments
 
-### `onReady`
+### `@onReady`
 
 Optional. This action exposes an API for full control over a modal dialog.
 
-### `onLoad`
+### `@onLoad`
 
 Optional. Fired when a modal is constructed and allows you to return a promise for any data that is required before the modal can display.
 
-### `onLoaded`
+### `@onLoaded`
 
 Optional. Fired after the request to load data was successful. Receives the result as an argument.
 
-### `onLoadError`
+### `@onLoadError`
 
 Optional. Fired when the request to load data fails. Receives the error as an argument.
 
-### `onClose`
+### `@onClose`
 
 Required. This action fires when `modal.close` has been called, _and_ any animations have run to hide the modal dialog.
 
-### `onEscape`
+### `@onEscape`
 
 Optional. Fired when escape is pressed. Receives the API as an argument. You can use the API to call `modal.close` for example.
 
