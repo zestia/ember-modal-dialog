@@ -71,7 +71,7 @@ The modal dialog component isn't designed to be used on its own, but rather used
 
 ### `@onReady`
 
-Optional. This action exposes an API for full control over a modal dialog.
+Optional. This action receives the API as a parameter, for full control over a modal dialog.
 
 ### `@onLoad`
 
