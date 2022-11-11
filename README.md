@@ -79,11 +79,11 @@ Optional. Fired when a modal is constructed and allows you to return a promise f
 
 ### `@onLoaded`
 
-Optional. Fired after the request to load data was successful. Receives the result as an argument.
+Optional. Fired after the request to load data was successful. Receives the result as a parameter.
 
 ### `@onLoadError`
 
-Optional. Fired when the request to load data fails. Receives the error as an argument.
+Optional. Fired when the request to load data fails. Receives the error as a parameter.
 
 ### `@onClose`
 
@@ -91,7 +91,7 @@ Required. This action fires when `modal.close` has been called, _and_ any animat
 
 ### `@onEscape`
 
-Optional. Fired when escape is pressed. Receives the API as an argument. You can use the API to call `modal.close` for example.
+Optional. Fired when escape is pressed. Receives the API as an parameter. You can use the API to call `modal.close` for example.
 
 ## API
 
