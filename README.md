@@ -38,7 +38,8 @@ https://zestia.github.io/ember-modal-dialog
 ## Notes
 
 - This addon intentionally does not come with any styles.
-- Does not use native `dialog` yet, because:
+- It is configured with [ember-test-waiters](https://github.com/emberjs/ember-test-waiters) so `await`ing in your test suite will just work.
+- Does not use native `dialog` _yet_, because:
   - Can't animate `::backdrop`
   - Can't use `::backdrop` with CSS variables
   - Does not provide a focus trap
@@ -50,23 +51,8 @@ The modal dialog component isn't designed to be used on its own, but rather used
 
 ```handlebars
 {{! my-modal.hbs }}
-<ModalDialog
-  @onClose={{@onClose}}
-  @onEscape={{@onEscape}}
-  @onLoad={{@onFetchPerson}}
-  @onLoaded={{this.loaded}}
-  @onLoadError={{this.failedToLoad}}
-  as |modal|
->
-  {{#if modal.isLoading}}
-    Loading person…
-  {{else if this.loadingError}}
-    Unable to load person because
-    {{this.loadingError}}
-  {{else}}
-    Hello
-    {{this.person.name}}
-  {{/if}}
+<ModalDialog @onClose={{@onClose}} as |modal|>
+  Content
 
   <button {{on 'click' modal.close}}>
     Close
@@ -74,46 +60,53 @@ The modal dialog component isn't designed to be used on its own, but rather used
 </ModalDialog>
 ```
 
-```javascript
-// my-modal.js
-export default class MyModal extends Component {
-  @tracked person;
-  @tracked loadingError;
-
-  @action
-  loaded(person) {
-    this.person = person;
-  }
-
-  @action
-  failedToLoad(error) {
-    this.loadingError = error.message;
-  }
-}
-```
-
-```javascript
-// application/controller.js
-export default class ApplicationController extends Controller {
-  @action
-  loadPerson() {
-    // Fetch remote data
-  }
-
-  @action
-  confirmEscape() {
-    return confirm('Are you sure?');
-  }
-}
-```
-
 ```handlebars
 {{! application/template.hbs }}
 {{#if this.showMyModal}}
-  <MyModal
-    @onClose={{this.hideMyModal}}
-    @onEscape={{this.confirmEscape}}
-    @onFetchPerson={{fn this.loadPerson 123}}
-  />
+  <MyModal @onClose={{this.hideMyModal}} />
 {{/if}}
 ```
+
+## Arguments
+
+### `onReady`
+
+Optional. This action exposes an API for full control over a modal dialog.
+
+### `onLoad`
+
+Optional. Fired when a modal is constructed and allows you to return a promise for any data that is required before the modal can display.
+
+### `onLoaded`
+
+Optional. Fired after the request to load data was successful. Receives the result as an argument.
+
+### `onLoadError`
+
+Optional. Fired when the request to load data fails. Receives the error as an argument.
+
+### `onClose`
+
+Required. This action fires when `modal.close` has been called, _and_ any animations have run to hide the modal dialog.
+
+### `onEscape`
+
+Optional. Fired when escape is pressed. Receives the API as an argument. You can use the API to call `modal.close` for example.
+
+## API
+
+### `close`
+
+Call this when you want to close the modal. It will first wait for any animations on the DOM element, and then `@onClose` will be fired. Allowing you to physically remove the modal from the DOM.
+
+### `isLoading`
+
+Whether the data required for the modal dialog to display is loading.
+
+### `element`
+
+The DOM element of the modal dialog component.
+
+### `boxElement`
+
+The inner DOM element of the modal dialog component, that contains the content.
