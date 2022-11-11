@@ -1,8 +1,9 @@
 # @zestia/ember-modal-dialog
 
 [![Latest npm release][npm-badge]][npm-badge-url]
-[![GitHub Actions][github-actions-badge]][github-actions-url]
 [![Ember Observer][ember-observer-badge]][ember-observer-url]
+
+<!-- [![GitHub Actions][github-actions-badge]][github-actions-url] -->
 
 [npm-badge]: https://img.shields.io/npm/v/@zestia/ember-modal-dialog.svg
 [npm-badge-url]: https://www.npmjs.com/package/@zestia/ember-modal-dialog
@@ -21,7 +22,7 @@ ember install @zestia/ember-modal-dialog
 
 ## Demo
 
-https://zestia.github.io/ember-modal-dialog/
+https://zestia.github.io/ember-modal-dialog
 
 ## Features
 
