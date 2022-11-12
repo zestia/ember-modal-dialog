@@ -89,11 +89,11 @@ Optional. Fired when the request to load data fails. Receives the error as a par
 
 #### `@onClose`
 
-Required. This action fires when `modal.close` has been called, _and_ any animations have run to hide the modal dialog.
+Required. This action fires when `close` has been called, _and_ any animations have run to hide the modal dialog.
 
 #### `@onEscape`
 
-Optional. Fired when escape is pressed. Receives the API as an parameter. You can use the API to call `modal.close` for example.
+Optional. Fired when escape is pressed. Receives the API as an parameter. You can use the API to call `close` for example.
 
 ### API
 
