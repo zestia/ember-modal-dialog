@@ -77,17 +77,6 @@ export default class ModalDialogComponent extends Component {
     { eager: false }
   );
 
-  notifyRoot = modifier(
-    () => {
-      const root = document.querySelector(':root');
-
-      root.classList.add('has-modal');
-
-      return () => root.classList.remove('has-modal');
-    },
-    { eager: false }
-  );
-
   bodyScrollLock = modifier(
     (element) => {
       disableBodyScroll(element, {

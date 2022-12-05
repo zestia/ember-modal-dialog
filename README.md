@@ -30,7 +30,6 @@ https://zestia.github.io/ember-modal-dialog
 - Body scroll lock ✔︎
 - Loading state handling ✔︎
 - Optionally escapable ✔︎
-- Root element notification ✔︎
 - Exceeds viewport detection ✔︎
 - Animatable (includes test waiters) ✔︎
 - Simple API ✔︎

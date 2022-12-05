@@ -67,24 +67,6 @@ module('modal-dialog', function (hooks) {
     });
   });
 
-  module('notify root', function () {
-    test('it works', async function (assert) {
-      assert.expect(2);
-
-      await render(hbs`
-        {{#if this.show}}
-          <ModalDialog />
-        {{/if}}
-      `);
-
-      assert.dom(document.documentElement).doesNotHaveClass('has-modal');
-
-      this.set('show', true);
-
-      assert.dom(document.documentElement).hasClass('has-modal');
-    });
-  });
-
   module('internal focus', function () {
     test('no focusable elements', async function (assert) {
       assert.expect(1);

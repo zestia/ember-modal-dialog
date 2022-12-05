@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.4.0
+
+- Removes `has-modal` class name from root element (use `:has` instead or a polyfill)
+
 ## 4.3.0
 
 - Remove BEM classes in favour of data attributes
