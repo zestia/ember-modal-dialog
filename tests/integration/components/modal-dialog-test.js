@@ -41,7 +41,6 @@ module('modal-dialog', function (hooks) {
         <ModalDialog
           class="foo"
           @onReady={{this.handleReady}}
-          as |modal|
         >
           Content goes here
         </ModalDialog>
@@ -98,8 +97,8 @@ module('modal-dialog', function (hooks) {
 
         {{#if this.show}}
           <ModalDialog>
-            <input class="internal1">
-            <input class="internal2">
+            <input class="internal1" aria-label="Example 1">
+            <input class="internal2" aria-label="Example 2">
           </ModalDialog>
         {{/if}}
       `);
@@ -236,7 +235,7 @@ module('modal-dialog', function (hooks) {
       getRootElement().parentNode.classList.add('full-screen');
 
       await render(hbs`
-        <ModalDialog as |modal|>
+        <ModalDialog>
           <div class="internal"></div>
         </ModalDialog>
       `);
