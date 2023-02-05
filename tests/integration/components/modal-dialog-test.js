@@ -16,7 +16,7 @@ import {
   triggerKeyEvent
 } from '@ember/test-helpers';
 
-const { keys } = Object;
+const { keys, isFrozen } = Object;
 
 module('modal-dialog', function (hooks) {
   setupRenderingTest(hooks);
@@ -515,6 +515,29 @@ module('modal-dialog', function (hooks) {
       await triggerKeyEvent(window, 'keydown', 'Escape');
 
       assert.verifySteps(['escaped 2']);
+    });
+  });
+
+  module('api', function () {
+    test('api', async function (assert) {
+      assert.expect(2);
+
+      this.capture = (api) => (this.api = api);
+
+      await render(hbs`
+        <ModalDialog as |modal|>
+          {{this.capture modal}}
+        </ModalDialog>
+      `);
+
+      assert.deepEqual(keys(this.api), [
+        'close',
+        'isLoading',
+        'element',
+        'boxElement'
+      ]);
+
+      assert.true(isFrozen(this.api));
     });
   });
 });

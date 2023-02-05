@@ -6,6 +6,7 @@ import { all } from 'rsvp';
 import { action } from '@ember/object';
 import { waitFor } from '@ember/test-waiters';
 import { waitForAnimation } from '@zestia/animation-utils';
+const { freeze } = Object;
 
 export default class ModalDialogComponent extends Component {
   element = null;
@@ -30,12 +31,12 @@ export default class ModalDialogComponent extends Component {
   }
 
   get api() {
-    return {
+    return freeze({
       close: this.close,
       isLoading: this.isLoading,
       element: this.element,
       boxElement: this.boxElement
-    };
+    });
   }
 
   get containsModal() {
