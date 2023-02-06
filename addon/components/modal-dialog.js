@@ -6,16 +6,17 @@ import { all } from 'rsvp';
 import { action } from '@ember/object';
 import { waitFor } from '@ember/test-waiters';
 import { waitForAnimation } from '@zestia/animation-utils';
-const { freeze } = Object;
+const { seal, assign } = Object;
 
 export default class ModalDialogComponent extends Component {
-  element = null;
-  boxElement = null;
-  lastMouseDownElement = null;
-
   @tracked isInViewport = false;
   @tracked isLoading = this.shouldLoad;
   @tracked isShowing = true;
+
+  _api = {};
+  element = null;
+  boxElement = null;
+  lastMouseDownElement = null;
 
   constructor() {
     super(...arguments);
@@ -26,17 +27,19 @@ export default class ModalDialogComponent extends Component {
     }
   }
 
-  get shouldLoad() {
-    return typeof this.args.onLoad === 'function';
+  get api() {
+    return seal(
+      assign(this._api, {
+        close: this.close,
+        isLoading: this.isLoading,
+        element: this.element,
+        boxElement: this.boxElement
+      })
+    );
   }
 
-  get api() {
-    return freeze({
-      close: this.close,
-      isLoading: this.isLoading,
-      element: this.element,
-      boxElement: this.boxElement
-    });
+  get shouldLoad() {
+    return typeof this.args.onLoad === 'function';
   }
 
   get containsModal() {

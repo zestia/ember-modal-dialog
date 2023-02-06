@@ -16,7 +16,7 @@ import {
   triggerKeyEvent
 } from '@ember/test-helpers';
 
-const { keys, isFrozen } = Object;
+const { keys, isSealed } = Object;
 
 module('modal-dialog', function (hooks) {
   setupRenderingTest(hooks);
@@ -537,7 +537,7 @@ module('modal-dialog', function (hooks) {
         'boxElement'
       ]);
 
-      assert.true(isFrozen(this.api));
+      assert.true(isSealed(this.api));
     });
   });
 });
