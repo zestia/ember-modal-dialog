@@ -236,9 +236,6 @@ export default class ModalDialogComponent extends Component {
 
   @waitFor
   _waitForAnimation() {
-    return all([
-      waitForAnimation(this.element),
-      waitForAnimation(this.boxElement)
-    ]);
+    return waitForAnimation(this.element, { subtree: true, maybe: true });
   }
 }
