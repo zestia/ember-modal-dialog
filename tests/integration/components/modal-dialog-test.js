@@ -404,15 +404,16 @@ module('modal-dialog', function (hooks) {
       assert.expect(2);
 
       await render(hbs`
+        {{! template-lint-disable no-forbidden-elements }}
         <style>
-        @keyframes ani {
-          to {
-            margin-left: 10px
+          @keyframes ani {
+            to {
+              margin-left: 10px
+            }
           }
-        }
-        .animation {
-          animation: ani 1s infinite;
-        }
+          .animation {
+            animation: ani 1s infinite;
+          }
         </style>
         <ModalDialog @onClose={{this.close}} as |modal|>
           <div class="animation"></div>
