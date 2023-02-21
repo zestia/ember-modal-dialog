@@ -3,6 +3,7 @@
 ## 4.4.0
 
 - Removes `has-modal` class name from root element (use `:has` instead or a polyfill)
+- Updates animation utils
 
 ## 4.3.0
 
