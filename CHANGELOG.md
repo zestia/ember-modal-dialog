@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.4.1
+
+- Add fix & regression test for 4.4.0 which would hang when closing in some circumstances
+
 ## 4.4.0
 
 - Removes `has-modal` class name from root element (use `:has` instead or a polyfill)

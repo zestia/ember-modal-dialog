@@ -5,6 +5,7 @@ import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 import { action } from '@ember/object';
 import { waitFor } from '@ember/test-waiters';
 import { waitForAnimation } from '@zestia/animation-utils';
+import { all } from 'rsvp';
 const { seal, assign } = Object;
 
 export default class ModalDialogComponent extends Component {
@@ -235,6 +236,9 @@ export default class ModalDialogComponent extends Component {
 
   @waitFor
   _waitForAnimation() {
-    return waitForAnimation(this.element, { subtree: true, maybe: true });
+    return all([
+      waitForAnimation(this.element, { maybe: true }),
+      waitForAnimation(this.boxElement, { maybe: true })
+    ]);
   }
 }

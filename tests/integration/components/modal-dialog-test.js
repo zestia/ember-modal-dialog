@@ -31,7 +31,7 @@ module('modal-dialog', function (hooks) {
 
   module('rendering', function () {
     test('it works', async function (assert) {
-      assert.expect(7);
+      assert.expect(6);
 
       let api;
 
@@ -58,11 +58,6 @@ module('modal-dialog', function (hooks) {
         'element',
         'boxElement'
       ]);
-
-      await waitForAnimation('.modal-dialog', { animationName: 'fade-in' });
-      await settled();
-
-      assert.true(true, 'does not use a test waiter');
     });
   });
 
@@ -382,7 +377,7 @@ module('modal-dialog', function (hooks) {
 
   module('closing', function () {
     test('waits for animation', async function (assert) {
-      assert.expect(3);
+      assert.expect(4);
 
       await render(hbs`
         <ModalDialog @onClose={{this.close}} as |modal|>
@@ -394,11 +389,38 @@ module('modal-dialog', function (hooks) {
 
       assert.verifySteps([]);
 
-      await waitForAnimation('.modal-dialog', {
+      const animations = await waitForAnimation('.modal-dialog', {
         animationName: 'fade-out'
       });
 
+      assert.strictEqual(animations.length, 1);
+
       await settled();
+
+      assert.verifySteps(['closed']);
+    });
+
+    test('does not accidentally wait for child animations', async function (assert) {
+      assert.expect(2);
+
+      await render(hbs`
+        <style>
+        @keyframes ani {
+          to {
+            margin-left: 10px
+          }
+        }
+        .animation {
+          animation: ani 1s infinite;
+        }
+        </style>
+        <ModalDialog @onClose={{this.close}} as |modal|>
+          <div class="animation"></div>
+          <button type="button" {{on "click" modal.close}}>Close</button>
+        </ModalDialog>
+      `);
+
+      await click('button');
 
       assert.verifySteps(['closed']);
     });
