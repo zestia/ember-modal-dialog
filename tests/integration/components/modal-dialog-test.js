@@ -16,8 +16,6 @@ import {
   triggerKeyEvent
 } from '@ember/test-helpers';
 
-const { keys, isSealed } = Object;
-
 module('modal-dialog', function (hooks) {
   setupRenderingTest(hooks);
 
@@ -31,17 +29,10 @@ module('modal-dialog', function (hooks) {
 
   module('rendering', function () {
     test('it works', async function (assert) {
-      assert.expect(6);
-
-      let api;
-
-      this.handleReady = (modal) => (api = modal);
+      assert.expect(5);
 
       await render(hbs`
-        <ModalDialog
-          class="foo"
-          @onReady={{this.handleReady}}
-        >
+        <ModalDialog class="foo">
           Content goes here
         </ModalDialog>
       `);
@@ -51,13 +42,6 @@ module('modal-dialog', function (hooks) {
       assert.dom('.modal-dialog__box').hasAttribute('role', 'dialog');
       assert.dom('.modal-dialog__box').hasAttribute('aria-modal', 'true');
       assert.dom('.modal-dialog__box').hasAttribute('aria-busy', 'false');
-
-      assert.deepEqual(keys(api), [
-        'close',
-        'isLoading',
-        'element',
-        'boxElement'
-      ]);
     });
   });
 
@@ -543,7 +527,7 @@ module('modal-dialog', function (hooks) {
 
   module('api', function () {
     test('api', async function (assert) {
-      assert.expect(2);
+      assert.expect(4);
 
       this.capture = (api) => (this.api = api);
 
@@ -553,14 +537,10 @@ module('modal-dialog', function (hooks) {
         </ModalDialog>
       `);
 
-      assert.deepEqual(keys(this.api), [
-        'close',
-        'isLoading',
-        'element',
-        'boxElement'
-      ]);
-
-      assert.true(isSealed(this.api));
+      assert.strictEqual(typeof this.api.close, 'function');
+      assert.false(this.api.isLoading);
+      assert.strictEqual(this.api.element, find('.modal-dialog'));
+      assert.strictEqual(this.api.boxElement, find('.modal-dialog__box'));
     });
   });
 });

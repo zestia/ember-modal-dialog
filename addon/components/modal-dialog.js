@@ -6,17 +6,15 @@ import { action } from '@ember/object';
 import { waitFor } from '@ember/test-waiters';
 import { waitForAnimation } from '@zestia/animation-utils';
 import { all } from 'rsvp';
-const { seal, assign } = Object;
 
 export default class ModalDialogComponent extends Component {
-  @tracked isInViewport = false;
+  @tracked isInViewport;
   @tracked isLoading = this.shouldLoad;
   @tracked isShowing = true;
 
-  _api = {};
-  element = null;
-  boxElement = null;
-  lastMouseDownElement = null;
+  element;
+  boxElement;
+  lastMouseDownElement;
 
   constructor() {
     super(...arguments);
@@ -25,17 +23,6 @@ export default class ModalDialogComponent extends Component {
     if (this.shouldLoad) {
       this._load();
     }
-  }
-
-  get api() {
-    return seal(
-      assign(this._api, {
-        close: this.close,
-        isLoading: this.isLoading,
-        element: this.element,
-        boxElement: this.boxElement
-      })
-    );
   }
 
   get shouldLoad() {
@@ -241,4 +228,20 @@ export default class ModalDialogComponent extends Component {
       waitForAnimation(this.boxElement, { maybe: true })
     ]);
   }
+
+  get _api() {
+    return {
+      close: this.close,
+      isLoading: this.isLoading,
+      element: this.element,
+      boxElement: this.boxElement
+    };
+  }
+
+  api = new Proxy(this, {
+    get(target, key) {
+      return target._api[key];
+    },
+    set() {}
+  });
 }
