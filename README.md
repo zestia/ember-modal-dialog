@@ -92,7 +92,7 @@ Required. This action fires when `close` has been called, _and_ any animations h
 
 #### `@onEscape`
 
-Optional. Fired when escape is pressed. Receives the API as an parameter. You can use the API to call `close` for example.
+Optional. Fired when escape is pressed or the user clicks outside the dialog box. You can use the API to call `close` for example.
 
 ### API
 
