@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.5.0
+
+- Run `ember-cli-update`
+
 ## 4.4.1
 
 - Add fix & regression test for 4.4.0 which would hang when closing in some circumstances
