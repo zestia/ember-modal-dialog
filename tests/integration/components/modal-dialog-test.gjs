@@ -22,8 +22,6 @@ import {
 module('modal-dialog', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function (assert) {});
-
   module('rendering', function () {
     test('it works', async function (assert) {
       assert.expect(5);
@@ -383,7 +381,7 @@ module('modal-dialog', function (hooks) {
     });
   });
 
-  module('closing', function () {
+  module('closing', function (hooks) {
     let close;
 
     hooks.beforeEach(function (assert) {
