@@ -1,16 +1,19 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import hbs from 'htmlbars-inline-precompile';
 import waitForAnimation from 'dummy/tests/helpers/wait-for-animation';
-import { helper } from '@ember/component/helper';
 import { reject, resolve, defer } from 'rsvp';
 import { modifier } from 'ember-modifier';
+import ModalDialog from '@zestia/ember-modal-dialog/components/modal-dialog';
+import autoFocus from '@zestia/ember-auto-focus/modifiers/auto-focus';
+import { on } from '@ember/modifier';
+import { tracked } from '@glimmer/tracking';
 import {
   click,
   find,
   focus,
   getRootElement,
   render,
+  rerender,
   settled,
   triggerEvent,
   triggerKeyEvent
@@ -19,23 +22,17 @@ import {
 module('modal-dialog', function (hooks) {
   setupRenderingTest(hooks);
 
-  hooks.beforeEach(function (assert) {
-    const capture = helper(([arg]) => (this.captured = arg));
-
-    this.owner.register('helper:capture', capture);
-
-    this.close = () => assert.step('closed');
-  });
+  hooks.beforeEach(function (assert) {});
 
   module('rendering', function () {
     test('it works', async function (assert) {
       assert.expect(5);
 
-      await render(hbs`
+      await render(<template>
         <ModalDialog class="foo">
           Content goes here
         </ModalDialog>
-      `);
+      </template>);
 
       assert.dom('.modal-dialog').hasAttribute('data-showing', 'true');
       assert.dom('.modal-dialog').hasClass('foo', 'splattributes');
@@ -49,19 +46,22 @@ module('modal-dialog', function (hooks) {
     test('no focusable elements', async function (assert) {
       assert.expect(1);
 
-      await render(hbs`
+      const state = new (class {
+        @tracked show;
+      })();
+
+      await render(<template>
         <button type="button" class="external"></button>
 
-        {{#if this.show}}
+        {{#if state.show}}
           <ModalDialog />
         {{/if}}
-      `);
+      </template>);
 
       await focus('.external');
 
-      this.set('show', true);
+      state.show = true;
 
-      await settled();
       await triggerEvent(window, 'blur');
       await triggerEvent(window, 'focus');
 
@@ -71,22 +71,25 @@ module('modal-dialog', function (hooks) {
     test('with focusable elements', async function (assert) {
       assert.expect(1);
 
-      await render(hbs`
+      const state = new (class {
+        @tracked show;
+      })();
+
+      await render(<template>
         <button type="button" class="external"></button>
 
-        {{#if this.show}}
+        {{#if state.show}}
           <ModalDialog>
-            <input class="internal1" aria-label="Example 1">
-            <input class="internal2" aria-label="Example 2">
+            <input class="internal1" aria-label="Example 1" />
+            <input class="internal2" aria-label="Example 2" />
           </ModalDialog>
         {{/if}}
-      `);
+      </template>);
 
       await focus('.external');
 
-      this.set('show', true);
+      state.show = true;
 
-      await settled();
       await focus('.internal2');
       await triggerEvent(window, 'blur');
       await triggerEvent(window, 'focus');
@@ -97,41 +100,52 @@ module('modal-dialog', function (hooks) {
     test('ie', async function (assert) {
       assert.expect(0);
 
-      await render(hbs`<ModalDialog />`);
+      await render(<template><ModalDialog /></template>);
 
       await triggerEvent(window, 'focus');
     });
   });
 
   module('external focus', function (hooks) {
-    hooks.beforeEach(async function () {
-      await render(hbs`
-        {{#if this.showButton}}
+    let state;
+
+    hooks.beforeEach(function () {
+      state = new (class {
+        @tracked showButton;
+        @tracked showModal;
+      })();
+
+      return render(<template>
+        {{#if state.showButton}}
           <button type="button" class="external"></button>
         {{/if}}
 
-        {{#if this.showModal}}
+        {{#if state.showModal}}
           <ModalDialog>
-             <button type="button" class="internal" {{auto-focus}}></button>
+            <button type="button" class="internal" {{autoFocus}}></button>
           </ModalDialog>
         {{/if}}
-      `);
+      </template>);
     });
 
     test('focus is restored after close', async function (assert) {
       assert.expect(3);
 
-      this.set('showButton', true);
+      state.showButton = true;
 
       await focus('.external');
 
       assert.dom('.external').isFocused();
 
-      this.set('showModal', true);
+      state.showModal = true;
+
+      await rerender();
 
       assert.dom('.internal').isFocused();
 
-      this.set('showModal', false);
+      state.showModal = false;
+
+      await rerender();
 
       assert.dom('.external').isFocused();
     });
@@ -139,26 +153,30 @@ module('modal-dialog', function (hooks) {
     test('does not blow up', async function (assert) {
       assert.expect(3);
 
-      this.set('showButton', true);
+      state.showButton = true;
 
       await focus('.external');
 
       assert.dom('.external').isFocused();
 
-      this.set('showModal', true);
-      this.set('showButton', false);
+      state.showModal = true;
+      state.showButton = false;
+
+      await rerender();
 
       assert.dom('.internal').isFocused();
 
-      this.set('showModal', false);
+      state.showModal = false;
+
+      await rerender();
 
       assert.dom(document.body).isFocused();
     });
   });
 
   module('focus trap', function (hooks) {
-    hooks.beforeEach(async function () {
-      await render(hbs`
+    hooks.beforeEach(function () {
+      return render(<template>
         <button type="button" class="external"></button>
 
         <ModalDialog>
@@ -166,7 +184,7 @@ module('modal-dialog', function (hooks) {
           <button type="button" class="second"></button>
           <button type="button" class="third"></button>
         </ModalDialog>
-     `);
+      </template>);
     });
 
     test('tabbing forwards', async function (assert) {
@@ -192,13 +210,13 @@ module('modal-dialog', function (hooks) {
     test('nested modals', async function (assert) {
       assert.expect(1);
 
-      await render(hbs`
+      await render(<template>
         <ModalDialog>
           <ModalDialog class="nested">
             <button type="button"></button>
           </ModalDialog>
         </ModalDialog>
-      `);
+      </template>);
 
       await focus('.nested button');
       await triggerKeyEvent('.nested .modal-dialog__box', 'keydown', 'Tab');
@@ -213,11 +231,11 @@ module('modal-dialog', function (hooks) {
 
       getRootElement().parentNode.classList.add('full-screen');
 
-      await render(hbs`
+      await render(<template>
         <ModalDialog>
           <div class="internal"></div>
         </ModalDialog>
-      `);
+      </template>);
 
       assert.dom('.modal-dialog__box').hasAttribute('data-in-viewport', 'true');
 
@@ -237,21 +255,25 @@ module('modal-dialog', function (hooks) {
     test('it works', async function (assert) {
       assert.expect(3);
 
-      await render(hbs`
-        {{#if this.show}}
+      const state = new (class {
+        @tracked show;
+      })();
+
+      await render(<template>
+        {{#if state.show}}
           <ModalDialog />
         {{/if}}
-      `);
+      </template>);
 
       assert.dom(document.body).hasStyle({ overflow: 'visible' });
 
-      this.set('show', true);
+      state.show = true;
 
       await settled();
 
       assert.dom(document.body).hasStyle({ overflow: 'hidden' });
 
-      this.set('show', false);
+      state.show = false;
 
       await settled();
 
@@ -265,20 +287,19 @@ module('modal-dialog', function (hooks) {
 
       const deferred = defer();
 
-      this.load = () => {
+      const load = () => {
         assert.step('load');
 
         return deferred.promise;
       };
 
-      this.inserted = modifier(() => assert.step('inserted'), { eager: false });
+      const inserted = modifier(() => assert.step('inserted'), {
+        eager: false
+      });
 
-      await render(hbs`
-        <ModalDialog
-          @onLoad={{this.load}}
-          {{this.inserted}}
-        />
-      `);
+      await render(<template>
+        <ModalDialog @onLoad={{load}} {{inserted}} />
+      </template>);
 
       assert.verifySteps(['load', 'inserted']);
     });
@@ -286,24 +307,25 @@ module('modal-dialog', function (hooks) {
     test('success', async function (assert) {
       assert.expect(4);
 
+      const state = new (class {
+        @tracked name;
+      })();
+
       const deferred = defer();
 
-      this.load = () => deferred.promise;
-      this.loaded = (data) => (this.name = data);
+      const load = () => deferred.promise;
+      const loaded = (data) => (state.name = data);
 
-      await render(hbs`
-        <ModalDialog
-          @onLoad={{this.load}}
-          @onLoaded={{this.loaded}}
-          as |modal|
-        >
+      await render(<template>
+        <ModalDialog @onLoad={{load}} @onLoaded={{loaded}} as |modal|>
           {{#if modal.isLoading}}
             Please wait…
           {{else}}
-            Hello {{this.name}}
+            Hello
+            {{state.name}}
           {{/if}}
         </ModalDialog>
-      `);
+      </template>);
 
       assert.dom('.modal-dialog__box').hasAttribute('aria-busy', 'true');
       assert.dom('.modal-dialog__box').hasText('Please wait…');
@@ -319,16 +341,21 @@ module('modal-dialog', function (hooks) {
     test('failure', async function (assert) {
       assert.expect(2);
 
-      this.load = () => reject({ message: 'sorry' });
-      this.loadError = (error) => this.set('error', error);
+      const state = new (class {
+        @tracked error;
+      })();
 
-      await render(hbs`
-        <ModalDialog @onLoad={{this.load}} @onLoadError={{this.loadError}}>
-          {{#if this.error}}
-            Failed {{this.error.message}}
+      const load = () => reject({ message: 'sorry' });
+      const loadError = (error) => (state.error = error);
+
+      await render(<template>
+        <ModalDialog @onLoad={{load}} @onLoadError={{loadError}}>
+          {{#if state.error}}
+            Failed
+            {{state.error.message}}
           {{/if}}
         </ModalDialog>
-      `);
+      </template>);
 
       assert.dom('.modal-dialog__box').hasAttribute('aria-busy', 'false');
       assert.dom('.modal-dialog__box').hasText('Failed sorry');
@@ -347,27 +374,30 @@ module('modal-dialog', function (hooks) {
         throw new Error('autotracking.mutation-after-consumption');
       };
 
-      this.handleReady = () => {};
-      this.load = () => resolve();
+      const handleReady = () => {};
+      const load = () => resolve();
 
-      await render(hbs`
-        <ModalDialog
-          @onReady={{this.handleReady}}
-          @onLoad={{@onLoad}}
-        />
-      `);
+      await render(<template>
+        <ModalDialog @onReady={{handleReady}} @onLoad={{load}} />
+      </template>);
     });
   });
 
   module('closing', function () {
+    let close;
+
+    hooks.beforeEach(function (assert) {
+      close = () => assert.step('closed');
+    });
+
     test('waits for animation', async function (assert) {
       assert.expect(4);
 
-      await render(hbs`
-        <ModalDialog @onClose={{this.close}} as |modal|>
+      await render(<template>
+        <ModalDialog @onClose={{close}} as |modal|>
           <button type="button" {{on "click" modal.close}}>Close</button>
         </ModalDialog>
-      `);
+      </template>);
 
       click('button');
 
@@ -387,23 +417,17 @@ module('modal-dialog', function (hooks) {
     test('does not accidentally wait for child animations', async function (assert) {
       assert.expect(2);
 
-      await render(hbs`
+      await render(<template>
         {{! template-lint-disable no-forbidden-elements }}
         <style>
-          @keyframes ani {
-            to {
-              margin-left: 10px
-            }
-          }
-          .animation {
-            animation: ani 1s infinite;
-          }
+          @keyframes ani { to { margin-left: 10px } } .animation { animation:
+          ani 1s infinite; }
         </style>
-        <ModalDialog @onClose={{this.close}} as |modal|>
+        <ModalDialog @onClose={{close}} as |modal|>
           <div class="animation"></div>
           <button type="button" {{on "click" modal.close}}>Close</button>
         </ModalDialog>
-      `);
+      </template>);
 
       await click('button');
 
@@ -413,17 +437,19 @@ module('modal-dialog', function (hooks) {
     test('test waiter', async function (assert) {
       assert.expect(1);
 
-      this.close = () => this.set('show', false);
+      const state = new (class {
+        @tracked show = true;
+      })();
 
-      this.show = true;
+      const close = () => (state.show = false);
 
-      await render(hbs`
-        {{#if this.show}}
-          <ModalDialog @onClose={{this.close}} as |modal|>
+      await render(<template>
+        {{#if state.show}}
+          <ModalDialog @onClose={{close}} as |modal|>
             <button type="button" {{on "click" modal.close}}>Close</button>
           </ModalDialog>
         {{/if}}
-      `);
+      </template>);
 
       await click('button');
 
@@ -435,17 +461,13 @@ module('modal-dialog', function (hooks) {
 
       let api;
 
-      this.handleReady = (modal) => (api = modal);
+      const handleReady = (modal) => (api = modal);
 
-      await render(hbs`
-        <ModalDialog
-          @onReady={{this.handleReady}}
-          @onClose={{this.close}}
-          as |modal|
-        >
+      await render(<template>
+        <ModalDialog @onReady={{handleReady}} @onClose={{close}} as |modal|>
           <button type="button" {{on "click" modal.close}}>Close</button>
         </ModalDialog>
-      `);
+      </template>);
 
       await api.close();
 
@@ -455,11 +477,11 @@ module('modal-dialog', function (hooks) {
     test('missing close argument', async function (assert) {
       assert.expect(1);
 
-      await render(hbs`
+      await render(<template>
         <ModalDialog @onClose={{null}} as |modal|>
           <button type="button" {{on "click" modal.close}}>Close</button>
         </ModalDialog>
-      `);
+      </template>);
 
       await click('button');
 
@@ -471,10 +493,10 @@ module('modal-dialog', function (hooks) {
     test('pressing escape', async function (assert) {
       assert.expect(2);
 
-      this.escape = (api, event) =>
+      const escape = (api, event) =>
         assert.step(`${event instanceof KeyboardEvent}`);
 
-      await render(hbs`<ModalDialog @onEscape={{this.escape}} />`);
+      await render(<template><ModalDialog @onEscape={{escape}} /></template>);
 
       await triggerKeyEvent(window, 'keydown', 'Escape');
 
@@ -484,10 +506,10 @@ module('modal-dialog', function (hooks) {
     test('clicking outside', async function (assert) {
       assert.expect(2);
 
-      this.escape = (api, event) =>
+      const escape = (api, event) =>
         assert.step(`${event instanceof MouseEvent}`);
 
-      await render(hbs`<ModalDialog @onEscape={{this.escape}} />`);
+      await render(<template><ModalDialog @onEscape={{escape}} /></template>);
 
       await click('.modal-dialog');
 
@@ -497,9 +519,9 @@ module('modal-dialog', function (hooks) {
     test('clicking inside and releasing outside', async function (assert) {
       assert.expect(1);
 
-      this.escape = () => assert.step('escaped');
+      const escape = () => assert.step('escaped');
 
-      await render(hbs`<ModalDialog @onEscape={{this.escape}} />`);
+      await render(<template><ModalDialog @onEscape={{escape}} /></template>);
 
       await triggerEvent('.modal-dialog__box', 'mousedown');
       await triggerEvent('.modal-dialog', 'mouseup');
@@ -510,14 +532,14 @@ module('modal-dialog', function (hooks) {
     test('nested modals', async function (assert) {
       assert.expect(2);
 
-      this.escape1 = () => assert.step('escaped 1');
-      this.escape2 = () => assert.step('escaped 2');
+      const escape1 = () => assert.step('escaped 1');
+      const escape2 = () => assert.step('escaped 2');
 
-      await render(hbs`
-        <ModalDialog @onEscape={{this.escape1}}>
-          <ModalDialog @onEscape={{this.escape2}} />
+      await render(<template>
+        <ModalDialog @onEscape={{escape1}}>
+          <ModalDialog @onEscape={{escape2}} />
         </ModalDialog>
-      `);
+      </template>);
 
       await triggerKeyEvent(window, 'keydown', 'Escape');
 
@@ -529,18 +551,20 @@ module('modal-dialog', function (hooks) {
     test('api', async function (assert) {
       assert.expect(4);
 
-      this.capture = (api) => (this.api = api);
+      let api;
 
-      await render(hbs`
+      const capture = (modal) => (api = modal);
+
+      await render(<template>
         <ModalDialog as |modal|>
-          {{this.capture modal}}
+          {{capture modal}}
         </ModalDialog>
-      `);
+      </template>);
 
-      assert.strictEqual(typeof this.api.close, 'function');
-      assert.false(this.api.isLoading);
-      assert.strictEqual(this.api.element, find('.modal-dialog'));
-      assert.strictEqual(this.api.boxElement, find('.modal-dialog__box'));
+      assert.strictEqual(typeof api.close, 'function');
+      assert.false(api.isLoading);
+      assert.strictEqual(api.element, find('.modal-dialog'));
+      assert.strictEqual(api.boxElement, find('.modal-dialog__box'));
     });
   });
 });
