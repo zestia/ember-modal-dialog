@@ -41,12 +41,16 @@ module('modal-dialog', function (hooks) {
   });
 
   module('internal focus', function () {
-    test('no focusable elements', async function (assert) {
-      assert.expect(1);
+    let state;
 
-      const state = new (class {
+    hooks.beforeEach(function () {
+      state = new (class {
         @tracked show;
       })();
+    });
+
+    test('no focusable elements', async function (assert) {
+      assert.expect(1);
 
       await render(<template>
         <button type="button" class="external"></button>
@@ -68,10 +72,6 @@ module('modal-dialog', function (hooks) {
 
     test('with focusable elements', async function (assert) {
       assert.expect(1);
-
-      const state = new (class {
-        @tracked show;
-      })();
 
       await render(<template>
         <button type="button" class="external"></button>
