@@ -1,5 +1,5 @@
 import { module, test } from 'qunit';
-import { setupRenderingTest } from 'ember-qunit';
+import { setupRenderingTest } from 'dummy/tests/helpers';
 import waitForAnimation from 'dummy/tests/helpers/wait-for-animation';
 import { defer } from 'rsvp';
 import { modifier } from 'ember-modifier';
