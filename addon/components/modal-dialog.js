@@ -5,7 +5,6 @@ import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 import { action } from '@ember/object';
 import { waitFor } from '@ember/test-waiters';
 import { waitForAnimation } from '@zestia/animation-utils';
-import { all } from 'rsvp';
 
 export default class ModalDialogComponent extends Component {
   @tracked isInViewport;
@@ -223,7 +222,7 @@ export default class ModalDialogComponent extends Component {
 
   @waitFor
   _waitForAnimation() {
-    return all([
+    return Promise.all([
       waitForAnimation(this.element, { maybe: true }),
       waitForAnimation(this.boxElement, { maybe: true })
     ]);

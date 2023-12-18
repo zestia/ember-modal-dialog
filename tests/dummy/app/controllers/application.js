@@ -2,7 +2,6 @@
 
 import Controller from '@ember/controller';
 import { tracked } from '@glimmer/tracking';
-import { Promise } from 'rsvp';
 import { action } from '@ember/object';
 import { later } from '@ember/runloop';
 

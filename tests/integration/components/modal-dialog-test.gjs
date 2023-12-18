@@ -1,7 +1,7 @@
 import { module, test } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
 import waitForAnimation from 'dummy/tests/helpers/wait-for-animation';
-import { reject, resolve, defer } from 'rsvp';
+import { defer } from 'rsvp';
 import { modifier } from 'ember-modifier';
 import ModalDialog from '@zestia/ember-modal-dialog/components/modal-dialog';
 import autoFocus from '@zestia/ember-auto-focus/modifiers/auto-focus';
@@ -343,7 +343,7 @@ module('modal-dialog', function (hooks) {
         @tracked error;
       })();
 
-      const load = () => reject({ message: 'sorry' });
+      const load = () => Promise.reject(new Error('sorry'));
       const loadError = (error) => (state.error = error);
 
       await render(<template>
@@ -373,7 +373,7 @@ module('modal-dialog', function (hooks) {
       };
 
       const handleReady = () => {};
-      const load = () => resolve();
+      const load = () => Promise.resolve();
 
       await render(<template>
         <ModalDialog @onReady={{handleReady}} @onLoad={{load}} />
