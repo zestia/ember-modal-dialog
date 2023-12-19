@@ -3,6 +3,7 @@ import { modifier } from 'ember-modifier';
 import { tracked } from '@glimmer/tracking';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 import { action } from '@ember/object';
+import { on } from '@ember/modifier';
 import { waitFor } from '@ember/test-waiters';
 import { waitForAnimation } from '@zestia/animation-utils';
 
@@ -243,4 +244,33 @@ export default class ModalDialogComponent extends Component {
     },
     set() {}
   });
+
+  <template>
+    {{! template-lint-disable no-pointer-down-event-binding no-invalid-interactive }}
+    <div
+      class="modal-dialog"
+      data-showing="{{this.isShowing}}"
+      {{on "mousedown" this.handleMouseDown}}
+      {{on "mouseup" this.handleMouseUp}}
+      {{this.registerElement}}
+      ...attributes
+    >
+      <div
+        class="modal-dialog__box"
+        role="dialog"
+        aria-modal="true"
+        aria-busy="{{this.isLoading}}"
+        data-in-viewport="{{this.isInViewport}}"
+        {{this.registerBoxElement}}
+        {{this.bodyScrollLock}}
+        {{this.inViewport}}
+        {{this.trapFocus}}
+        {{this.externalFocus}}
+        {{this.internalFocus}}
+        {{this.escapable}}
+      >
+        {{yield this.api}}
+      </div>
+    </div>
+  </template>
 }
