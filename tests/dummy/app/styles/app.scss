@@ -39,6 +39,10 @@ body {
     animation: warn 300ms;
   }
 
+  &[aria-busy='true'] {
+    text-align: center;
+  }
+
   &[open] {
     opacity: 1;
   }

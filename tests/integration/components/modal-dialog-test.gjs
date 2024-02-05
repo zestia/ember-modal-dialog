@@ -8,11 +8,9 @@ import { on } from '@ember/modifier';
 import { tracked } from '@glimmer/tracking';
 import {
   click,
-  find,
   render,
   waitFor,
   settled,
-  triggerEvent,
   triggerKeyEvent
 } from '@ember/test-helpers';
 
