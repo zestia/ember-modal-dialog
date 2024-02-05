@@ -35,7 +35,7 @@ body {
       display 1s allow-discrete;
   }
 
-  &[data-warning='true'] {
+  &[data-warning] {
     animation: warn 300ms;
   }
 

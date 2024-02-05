@@ -1,6 +1,7 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
 import { tracked } from '@glimmer/tracking';
+import { waitFor } from '@ember/test-waiters';
 import { waitForAnimation } from '@zestia/animation-utils';
 import { on } from '@ember/modifier';
 import { modifier } from 'ember-modifier';
@@ -35,7 +36,7 @@ export default class ModalDialogComponent extends Component {
 
   @action
   close() {
-    this._close();
+    return this._close();
   }
 
   async _load() {
@@ -59,12 +60,14 @@ export default class ModalDialogComponent extends Component {
     }
   }
 
+  @waitFor
   async _close() {
     this.element.close();
     await waitForAnimation(this.element, { maybe: true });
-    this.args.onClose?.();
+    this.args.onClose();
   }
 
+  @waitFor
   async _warn() {
     this.isWarning = true;
     await waitForAnimation(this.element);
@@ -90,7 +93,7 @@ export default class ModalDialogComponent extends Component {
     <dialog
       class="modal-dialog"
       aria-busy="{{this.isLoading}}"
-      data-warning="{{this.isWarning}}"
+      data-warning={{this.isWarning}}
       {{this.modal}}
       {{on "keydown" this.handleKeyDown}}
       ...attributes
