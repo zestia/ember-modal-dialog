@@ -32,30 +32,22 @@ https://zestia.github.io/ember-modal-dialog
 
 ## Features
 
+- Uses native `dialog` ✔︎
 - Focus trap ✔︎
 - Body scroll lock ✔︎
 - Loading state handling ✔︎
 - Optionally escapable ✔︎
-- Exceeds viewport detection ✔︎
-- Animatable (includes test waiters) ✔︎
+- Animatable (remains in the DOM until animated out) ✔︎
 - Simple API ✔︎
 
 ## Notes
 
 - This addon intentionally does not come with any styles.
 - It is configured with [ember-test-waiters](https://github.com/emberjs/ember-test-waiters) so `await`ing in your test suite will just work.
-- Does not use native `dialog` _yet_, because:
-  - Can't animate `::backdrop`
-  - Can't use `::backdrop` with CSS variables
-  - Does not provide a focus trap
-  - Does not provide a scroll lock
 
 ## Example
 
-The modal dialog component isn't designed to be used on its own, but rather used to compose a new modal dialog component... in this example it's called "my-modal"
-
 ```handlebars
-{{! my-modal.hbs }}
 <ModalDialog @onClose={{@onClose}} as |modal|>
   Content
 
@@ -96,10 +88,6 @@ Optional. Fired when the request to load data fails. Receives the error as a par
 
 Required. This action fires when `close` has been called, _and_ any animations have run to hide the modal dialog.
 
-#### `@onEscape`
-
-Optional. Fired when escape is pressed or the user clicks outside the dialog box. You can use the API to call `close` for example.
-
 ### API
 
 #### `close`
@@ -109,11 +97,3 @@ Call this when you want to close the modal. It will first wait for any animation
 #### `isLoading`
 
 Whether the data required for the modal dialog to display is loading.
-
-#### `element`
-
-The DOM element of the modal dialog component.
-
-#### `boxElement`
-
-The inner DOM element of the modal dialog component, that contains the content.
