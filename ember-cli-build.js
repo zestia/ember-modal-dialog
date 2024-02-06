@@ -5,7 +5,10 @@ const { maybeEmbroider } = require('@embroider/test-setup');
 
 module.exports = function (defaults) {
   const app = new EmberAddon(defaults, {
-    // Add options here
+    // Disable because ember-cli-clean-css was stripping @starting-style
+    minifyCSS: {
+      enabled: false
+    }
   });
 
   /**
