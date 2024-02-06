@@ -15,7 +15,7 @@ This addon provides a simple Modal Dialog component.
 
 There are two versions [4x](https://github.com/zestia/ember-modal-dialog/blob/4x/README.md) and [5x](https://github.com/zestia/ember-modal-dialog/blob/main/README.md).
 
-Version 5 uses the native dialog, and version 4 does not. Version 4 is still being maintained because support for native dialog is not great, and there are still some [quirks](#notes) around animating.
+Version 5 uses the native dialog, and version 4 does not. Version 4 is still being maintained because support for native dialog is not great, and there are still some [quirks](#notes).
 
 ## Installation
 
