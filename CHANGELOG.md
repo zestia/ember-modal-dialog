@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.0.0
+
+- Use native `dialog`
+
 ## 4.5.4
 
 - Convert to `.gjs`
