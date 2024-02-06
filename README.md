@@ -49,6 +49,7 @@ https://zestia.github.io/ember-modal-dialog
 - This addon intentionally does not come with any styles.
 - It is configured with [ember-test-waiters](https://github.com/emberjs/ember-test-waiters) so `await`ing in your test suite will just work.
 - Animating a modal dialog out is [not possible](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog#dialog_keyframe_animations#css_3). Although you can achieve it with transitions. (see demo)
+- Support for `@starting-style` is not great
 - Native scroll lock only works on the body element (see demo)
 
 ## Example
