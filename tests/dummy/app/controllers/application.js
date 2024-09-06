@@ -23,6 +23,11 @@ export default class ApplicationController extends Controller {
   }
 
   @action
+  setLoadDelay(event) {
+    this.loadDelay = event.target.checked;
+  }
+
+  @action
   loadExampleModal() {
     if (!this.loadDelay) {
       return;

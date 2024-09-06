@@ -5,18 +5,14 @@
 
   <p>
     <label>
-      <Input
-        @type="checkbox"
-        @checked={{this.isEscapable}}
-        {{on "click" this.setEscapable}}
-      />
+      <input type="checkbox" {{on "click" this.setEscapable}} />
       Escapable
     </label>
   </p>
 
   <p>
     <label>
-      <Input @type="checkbox" @checked={{this.loadDelay}} />
+      <input type="checkbox" {{on "click" this.setLoadDelay}} />
       Load delay
     </label>
   </p>
