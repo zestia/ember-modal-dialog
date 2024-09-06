@@ -291,9 +291,7 @@ module('modal-dialog', function (hooks) {
         return deferred.promise;
       };
 
-      const inserted = modifier(() => assert.step('inserted'), {
-        eager: false
-      });
+      const inserted = modifier(() => assert.step('inserted'));
 
       await render(<template>
         <ModalDialog @onLoad={{load}} {{inserted}} />
