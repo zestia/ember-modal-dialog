@@ -65,7 +65,7 @@ https://zestia.github.io/ember-modal-dialog
 ```
 
 ```handlebars
-{{! application/template.hbs }}
+{{! application.gjs }}
 {{#if this.showMyModal}}
   <MyModal @onClose={{this.hideMyModal}} />
 {{/if}}
