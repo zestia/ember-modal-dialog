@@ -1,7 +1,6 @@
 import { module, test, skip } from 'qunit';
 import { setupRenderingTest } from 'dummy/tests/helpers';
 import waitForAnimation from 'dummy/tests/helpers/wait-for-animation';
-import { defer } from 'rsvp';
 import { modifier } from 'ember-modifier';
 import ModalDialog from '@zestia/ember-modal-dialog/components/modal-dialog';
 import { on } from '@ember/modifier';
@@ -46,7 +45,7 @@ module('modal-dialog', function (hooks) {
     test('action order', async function (assert) {
       assert.expect(3);
 
-      const deferred = defer();
+      const deferred = Promise.withResolvers();
 
       const load = () => {
         assert.step('load');
@@ -72,7 +71,7 @@ module('modal-dialog', function (hooks) {
         @tracked name;
       })();
 
-      const deferred = defer();
+      const deferred = Promise.withResolvers();
 
       const load = () => deferred.promise;
       const loaded = (data) => (state.name = data);
