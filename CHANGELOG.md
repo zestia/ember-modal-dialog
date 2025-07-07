@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.5.5
+
+- Update `@ember/test-waiters`
+
 ## 4.5.4
 
 - Convert to `.gjs`
