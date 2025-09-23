@@ -183,15 +183,15 @@ export default class ModalDialogComponent extends Component {
   });
 
   _escape(event) {
-    this.args.onEscape?.(this.api, event);
+    this.args.onEscape?.(event, this.api);
   }
 
   async _load() {
     try {
       const data = await this.args.onLoad();
-      this.args.onLoaded?.(data);
+      this.args.onLoaded?.(data, this.api);
     } catch (error) {
-      this.args.onLoadError?.(error);
+      this.args.onLoadError?.(error, this.api);
     } finally {
       this.isLoading = false;
     }

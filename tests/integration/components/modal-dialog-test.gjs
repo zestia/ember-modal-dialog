@@ -489,7 +489,7 @@ module('modal-dialog', function (hooks) {
     test('pressing escape', async function (assert) {
       assert.expect(2);
 
-      const escape = (api, event) =>
+      const escape = (event, api) =>
         assert.step(`${event instanceof KeyboardEvent}`);
 
       await render(<template><ModalDialog @onEscape={{escape}} /></template>);
@@ -502,7 +502,7 @@ module('modal-dialog', function (hooks) {
     test('clicking outside', async function (assert) {
       assert.expect(2);
 
-      const escape = (api, event) =>
+      const escape = (event, api) =>
         assert.step(`${event instanceof MouseEvent}`);
 
       await render(<template><ModalDialog @onEscape={{escape}} /></template>);
