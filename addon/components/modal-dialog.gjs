@@ -31,7 +31,7 @@ export default class ModalDialogComponent extends Component {
       return;
     }
 
-    this._handleEscape(event);
+    this._handleEscape(event, this.api);
   }
 
   @action
@@ -42,9 +42,9 @@ export default class ModalDialogComponent extends Component {
   async _load() {
     try {
       const data = await this.args.onLoad?.();
-      this.args.onLoaded?.(data);
+      this.args.onLoaded?.(data, this.api);
     } catch (error) {
-      this.args.onLoadError?.(error);
+      this.args.onLoadError?.(error, this.api);
     } finally {
       this.isLoading = false;
     }

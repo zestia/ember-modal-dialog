@@ -4,6 +4,15 @@
 
 - Use native `dialog`
 
+## 4.6.0
+
+- Swap parameter order to `@onEscape`
+- Provide API as second parameter on `@onLoaded` and `@onLoadError`
+
+## 4.5.5
+
+- Update `@ember/test-waiters`
+
 ## 4.5.4
 
 - Convert to `.gjs`
