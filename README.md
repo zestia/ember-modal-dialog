@@ -35,25 +35,30 @@ https://zestia.github.io/ember-modal-dialog
 
 ## Features
 
-- Uses native `dialog` ✔︎
 - Focus trap ✔︎
 - Body scroll lock ✔︎
 - Loading state handling ✔︎
 - Optionally escapable ✔︎
-- Animatable (remains in the DOM until animated out) ✔︎
+- Exceeds viewport detection ✔︎
+- Animatable (includes test waiters) ✔︎
 - Simple API ✔︎
 
 ## Notes
 
 - This addon intentionally does not come with any styles.
 - It is configured with [ember-test-waiters](https://github.com/emberjs/ember-test-waiters) so `await`ing in your test suite will just work.
-- Animating a modal dialog out is [not possible](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dialog#dialog_keyframe_animations#css_3). Although you can achieve it with transitions. (see demo)
-- Support for `@starting-style` is not great
-- Native scroll lock only works on the body element (see demo)
+- Does not use native `dialog` _yet_, because:
+  - Can't animate `::backdrop`
+  - Can't use `::backdrop` with CSS variables
+  - Does not provide a focus trap
+  - Does not provide a scroll lock
 
 ## Example
 
+The modal dialog component isn't designed to be used on its own, but rather used to compose a new modal dialog component... in this example it's called "my-modal"
+
 ```handlebars
+{{! my-modal.hbs }}
 <ModalDialog @onClose={{@onClose}} as |modal|>
   Content
 
@@ -64,7 +69,7 @@ https://zestia.github.io/ember-modal-dialog
 ```
 
 ```handlebars
-{{! application.gjs }}
+{{! application/template.hbs }}
 {{#if this.showMyModal}}
   <MyModal @onClose={{this.hideMyModal}} />
 {{/if}}
@@ -94,6 +99,10 @@ Optional. Fired when the request to load data fails. Receives the error as a par
 
 Required. This action fires when `close` has been called, _and_ any animations have run to hide the modal dialog.
 
+#### `@onEscape`
+
+Optional. Fired when escape is pressed or the user clicks outside the dialog box. You can use the API to call `close` for example.
+
 ### API
 
 #### `close`
@@ -103,3 +112,11 @@ Call this when you want to close the modal. It will first wait for any animation
 #### `isLoading`
 
 Whether the data required for the modal dialog to display is loading.
+
+#### `element`
+
+The DOM element of the modal dialog component.
+
+#### `boxElement`
+
+The inner DOM element of the modal dialog component, that contains the content.

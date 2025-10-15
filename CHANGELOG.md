@@ -1,8 +1,16 @@
 # Changelog
 
-## 5.0.0
+## 5.0.0-1
+
+- Port v2 structure
+
+## 5.0.0-0
 
 - Use native `dialog`
+
+## 4.7.0
+
+- Convert to v2 addon
 
 ## 4.6.0
 
@@ -16,6 +24,8 @@
 ## 4.5.4
 
 - Convert to `.gjs`
+- Run ember-cli-update
+- Upgrade dependencies
 
 ## 4.5.3
 
