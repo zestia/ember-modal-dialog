@@ -1,6 +1,6 @@
 {
   "name": "@zestia/ember-modal-dialog",
-  "version": "4.7.0-1",
+  "version": "4.7.0",
   "description": "A simple modal dialog component for Ember apps",
   "keywords": [
     "ember-addon",
