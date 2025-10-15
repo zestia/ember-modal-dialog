@@ -37,6 +37,7 @@
   "dependencies": {
     "body-scroll-lock": "^3.1.5",
     "@zestia/animation-utils": "^5.0.5",
+    "@ember/test-waiters": "^4.1.1",
     "@embroider/addon-shim": "^1.8.9",
     "decorator-transforms": "^2.2.2",
     "ember-modifier": "^4.2.0"
