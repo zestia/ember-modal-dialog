@@ -1,5 +1,9 @@
 # Changelog
 
+## 4.7.0
+
+- Convert to v2 addon
+
 ## 4.6.0
 
 - Swap parameter order to `@onEscape`
