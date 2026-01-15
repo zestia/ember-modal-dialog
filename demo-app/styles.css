@@ -1,6 +1,81 @@
-/**
-* See: https://vite.dev/guide/features.html#css
-*      for features beyond normal CSS that are available to you.
-*
-* This CSS is meant for the demo-app only, and will not be included in the published assets for this library.
-*/
+:root {
+  overflow: hidden;
+}
+
+/* stylelint-disable-next-line selector-max-type */
+body {
+  overflow: auto;
+  height: 100vh;
+  margin: 0;
+}
+
+.inside-the-application {
+  margin: 20px; /* stylelint-disable-line scale-unlimited/declaration-strict-value */
+}
+
+.example-text {
+  color: darkgrey; /* stylelint-disable-line */
+}
+
+.modal-dialog {
+  background-color: white;
+  box-sizing: border-box;
+  width: 480px;
+  opacity: 0;
+  transition:
+    opacity 1s,
+    overlay 1s allow-discrete,
+    display 1s allow-discrete;
+}
+
+.modal-dialog::backdrop {
+  background-color: rgb(0 0 0 / 0%);
+  transition:
+    background-color 1s,
+    overlay 1s allow-discrete,
+    display 1s allow-discrete;
+}
+
+.modal-dialog[data-warning] {
+  animation: warn 300ms;
+}
+
+.modal-dialog[aria-busy='true'] {
+  text-align: center;
+}
+
+.modal-dialog[open] {
+  opacity: 1;
+}
+
+.modal-dialog[open]::backdrop {
+  background-color: rgb(0 0 0 / 30%);
+}
+
+@starting-style {
+  .modal-dialog[open] {
+    opacity: 0;
+  }
+
+  .modal-dialog[open]::backdrop {
+    background-color: rgb(0 0 0 / 0%);
+  }
+}
+
+@keyframes warn {
+  0% {
+    transform: scale(1);
+  }
+
+  40% {
+    transform: scale(1.02);
+  }
+
+  60% {
+    transform: scale(1.02);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
