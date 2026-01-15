@@ -4,7 +4,6 @@ import Component from '@glimmer/component';
 import ExampleModal from '../components/example-modal.gjs';
 import LoremIpsumLong from '../components/lorem-ipsum-long.gjs';
 import Route from 'ember-route-template';
-import '../styles/app.css';
 
 class Demo extends Component {
   @tracked isEscapable = false;
