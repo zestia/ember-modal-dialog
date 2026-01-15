@@ -9,7 +9,7 @@ export default defineConfig({
   resolve: {
     alias: [
       {
-        find: '@zestia/ember-modal-box',
+        find: '@zestia/ember-modal-dialog',
         replacement: `${__dirname}/src`
       }
     ]

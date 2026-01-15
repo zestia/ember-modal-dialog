@@ -12,6 +12,7 @@ import {
   settled,
   triggerKeyEvent
 } from '@ember/test-helpers';
+import '../../demo-app/styles.css';
 
 module('modal-dialog', function (hooks) {
   setupRenderingTest(hooks);
