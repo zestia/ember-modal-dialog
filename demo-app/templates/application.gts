@@ -1,11 +1,300 @@
-import { pageTitle } from 'ember-page-title';
+import { on } from '@ember/modifier';
+import { service } from '@ember/service';
+import { tracked } from '@glimmer/tracking';
+import Component from '@glimmer/component';
+import ExampleModal from '../components/example-modal.gjs';
+import Route from 'ember-route-template';
 
-const greeting = 'hello';
+class Demo extends Component {
+  @service demo;
 
-<template>
-  {{pageTitle "Demo App"}}
+  @tracked isEscapable = false;
+  @tracked clickOutsideToEscape = true;
+  @tracked confirmEscape = false;
+  @tracked loadDelay = false;
+  @tracked showExampleModal = false;
 
-  <h1>Welcome to ember!</h1>
+  toggleEscapable = () => {
+    this.isEscapable = !this.isEscapable;
+    this.clickOutsideToEscape = true;
+  };
 
-  {{greeting}}, world!
-</template>
+  toggleClickOutsideToEscape = () => {
+    this.clickOutsideToEscape = !this.clickOutsideToEscape;
+  };
+
+  toggleConfirmEscape = () => {
+    this.confirmEscape = !this.confirmEscape;
+  };
+
+  toggleLoadDelay = () => {
+    this.loadDelay = !this.loadDelay;
+  };
+
+  openExampleModal = () => {
+    this.showExampleModal = true;
+  };
+
+  closeExampleModal = () => {
+    this.showExampleModal = false;
+  };
+
+  loadExampleModal = () => {
+    if (!this.loadDelay) {
+      return;
+    }
+
+    return new Promise((resolve) => {
+      setTimeout(resolve, 1500);
+    });
+  };
+
+  handleEscapeExampleModal = (event, modal) => {
+    const escapable =
+      this.isEscapable &&
+      ((this.clickOutsideToEscape && event instanceof MouseEvent) ||
+        event instanceof KeyboardEvent);
+
+    if (!escapable) {
+      return;
+    }
+
+    let close = true;
+
+    if (this.confirmEscape) {
+      close = confirm('Are you sure?'); // eslint-disable-line no-alert
+    }
+
+    if (close) {
+      modal.close();
+    }
+  };
+
+  <template>
+    <div class="inside-the-application">
+      <h1>
+        @zestia/ember-modal-dialog
+      </h1>
+
+      <fieldset>
+        <legend>
+          Options
+        </legend>
+        <label>
+          <input
+            type="checkbox"
+            checked={{this.isEscapable}}
+            {{on "click" this.toggleEscapable}}
+          />
+          Escapable
+        </label>
+
+        <br />
+
+        <label>
+          <input
+            type="checkbox"
+            checked={{this.clickOutsideToEscape}}
+            disabled={{if this.isEscapable false true}}
+            {{on "click" this.toggleClickOutsideToEscape}}
+          />
+          Click outside to escape
+        </label>
+
+        <br />
+
+        <label>
+          <input
+            type="checkbox"
+            checked={{this.confirmEscape}}
+            disabled={{if this.isEscapable false true}}
+            {{on "click" this.toggleConfirmEscape}}
+          />
+          Confirm escape
+        </label>
+
+        <br />
+
+        <label>
+          <input
+            type="checkbox"
+            checked={{this.loadDelay}}
+            {{on "click" this.toggleLoadDelay}}
+          />
+          Load delay
+        </label>
+      </fieldset>
+
+      <br />
+      <br />
+
+      <button type="button" {{on "click" this.openExampleModal}}>
+        Open
+      </button>
+
+      <ul>
+        <li>
+          The body will not be scrollable when the modal dialog is open.
+        </li>
+
+        <li>
+          When closing the modal, focus will be restored to the element that was
+          originally focused.
+        </li>
+
+        <li>
+          Tabbing through focusable elements will not escape to outside of the
+          modal.
+        </li>
+
+        <li>
+          When changing browser tab, and returning, focus is maintained inside
+          the modal dialog.
+        </li>
+
+        <li>
+          The content of the modal dialog box becomes scrollable, only if it
+          doesn't fit into the viewport.
+        </li>
+      </ul>
+
+      <div class="example-text">
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut est
+          eget nulla malesuada pretium id eu ipsum. Nam eu turpis et quam rutrum
+          molestie a vitae tortor. Maecenas nec ex est. Nulla quis leo id leo
+          commodo sagittis. Nullam diam dolor, semper sed convallis ut,
+          facilisis sollicitudin quam. Ut a fermentum turpis, ac gravida elit.
+          Fusce sed leo mollis nibh tincidunt ornare. Quisque convallis sodales
+          erat, eget ultricies nulla pellentesque ut. Curabitur nec sem lorem.
+        </p>
+
+        <p>
+          Vivamus malesuada arcu vitae mauris fringilla, sed lacinia nunc porta.
+          Nullam id eros vitae arcu blandit tincidunt. Fusce porta sed mi sit
+          amet varius. Proin congue accumsan rutrum. Aenean ac cursus ex. Sed
+          sed venenatis urna. Aliquam elementum felis et eros egestas
+          pellentesque. Nulla vulputate libero non cursus hendrerit.
+        </p>
+
+        <p>
+          Aenean suscipit rhoncus sapien a blandit. Morbi urna nisi, porttitor
+          sit amet lacus vitae, suscipit porta ipsum. Fusce blandit orci nec
+          faucibus malesuada. In feugiat libero id nisl egestas, vel cursus nisi
+          pulvinar. Pellentesque accumsan libero id nulla tincidunt tristique.
+          Sed eget ligula enim. Cras iaculis lacinia ipsum id sodales. In
+          sagittis tempus maximus. Duis ultrices urna magna, vitae vestibulum
+          augue eleifend vitae. Cras tristique est quis ipsum ullamcorper
+          tincidunt. Phasellus non dolor in urna scelerisque gravida. Ut
+          volutpat tortor vitae risus tristique placerat. Vivamus iaculis varius
+          nunc, nec tincidunt lorem facilisis non. Maecenas ultricies risus
+          urna, finibus luctus erat posuere vitae.
+        </p>
+
+        <p>
+          Fusce congue lacus ut augue varius faucibus non vel nunc. Suspendisse
+          aliquet mi nisi, vel pharetra ipsum euismod ut. Proin elementum ante
+          eu metus volutpat, vitae feugiat turpis commodo. Quisque tincidunt
+          eget mauris ac iaculis. Proin rhoncus ligula ut augue sollicitudin
+          aliquet at vel tellus. Vivamus congue sed nibh id gravida. Nulla
+          fermentum aliquet sapien id pulvinar.
+        </p>
+
+        <p>
+          Morbi ut dolor mauris. Sed elementum, arcu et tincidunt tincidunt,
+          dolor elit finibus dolor, at volutpat metus felis at nisl. Nunc tempor
+          blandit suscipit. Phasellus lacinia felis ac placerat dapibus.
+          Vestibulum ante ipsum primis in faucibus orci luctus et ultrices
+          posuere cubilia curae; Vivamus nec velit et elit scelerisque
+          elementum. Mauris volutpat ante non condimentum vestibulum. Integer
+          faucibus odio ac orci placerat feugiat. Sed fermentum lectus vitae sem
+          molestie interdum. Integer egestas purus et velit facilisis, id mollis
+          neque mollis. Sed risus eros, dignissim lobortis lacinia vel, vehicula
+          sed sem. Phasellus nec interdum leo, sed mollis turpis.
+        </p>
+
+        <p>
+          Fusce bibendum urna a purus condimentum, vitae volutpat turpis
+          facilisis. Pellentesque nec nisl lectus. Donec turpis mauris, bibendum
+          a est a, feugiat mollis nisi. Suspendisse luctus enim felis, eu ornare
+          neque tempor et. Nullam nibh nisl, imperdiet dictum nisl ut, rutrum
+          maximus ligula. Morbi euismod augue nisi, at vestibulum neque mattis
+          venenatis. Morbi enim risus, eleifend vel mauris dictum, sagittis
+          sagittis urna. Aliquam tempor dignissim urna, vitae tempor odio
+          finibus quis.
+        </p>
+
+        <p>
+          Mauris interdum sagittis neque id interdum. Nam eu vulputate felis.
+          Praesent nec rutrum dui. Vivamus hendrerit tortor a tortor blandit
+          viverra. Aliquam sagittis risus erat, nec imperdiet libero posuere
+          eget. Aenean sed hendrerit ligula, eu rhoncus nisi. Aliquam ipsum
+          mauris, cursus ut viverra vitae, lacinia accumsan arcu. Integer lorem
+          tellus, sagittis ut euismod at, lacinia eu tortor. In sed felis
+          pretium, dictum massa eu, tincidunt sapien. Aliquam in ante eu nisl
+          sodales consequat quis eu eros. Aenean tempus risus et erat egestas,
+          id lobortis massa laoreet.
+        </p>
+
+        <p>
+          Nunc accumsan non mi laoreet varius. Morbi porttitor dapibus enim, eu
+          tincidunt massa gravida sed. Mauris facilisis ipsum mauris. Praesent
+          et accumsan leo. Nullam facilisis quam ut nisl finibus, ut dictum
+          nulla pulvinar. Vestibulum quam urna, ultricies ac ornare eu, egestas
+          sit amet turpis. Nunc dapibus mauris tellus. Etiam tristique convallis
+          mi, at pellentesque arcu pretium sed. Pellentesque rutrum ultrices
+          laoreet.
+        </p>
+
+        <p>
+          Donec tincidunt in dolor nec aliquam. Suspendisse potenti. Curabitur
+          quam erat, posuere non mauris ac, aliquet auctor sem. Mauris imperdiet
+          massa id lectus tincidunt bibendum sed ut felis. Donec viverra augue
+          dui, eu viverra diam pretium in. Maecenas dictum nec tortor sed
+          rhoncus. Quisque rhoncus dui a elit scelerisque ultricies. Donec quis
+          porta libero. Sed vestibulum a tellus ac cursus.
+        </p>
+
+        <p>
+          Donec luctus enim eget erat condimentum ornare. Sed volutpat bibendum
+          odio, et laoreet nisi tempor ac. Aliquam diam ex, hendrerit in
+          elementum quis, placerat non magna. Vestibulum vulputate mauris eu
+          tortor suscipit, ac bibendum magna rhoncus. Curabitur lacinia, ipsum
+          vitae tincidunt dapibus, velit augue tincidunt est, ac ultrices nisl
+          ex eu sapien. Etiam consequat sem eget tortor ultrices, at ultrices
+          nulla vulputate. Vivamus venenatis eleifend luctus. Nam eget augue
+          imperdiet velit varius lobortis ut nec lacus. Aenean iaculis neque
+          quis tempus suscipit. Fusce aliquet mattis eros, nec mattis diam
+          feugiat eu.
+        </p>
+      </div>
+    </div>
+
+    <div class="outside-the-application">
+      {{#if this.showExampleModal}}
+        <ExampleModal
+          @onClose={{this.closeExampleModal}}
+          @onLoad={{this.loadExampleModal}}
+          @onEscape={{this.handleEscapeExampleModal}}
+        />
+      {{/if}}
+    </div>
+
+    {{outlet}}
+
+    {{! template-lint-disable no-inline-styles }}
+    <a href="https://github.com/zestia/ember-modal-dialog">
+      <img
+        style="position: absolute; top: 0; right: 0; border: 0;"
+        width="149"
+        height="149"
+        src="https://github.blog/wp-content/uploads/2008/12/forkme_right_darkblue_121621.png?resize=149%2C149"
+        class="attachment-full size-full"
+        alt="Fork me on GitHub"
+        data-recalc-dims="1"
+      />
+    </a>
+  </template>
+}
+
+export default Route(Demo);
