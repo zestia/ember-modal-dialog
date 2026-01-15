@@ -9,24 +9,24 @@ export default defineConfig({
   resolve: {
     alias: [
       {
-        find: '@zestia/ember-modal-dialog',
-        replacement: `${__dirname}/src`
-      }
-    ]
+        find: '@zestia/ember-modal-box',
+        replacement: `${__dirname}/src`,
+      },
+    ],
   },
   plugins: [
     ...(isCompat ? [classicEmberSupport()] : []),
     ember(),
     babel({
       babelHelpers: 'inline',
-      extensions
-    })
+      extensions,
+    }),
   ],
   build: {
     rollupOptions: {
       input: {
-        tests: 'tests/index.html'
-      }
-    }
-  }
+        tests: 'tests/index.html',
+      },
+    },
+  },
 });
