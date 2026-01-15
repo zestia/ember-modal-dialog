@@ -57,22 +57,22 @@
   margin: var(--space);
 }
 
-.modal-dialog[data-showing="true"] {
+.modal-dialog[data-showing='true'] {
   animation: fade-in var(--modal-ani-speed);
 }
 
-.modal-dialog[data-showing="false"] {
+.modal-dialog[data-showing='false'] {
   animation: fade-out var(--modal-ani-speed);
 }
 
-.modal-dialog__box[aria-busy="true"] {
+.modal-dialog__box[aria-busy='true'] {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: var(--height);
 }
 
-.modal-dialog__box[data-in-viewport="false"] {
+.modal-dialog__box[data-in-viewport='false'] {
   overflow-y: scroll;
   max-height: 100%;
 }
