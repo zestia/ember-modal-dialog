@@ -16,7 +16,7 @@ import {
   rerender,
   settled,
   triggerEvent,
-  triggerKeyEvent
+  triggerKeyEvent,
 } from '@ember/test-helpers';
 
 module('modal-dialog', function (hooks) {
@@ -31,7 +31,7 @@ module('modal-dialog', function (hooks) {
           <ModalDialog class="foo">
             Content goes here
           </ModalDialog>
-        </template>
+        </template>,
       );
 
       assert.dom('.modal-dialog').hasAttribute('data-showing', 'true');
@@ -42,7 +42,7 @@ module('modal-dialog', function (hooks) {
     });
   });
 
-  module('internal focus', function () {
+  module('internal focus', function (hooks) {
     let state;
 
     hooks.beforeEach(function () {
@@ -61,7 +61,7 @@ module('modal-dialog', function (hooks) {
           {{#if state.show}}
             <ModalDialog />
           {{/if}}
-        </template>
+        </template>,
       );
 
       await focus('.external');
@@ -87,7 +87,7 @@ module('modal-dialog', function (hooks) {
               <input class="internal2" aria-label="Example 2" />
             </ModalDialog>
           {{/if}}
-        </template>
+        </template>,
       );
 
       await focus('.external');
@@ -130,7 +130,7 @@ module('modal-dialog', function (hooks) {
               <button type="button" class="internal" {{autoFocus}}></button>
             </ModalDialog>
           {{/if}}
-        </template>
+        </template>,
       );
     });
 
@@ -191,7 +191,7 @@ module('modal-dialog', function (hooks) {
             <button type="button" class="second"></button>
             <button type="button" class="third"></button>
           </ModalDialog>
-        </template>
+        </template>,
       );
     });
 
@@ -209,7 +209,7 @@ module('modal-dialog', function (hooks) {
 
       await focus('.first');
       await triggerKeyEvent('.modal-dialog__box', 'keydown', 'Tab', {
-        shiftKey: true
+        shiftKey: true,
       });
 
       assert.deepEqual(find('.third'), document.activeElement);
@@ -225,7 +225,7 @@ module('modal-dialog', function (hooks) {
               <button type="button"></button>
             </ModalDialog>
           </ModalDialog>
-        </template>
+        </template>,
       );
 
       await focus('.nested button');
@@ -246,7 +246,7 @@ module('modal-dialog', function (hooks) {
           <ModalDialog>
             <div class="internal"></div>
           </ModalDialog>
-        </template>
+        </template>,
       );
 
       assert.dom('.modal-dialog__box').hasAttribute('data-in-viewport', 'true');
@@ -276,7 +276,7 @@ module('modal-dialog', function (hooks) {
           {{#if state.show}}
             <ModalDialog />
           {{/if}}
-        </template>
+        </template>,
       );
 
       assert.dom(document.body).hasStyle({ overflow: 'visible' });
@@ -310,7 +310,7 @@ module('modal-dialog', function (hooks) {
       const inserted = modifier(() => assert.step('inserted'));
 
       await render(
-        <template><ModalDialog @onLoad={{load}} {{inserted}} /></template>
+        <template><ModalDialog @onLoad={{load}} {{inserted}} /></template>,
       );
 
       assert.verifySteps(['load', 'inserted']);
@@ -338,7 +338,7 @@ module('modal-dialog', function (hooks) {
               {{state.name}}
             {{/if}}
           </ModalDialog>
-        </template>
+        </template>,
       );
 
       assert.dom('.modal-dialog__box').hasAttribute('aria-busy', 'true');
@@ -370,7 +370,7 @@ module('modal-dialog', function (hooks) {
               {{state.error.message}}
             {{/if}}
           </ModalDialog>
-        </template>
+        </template>,
       );
 
       assert.dom('.modal-dialog__box').hasAttribute('aria-busy', 'false');
@@ -396,7 +396,7 @@ module('modal-dialog', function (hooks) {
       await render(
         <template>
           <ModalDialog @onReady={{handleReady}} @onLoad={{load}} />
-        </template>
+        </template>,
       );
     });
   });
@@ -416,7 +416,7 @@ module('modal-dialog', function (hooks) {
           <ModalDialog @onClose={{close}} as |modal|>
             <button type="button" {{on "click" modal.close}}>Close</button>
           </ModalDialog>
-        </template>
+        </template>,
       );
 
       click('button');
@@ -424,7 +424,7 @@ module('modal-dialog', function (hooks) {
       assert.verifySteps([]);
 
       const animations = await waitForAnimation('.modal-dialog', {
-        animationName: 'fade-out'
+        animationName: 'fade-out',
       });
 
       assert.strictEqual(animations.length, 1);
@@ -454,7 +454,7 @@ module('modal-dialog', function (hooks) {
             <div class="animation"></div>
             <button type="button" {{on "click" modal.close}}>Close</button>
           </ModalDialog>
-        </template>
+        </template>,
       );
 
       await click('button');
@@ -478,7 +478,7 @@ module('modal-dialog', function (hooks) {
               <button type="button" {{on "click" modal.close}}>Close</button>
             </ModalDialog>
           {{/if}}
-        </template>
+        </template>,
       );
 
       await click('button');
@@ -498,7 +498,7 @@ module('modal-dialog', function (hooks) {
           <ModalDialog @onReady={{handleReady}} @onClose={{close}} as |modal|>
             <button type="button" {{on "click" modal.close}}>Close</button>
           </ModalDialog>
-        </template>
+        </template>,
       );
 
       await api.close();
@@ -514,7 +514,7 @@ module('modal-dialog', function (hooks) {
           <ModalDialog @onClose={{null}} as |modal|>
             <button type="button" {{on "click" modal.close}}>Close</button>
           </ModalDialog>
-        </template>
+        </template>,
       );
 
       await click('button');
@@ -573,7 +573,7 @@ module('modal-dialog', function (hooks) {
           <ModalDialog @onEscape={{escape1}}>
             <ModalDialog @onEscape={{escape2}} />
           </ModalDialog>
-        </template>
+        </template>,
       );
 
       await triggerKeyEvent(window, 'keydown', 'Escape');
@@ -595,7 +595,7 @@ module('modal-dialog', function (hooks) {
           <ModalDialog as |modal|>
             {{capture modal}}
           </ModalDialog>
-        </template>
+        </template>,
       );
 
       assert.strictEqual(typeof api.close, 'function');

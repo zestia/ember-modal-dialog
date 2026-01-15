@@ -1,13 +1,12 @@
 /* eslint-disable array-callback-return */
 
-import EmberApp from '@ember/application';
-import Resolver from 'ember-resolver';
+import EmberApp from 'ember-strict-application-resolver';
 import EmberRouter from '@ember/routing/router';
 import * as QUnit from 'qunit';
 import { setApplication } from '@ember/test-helpers';
 import { setup } from 'qunit-dom';
 import { start as qunitStart, setupEmberOnerrorValidation } from 'ember-qunit';
-import '../demo/styles/app.css';
+import '../demo-app/styles.css';
 
 class Router extends EmberRouter {
   location = 'none';
@@ -15,11 +14,12 @@ class Router extends EmberRouter {
 }
 
 class TestApp extends EmberApp {
-  modulePrefix = 'test-app';
-  Resolver = Resolver.withModules({
-    'test-app/router': { default: Router }
+  modules = {
+    './router': Router
     // add any custom services here
-  });
+    // import.meta.glob('./services/*', { eager: true }),
+  };
+  p;
 }
 
 Router.map(function () {});

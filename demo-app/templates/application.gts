@@ -4,7 +4,6 @@ import { tracked } from '@glimmer/tracking';
 import Component from '@glimmer/component';
 import ExampleModal from '../components/example-modal.gjs';
 import Route from 'ember-route-template';
-import '../styles/app.css';
 
 class Demo extends Component {
   @service demo;
