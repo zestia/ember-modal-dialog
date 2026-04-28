@@ -1,6 +1,6 @@
 import { module, test, skip } from 'qunit';
 import { setupRenderingTest } from 'ember-qunit';
-import waitForAnimation from '../helpers/wait-for-animation';
+import waitForAnimation from '#tests/helpers/wait-for-animation';
 import { modifier } from 'ember-modifier';
 import ModalDialog from '@zestia/ember-modal-dialog/components/modal-dialog';
 import { on } from '@ember/modifier';
