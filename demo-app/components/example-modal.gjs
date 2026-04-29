@@ -1,4 +1,4 @@
-import ModalDialog from '@zestia/ember-modal-dialog/components/modal-dialog';
+import ModalDialog from '#src/components/modal-dialog';
 import autoFocus from '@zestia/ember-auto-focus/modifiers/auto-focus';
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
