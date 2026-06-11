@@ -76,6 +76,10 @@ export default class ModalDialogComponent extends Component {
   }
 
   close = waitFor(async () => {
+    if (!this.element.open) {
+      return;
+    }
+
     this.isShowing = false;
     await waitForAnimation(this.element, { maybe: true });
     this.element.close();

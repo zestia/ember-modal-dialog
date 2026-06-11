@@ -221,6 +221,25 @@ module('modal-dialog', function (hooks) {
       assert.verifySteps(['closed']);
     });
 
+    test('does not fire onClose if already closed', async function (assert) {
+      assert.expect(2);
+
+      let api;
+
+      const handleReady = (modal) => (api = modal);
+
+      await render(
+        <template>
+          <ModalDialog @onReady={{handleReady}} @onClose={{close}} />
+        </template>
+      );
+
+      await api.close();
+      await api.close();
+
+      assert.verifySteps(['closed']);
+    });
+
     skip('missing close argument', async function (assert) {
       assert.expect(1);
 
