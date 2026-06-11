@@ -8,6 +8,7 @@ import { modifier } from 'ember-modifier';
 export default class ModalDialogComponent extends Component {
   @tracked element;
   @tracked isLoading = true;
+  @tracked isShowing = true;
   @tracked isWarning;
 
   modal = modifier(
@@ -53,11 +54,12 @@ export default class ModalDialogComponent extends Component {
     }
   }
 
-  close = async () => {
+  close = waitFor(async () => {
+    this.isShowing = false;
+    await waitForAnimation(this.element, { maybe: true });
     this.element.close();
-    await waitFor(waitForAnimation(this.element, { maybe: true }));
     this.args.onClose();
-  };
+  });
 
   @waitFor
   async #warn() {
@@ -85,6 +87,7 @@ export default class ModalDialogComponent extends Component {
     <dialog
       class="modal-dialog"
       aria-busy="{{this.isLoading}}"
+      data-showing="{{this.isShowing}}"
       data-warning={{this.isWarning}}
       {{this.modal}}
       {{on "keydown" this.handleKeyDown}}

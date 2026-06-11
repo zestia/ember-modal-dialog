@@ -170,7 +170,7 @@ module('modal-dialog', function (hooks) {
 
       const animations = await waitForAnimation('.modal-dialog');
 
-      assert.strictEqual(animations.length, 2);
+      assert.strictEqual(animations.length, 1);
 
       await settled();
 
@@ -266,7 +266,7 @@ module('modal-dialog', function (hooks) {
 
       const animations = await waitForAnimation('.modal-dialog');
 
-      assert.strictEqual(animations.length, 2);
+      assert.strictEqual(animations.length, 1);
 
       await settled();
 
