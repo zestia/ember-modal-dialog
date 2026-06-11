@@ -49,7 +49,7 @@ export default class ModalDialogComponent extends Component {
     if (this.args.escapable) {
       this.close();
     } else {
-      this._warn();
+      this.#warn();
     }
   }
 
@@ -60,7 +60,7 @@ export default class ModalDialogComponent extends Component {
   };
 
   @waitFor
-  async _warn() {
+  async #warn() {
     this.isWarning = true;
     await waitForAnimation(this.element);
     this.isWarning = false;

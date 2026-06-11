@@ -12,10 +12,6 @@
 
 This addon provides a simple Modal Dialog component.
 
-There are two versions [4x](https://github.com/zestia/ember-modal-dialog/blob/4x/README.md) and [5x](https://github.com/zestia/ember-modal-dialog/blob/main/README.md).
-
-Version 5 uses the native dialog, and version 4 does not. Version 4 is still being maintained because support for native dialog is not great, and there are still some [quirks](#notes).
-
 ## Installation
 
 ```
@@ -35,31 +31,26 @@ https://zestia.github.io/ember-modal-dialog
 
 ## Features
 
+- Native modal dialog
 - Focus trap ✔︎
 - Body scroll lock ✔︎
 - Loading state handling ✔︎
 - Optionally escapable ✔︎
-- Exceeds viewport detection ✔︎
-- Animatable (includes test waiters) ✔︎
+- Easily animatable ✔︎
 - Simple API ✔︎
 
 ## Notes
 
 - This addon intentionally does not come with any styles.
 - It is configured with [ember-test-waiters](https://github.com/emberjs/ember-test-waiters) so `await`ing in your test suite will just work.
-- Does not use native `dialog` _yet_, because:
-  - Can't animate `::backdrop`
-  - Can't use `::backdrop` with CSS variables
-  - Does not provide a focus trap
-  - Does not provide a scroll lock
 
 ## Example
 
-The modal dialog component isn't designed to be used on its own, but rather used to compose a new modal dialog component... in this example it's called "my-modal"
+The modal dialog component isn't designed to be used on its own, but rather used to compose a new modal dialog component... in this example it's called "user-modal"
 
 ```handlebars
-{{! my-modal.hbs }}
-<ModalDialog @onClose={{@onClose}} as |modal|>
+{{! user-modal.hbs }}
+<ModalDialog @onClose={{@onClose}} @onLoad={{loadUser}} as |modal|>
   Content
 
   <button {{on 'click' modal.close}}>
@@ -70,8 +61,8 @@ The modal dialog component isn't designed to be used on its own, but rather used
 
 ```handlebars
 {{! application/template.hbs }}
-{{#if this.showMyModal}}
-  <MyModal @onClose={{this.hideMyModal}} />
+{{#if this.showUserModal}}
+  <UserModal @onClose={{this.hideUserModal}} />
 {{/if}}
 ```
 
