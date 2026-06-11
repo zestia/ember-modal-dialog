@@ -27,10 +27,6 @@ body {
   background-color: rgb(0 0 0 / 30%);
 }
 
-.modal-dialog[data-warning] {
-  animation: warn 300ms;
-}
-
 .modal-dialog[aria-busy='true'] {
   text-align: center;
 }
@@ -49,6 +45,12 @@ body {
 
 .modal-dialog[data-showing='false']::backdrop {
   animation: fade-out 1s;
+}
+
+.modal-dialog[data-warning] {
+  animation:
+    fade-in 0,
+    warn 300ms;
 }
 
 @keyframes fade-in {
@@ -81,7 +83,7 @@ body {
   }
 
   60% {
-    transform: scale(1.02);
+    transform: scale(1.03);
   }
 
   100% {
