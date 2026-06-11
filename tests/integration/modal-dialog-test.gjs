@@ -234,8 +234,10 @@ module('modal-dialog', function (hooks) {
         </template>
       );
 
-      await api.close();
-      await api.close();
+      api.close();
+      api.close();
+
+      await settled();
 
       assert.verifySteps(['closed']);
     });
