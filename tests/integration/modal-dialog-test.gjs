@@ -274,6 +274,96 @@ module('modal-dialog', function (hooks) {
 
       assert.verifySteps([]);
     });
+
+    test('clicking backdrop (escapable)', async function (assert) {
+      assert.expect(3);
+
+      await render(
+        <template>
+          <ModalDialog @escapable={{true}} @onClose={{close}} />
+        </template>
+      );
+
+      const dialog = document.querySelector('.modal-dialog');
+      const rect = dialog.getBoundingClientRect();
+
+      await click(dialog, {
+        clientX: rect.left - 10,
+        clientY: rect.top - 10
+      });
+
+      assert.verifySteps(['closed']);
+
+      assert.dom('.modal-dialog').doesNotHaveAttribute('open');
+    });
+
+    test('clicking backdrop (not escapable)', async function (assert) {
+      assert.expect(3);
+
+      await render(<template><ModalDialog @onClose={{close}} /></template>);
+
+      const dialog = document.querySelector('.modal-dialog');
+      const rect = dialog.getBoundingClientRect();
+
+      click(dialog, {
+        clientX: rect.left - 10,
+        clientY: rect.top - 10
+      });
+
+      await waitFor('.modal-dialog[data-warning]');
+
+      const animations = await waitForAnimation('.modal-dialog');
+
+      assert.strictEqual(animations.length, 1);
+
+      await settled();
+
+      assert.dom('.modal-dialog').doesNotHaveAttribute('data-warning');
+
+      assert.verifySteps([]);
+    });
+
+    test('clicking content does not dismiss', async function (assert) {
+      assert.expect(2);
+
+      await render(
+        <template>
+          <ModalDialog @onClose={{close}}>
+            <button type="button">Inside</button>
+          </ModalDialog>
+        </template>
+      );
+
+      await click('button');
+
+      assert.dom('.modal-dialog').doesNotHaveAttribute('data-warning');
+
+      assert.verifySteps([]);
+    });
+
+    test('clicking empty space inside dialog does not dismiss', async function (assert) {
+      assert.expect(2);
+
+      await render(
+        <template>
+          <ModalDialog @onClose={{close}}>
+            <button type="button">Inside</button>
+          </ModalDialog>
+        </template>
+      );
+
+      const dialog = document.querySelector('.modal-dialog');
+      const rect = dialog.getBoundingClientRect();
+
+      await click(dialog, {
+        clientX: rect.left + 5,
+        clientY: rect.top + 5
+      });
+
+      assert.dom('.modal-dialog').doesNotHaveAttribute('data-warning');
+
+      assert.verifySteps([]);
+    });
   });
 
   module('api', function () {

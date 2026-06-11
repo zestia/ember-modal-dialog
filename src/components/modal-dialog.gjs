@@ -30,7 +30,16 @@ export default class ModalDialogComponent extends Component {
       return;
     }
 
-    this.#handleEscape(event, this.api);
+    this.#handleEscape(event);
+  };
+
+  handleClick = (event) => {
+    if (!this.#isBackdrop(event)) {
+      return;
+    }
+
+    event.preventDefault();
+    this.#handleDismissAttempt();
   };
 
   async #load() {
@@ -46,12 +55,27 @@ export default class ModalDialogComponent extends Component {
 
   #handleEscape(event) {
     event.preventDefault();
+    this.#handleDismissAttempt();
+  }
 
+  #handleDismissAttempt() {
     if (this.args.escapable) {
       this.close();
     } else {
       this.#warn();
     }
+  }
+
+  #isBackdrop(event) {
+    const { clientX, clientY } = event;
+    const { left, right, top, bottom } = this.element.getBoundingClientRect();
+
+    return (
+      clientX < left ||
+      clientX > right ||
+      clientY < top ||
+      clientY > bottom
+    );
   }
 
   close = waitFor(async () => {
@@ -91,6 +115,7 @@ export default class ModalDialogComponent extends Component {
       data-warning={{this.isWarning}}
       {{this.modal}}
       {{on "keydown" this.handleKeyDown}}
+      {{on "click" this.handleClick}}
       ...attributes
     >
       {{yield this.api}}
