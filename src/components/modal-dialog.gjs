@@ -71,7 +71,8 @@ export default class ModalDialogComponent extends Component {
     const { left, right, top, bottom } = this.element.getBoundingClientRect();
 
     return (
-      clientX < left || clientX > right || clientY < top || clientY > bottom
+      event.target === this.element &&
+      (clientX < left || clientX > right || clientY < top || clientY > bottom)
     );
   }
 
