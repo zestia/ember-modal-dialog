@@ -1,10 +1,6 @@
 # Changelog
 
-## 5.0.0-1
-
-- Port v2 structure
-
-## 5.0.0-0
+## 5.0.0
 
 - Use native `dialog`
 

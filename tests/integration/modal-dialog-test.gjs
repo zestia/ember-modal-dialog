@@ -7,6 +7,7 @@ import { on } from '@ember/modifier';
 import { tracked } from '@glimmer/tracking';
 import {
   click,
+  find,
   render,
   waitFor,
   settled,
@@ -305,10 +306,9 @@ module('modal-dialog', function (hooks) {
         </template>
       );
 
-      const dialog = document.querySelector('.modal-dialog');
-      const rect = dialog.getBoundingClientRect();
+      const rect = find('.modal-dialog').getBoundingClientRect();
 
-      await click(dialog, {
+      await click('.modal-dialog', {
         clientX: rect.left - 10,
         clientY: rect.top - 10
       });
@@ -323,10 +323,9 @@ module('modal-dialog', function (hooks) {
 
       await render(<template><ModalDialog @onClose={{close}} /></template>);
 
-      const dialog = document.querySelector('.modal-dialog');
-      const rect = dialog.getBoundingClientRect();
+      const rect = find('.modal-dialog').getBoundingClientRect();
 
-      click(dialog, {
+      click('.modal-dialog', {
         clientX: rect.left - 10,
         clientY: rect.top - 10
       });
@@ -362,6 +361,29 @@ module('modal-dialog', function (hooks) {
       assert.verifySteps([]);
     });
 
+    test('clicking child with backdrop coordinates does not dismiss', async function (assert) {
+      assert.expect(2);
+
+      await render(
+        <template>
+          <ModalDialog @escapable={{true}} @onClose={{close}}>
+            <button type="button">Inside</button>
+          </ModalDialog>
+        </template>
+      );
+
+      const rect = find('.modal-dialog').getBoundingClientRect();
+
+      await click('button', {
+        clientX: rect.left - 10,
+        clientY: rect.top - 10
+      });
+
+      assert.dom('.modal-dialog').hasAttribute('open');
+
+      assert.verifySteps([]);
+    });
+
     test('clicking empty space inside dialog does not dismiss', async function (assert) {
       assert.expect(2);
 
@@ -373,10 +395,9 @@ module('modal-dialog', function (hooks) {
         </template>
       );
 
-      const dialog = document.querySelector('.modal-dialog');
-      const rect = dialog.getBoundingClientRect();
+      const rect = find('.modal-dialog').getBoundingClientRect();
 
-      await click(dialog, {
+      await click('.modal-dialog', {
         clientX: rect.left + 5,
         clientY: rect.top + 5
       });
