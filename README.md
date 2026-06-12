@@ -94,16 +94,8 @@ Required. This action fires when `close` has been called, _and_ any animations h
 
 #### `close`
 
-Call this when you want to close the modal. It will first wait for any animations on the DOM element, and then `@onClose` will be fired. Allowing you to physically remove the modal from the DOM.
+Call this when you want to close the modal. It will first wait for any animations on the dialog element, and then `@onClose` will be fired. Allowing you to physically remove the modal from the DOM.
 
 #### `isLoading`
 
 Whether the data required for the modal dialog to display is loading.
-
-#### `element`
-
-The DOM element of the modal dialog component.
-
-#### `boxElement`
-
-The inner DOM element of the modal dialog component, that contains the content.
