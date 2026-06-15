@@ -87,12 +87,11 @@ export default class ModalDialogComponent extends Component {
     this.args.onClose();
   });
 
-  @waitFor
-  async #warn() {
+  #warn = waitFor(async () => {
     this.isWarning = true;
     await waitForAnimation(this.element);
     this.isWarning = false;
-  }
+  });
 
   get #api() {
     return {
