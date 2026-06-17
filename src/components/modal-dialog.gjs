@@ -11,13 +11,10 @@ export default class ModalDialogComponent extends Component {
   @tracked isShowing = true;
   @tracked isWarning;
 
-  modal = modifier(
-    (element) => {
-      this.element = element;
-      this.element.showModal();
-    },
-    { eager: false }
-  );
+  modal = modifier((element) => {
+    this.element = element;
+    this.element.showModal();
+  });
 
   constructor() {
     super(...arguments);
