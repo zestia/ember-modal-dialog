@@ -13,7 +13,10 @@ export default class ModalDialogComponent extends Component {
 
   modal = modifier((element) => {
     this.element = element;
-    this.element.showModal();
+
+    if (!element.open) {
+      element.showModal();
+    }
   });
 
   constructor() {

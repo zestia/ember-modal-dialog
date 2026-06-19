@@ -408,6 +408,31 @@ module('modal-dialog', function (hooks) {
     });
   });
 
+  test('only calls showModal when the dialog is closed', async function (assert) {
+    const originalShowModal = HTMLDialogElement.prototype.showModal;
+
+    // Unreleastic code path, but useful test nonetheless:
+    // Older implementations of .showDialog errored if the dialog was already open
+
+    HTMLDialogElement.prototype.showModal = function () {
+      assert.step('showModal');
+      this.open = true;
+    };
+
+    try {
+      await render(
+        <template>
+          <ModalDialog />
+          <ModalDialog open />
+        </template>
+      );
+
+      assert.verifySteps(['showModal']);
+    } finally {
+      HTMLDialogElement.prototype.showModal = originalShowModal;
+    }
+  });
+
   module('api', function () {
     test('api', async function (assert) {
       assert.expect(2);

@@ -1,5 +1,9 @@
 # Changelog
 
+## 5.0.1
+
+- Support older dialog implementations
+
 ## 5.0.0
 
 - Use native `dialog`
